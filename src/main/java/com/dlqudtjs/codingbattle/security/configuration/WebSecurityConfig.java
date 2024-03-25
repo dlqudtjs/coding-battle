@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.security;
+package com.dlqudtjs.codingbattle.security.configuration;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
