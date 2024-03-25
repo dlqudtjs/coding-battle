@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.configuration.log;
+package com.dlqudtjs.codingbattle.common.log;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -12,15 +12,15 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class LogConfig {
 
-    @Pointcut("execution(* com.dlqudtjs.codingbattle.controller..*.*(..)) && !@annotation(com.dlqudtjs.codingbattle.configuration.log.NoLogging)")
+    @Pointcut("execution(* com.dlqudtjs.codingbattle.controller..*.*(..)) && !@annotation(com.dlqudtjs.codingbattle.common.log.NoLogging)")
     public void allController() {
     }
 
-    @Pointcut("execution(* com.dlqudtjs.codingbattle.service..*.*(..)) && !@annotation(com.dlqudtjs.codingbattle.configuration.log.NoLogging)")
+    @Pointcut("execution(* com.dlqudtjs.codingbattle.service..*.*(..)) && !@annotation(com.dlqudtjs.codingbattle.common.log.NoLogging)")
     public void allService() {
     }
 
-    @Pointcut("execution(* com.dlqudtjs.codingbattle.repository..*.*(..)) && !@annotation(com.dlqudtjs.codingbattle.configuration.log.NoLogging)")
+    @Pointcut("execution(* com.dlqudtjs.codingbattle.repository..*.*(..)) && !@annotation(com.dlqudtjs.codingbattle.common.log.NoLogging)")
     public void allRepository() {
     }
 
