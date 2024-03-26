@@ -1,5 +1,7 @@
 package com.dlqudtjs.codingbattle.security.configuration;
 
+import com.dlqudtjs.codingbattle.security.exception.CustomAccessDeniedHandler;
+import com.dlqudtjs.codingbattle.security.exception.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +28,11 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
                                 .anyRequest().permitAll()
-                );
+                )
+                .exceptionHandling((exceptionHandling) ->
+                        exceptionHandling
+                                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                                .accessDeniedHandler(new CustomAccessDeniedHandler()));
 
         return httpSecurity.build();
     }
