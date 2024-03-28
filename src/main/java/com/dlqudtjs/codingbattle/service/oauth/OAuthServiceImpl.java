@@ -26,6 +26,14 @@ public class OAuthServiceImpl implements OAuthService {
     public ResponseDto singUp(SignUpRequestDto signUpRequestDto) {
         validateSignUpRequest(signUpRequestDto);
 
+        User user = User.builder()
+                .userId(signUpRequestDto.getUserId())
+                .nickname(signUpRequestDto.getNickname())
+                .password(signUpRequestDto.getPassword())
+                .build();
+
+        userRepository.save(user);
+
         return null;
     }
 
