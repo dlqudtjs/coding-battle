@@ -23,4 +23,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return ResponseEntity.status(status).body(errorResponseDto);
     }
+
+    // 409 AlreadyExistUserIdException
+    @ExceptionHandler(AlreadyExistUserIdException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Object> handleAlreadyExistUserIdException(AlreadyExistUserIdException e) {
+        log.error("handleAlreadyExistUserIdException", e);
+        return buildErrorResponse(e, e.getMessage(), HttpStatus.CONFLICT);
+    }
 }
