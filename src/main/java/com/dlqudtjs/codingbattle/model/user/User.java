@@ -1,0 +1,76 @@
+package com.dlqudtjs.codingbattle.model.user;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+@Entity
+@Builder
+@AllArgsConstructor
+@RequiredArgsConstructor
+@Table(name = "user")
+public class User implements UserDetails {
+
+    @Id
+    @Column(name = "id", nullable = false)
+    private Long id;
+
+    @Column(name = "user_id", nullable = false, unique = true)
+    private String userId;
+
+    @Column(name = "password", nullable = false)
+    private String password;
+
+    @Column(name = "nickname", nullable = false, unique = true)
+    private String nickname;
+
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(() -> role.name());
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return nickname;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+}
