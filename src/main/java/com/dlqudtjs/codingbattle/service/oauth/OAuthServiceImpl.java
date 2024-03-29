@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OAuthServiceImpl implements OAuthService {
 
     private final UserRepository userRepository;
+
     @Override
     public ResponseDto signIn(SignInRequestDto signInRequestDto) {
         return null;
@@ -30,18 +31,12 @@ public class OAuthServiceImpl implements OAuthService {
     public ResponseDto singUp(SignUpRequestDto signUpRequestDto) {
         validateSignUpRequest(signUpRequestDto);
 
-        User user = User.builder()
-                .userId(signUpRequestDto.getUserId())
-                .nickname(signUpRequestDto.getNickname())
-                .password(signUpRequestDto.getPassword())
-                .build();
-
-        User savedUser = userRepository.save(user);
+        User savedUser = userRepository.save(signUpRequestDto.toEntity());
 
         return ResponseDto.builder()
                 .status(SuccessCode.LOGIN_SUCCESS.getStatus())
                 .message(SuccessCode.LOGIN_SUCCESS.getMessage())
-                .data(savedUser.getUsername())
+                .data(savedUser.getId())
                 .build();
     }
 
