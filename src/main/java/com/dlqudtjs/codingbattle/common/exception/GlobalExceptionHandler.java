@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.common.exception;
 
 import com.dlqudtjs.codingbattle.common.dto.ErrorResponseDto;
+import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistNicknameException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistUserIdException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<Object> handleAlreadyExistUserIdException(AlreadyExistUserIdException e) {
         log.error("handleAlreadyExistUserIdException", e);
+        return buildErrorResponse(e, e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    // 409 AlreadyExistNicknameException
+    @ExceptionHandler(AlreadyExistNicknameException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Object> handleAlreadyExistNicknameException(AlreadyExistNicknameException e) {
+        log.error("handleAlreadyExistNicknameException", e);
         return buildErrorResponse(e, e.getMessage(), HttpStatus.CONFLICT);
     }
 }
