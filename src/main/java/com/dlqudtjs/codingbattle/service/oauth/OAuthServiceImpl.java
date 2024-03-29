@@ -11,6 +11,7 @@ import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
 import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordCheckException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OAuthServiceImpl implements OAuthService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public ResponseDto signIn(SignInRequestDto signInRequestDto) {
@@ -31,11 +33,12 @@ public class OAuthServiceImpl implements OAuthService {
     public ResponseDto singUp(SignUpRequestDto signUpRequestDto) {
         validateSignUpRequest(signUpRequestDto);
 
-        User savedUser = userRepository.save(signUpRequestDto.toEntity());
+        User savedUser = userRepository.save(signUpRequestDto.toEntity().
+                encodePassword(passwordEncoder));
 
         return ResponseDto.builder()
-                .status(SuccessCode.LOGIN_SUCCESS.getStatus())
-                .message(SuccessCode.LOGIN_SUCCESS.getMessage())
+                .status(SuccessCode.SIGN_UP_SUCCESS.getStatus())
+                .message(SuccessCode.SIGN_UP_SUCCESS.getMessage())
                 .data(savedUser.getId())
                 .build();
     }
