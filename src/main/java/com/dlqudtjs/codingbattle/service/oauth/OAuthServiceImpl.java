@@ -5,6 +5,7 @@ import com.dlqudtjs.codingbattle.model.oauth.SignInRequestDto;
 import com.dlqudtjs.codingbattle.model.oauth.SignUpRequestDto;
 import com.dlqudtjs.codingbattle.model.user.User;
 import com.dlqudtjs.codingbattle.repository.JpaUserRepository;
+import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistNicknameException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistUserIdException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -45,18 +46,16 @@ public class OAuthServiceImpl implements OAuthService {
 
     private void validateSignUpRequest(SignUpRequestDto signUpRequestDto) {
         if (isExistUser(signUpRequestDto.getUserId())) {
-            return;
+            throw new AlreadyExistUserIdException(ErrorCode.ALREADY_EXIST_USER_ID.getMessage());
         }
 
         if (isExistNickname(signUpRequestDto.getNickname())) {
-            return;
+            throw new AlreadyExistNicknameException(ErrorCode.ALREADY_EXIST_NICKNAME.getMessage());
         }
 
         if (!passwordCheck(signUpRequestDto.getPassword(), signUpRequestDto.getPasswordCheck())) {
             return;
         }
-
-        throw new AlreadyExistUserIdException(ErrorCode.ALREADY_EXIST_USER_ID.getMessage());
     }
 
     private boolean isExistUser(String userId) {
