@@ -4,7 +4,7 @@ import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.oauth.SignInRequestDto;
 import com.dlqudtjs.codingbattle.model.oauth.SignUpRequestDto;
 import com.dlqudtjs.codingbattle.model.user.User;
-import com.dlqudtjs.codingbattle.repository.JpaUserRepository;
+import com.dlqudtjs.codingbattle.repository.UserRepository;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistNicknameException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistUserIdException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class OAuthServiceImpl implements OAuthService {
 
-    private final JpaUserRepository userRepository;
+    private final UserRepository userRepository;
     @Override
     public ResponseDto signIn(SignInRequestDto signInRequestDto) {
         return null;
