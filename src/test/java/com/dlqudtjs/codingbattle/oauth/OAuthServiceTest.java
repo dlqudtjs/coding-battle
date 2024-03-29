@@ -19,12 +19,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 public class OAuthServiceTest {
 
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private OAuthServiceImpl oAuthService;
@@ -39,6 +42,7 @@ public class OAuthServiceTest {
         String nickname = "testNickname";
         SignUpRequestDto signUpRequestDto = new SignUpRequestDto(userId, password, passwordCheck, nickname);
 
+        Mockito.when(passwordEncoder.encode(Mockito.anyString())).thenReturn(password);
         Mockito.when(userRepository.existsByUserId(Mockito.anyString())).thenReturn(false);
         Mockito.when(userRepository.existsByNickname(Mockito.anyString())).thenReturn(false);
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(User.builder()
@@ -54,7 +58,7 @@ public class OAuthServiceTest {
 
         // then
         Assertions.assertThat(responseDto.getStatus()).isEqualTo(200);
-        Assertions.assertThat(responseDto.getMessage()).isEqualTo(SuccessCode.LOGIN_SUCCESS.getMessage());
+        Assertions.assertThat(responseDto.getMessage()).isEqualTo(SuccessCode.SIGN_UP_SUCCESS.getMessage());
         Assertions.assertThat(responseDto.getData()).isEqualTo(1L);
     }
 
