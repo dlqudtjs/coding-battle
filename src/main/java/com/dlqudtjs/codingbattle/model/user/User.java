@@ -12,14 +12,16 @@ import java.util.Collection;
 import java.util.Collections;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Builder
+@Getter
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Table(name = "user")
 public class User implements UserDetails {
 
