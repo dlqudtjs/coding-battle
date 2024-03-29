@@ -7,8 +7,10 @@ import com.dlqudtjs.codingbattle.model.user.UserRole;
 import com.dlqudtjs.codingbattle.repository.UserRepository;
 import com.dlqudtjs.codingbattle.service.oauth.OAuthServiceImpl;
 import com.dlqudtjs.codingbattle.service.oauth.SuccessCode;
+import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistNicknameException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistUserIdException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
+import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordCheckException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +30,7 @@ public class OAuthServiceTest {
     private OAuthServiceImpl oAuthService;
 
     @Test
-    @DisplayName("회원가입 성공")
+    @DisplayName("회원가입 성공 테스트")
     void signUpSuccessTest() {
         // given
         String userId = "testId";
@@ -57,7 +59,7 @@ public class OAuthServiceTest {
     }
 
     @Test
-    @DisplayName("User Id 중복 에러 반환")
+    @DisplayName("User Id 중복 에러 반환 테스트")
     void duplicateUserIdErrorTest() {
         // given
         String userId = "testId";
@@ -75,7 +77,7 @@ public class OAuthServiceTest {
     }
 
     @Test
-    @DisplayName("Nickname 중복 에러 반환")
+    @DisplayName("Nickname 중복 에러 반환 테스트")
     void duplicateNicknameErrorTest() {
         // given
         String userId = "testId";
@@ -89,7 +91,23 @@ public class OAuthServiceTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> oAuthService.singUp(signUpRequestDto))
-                .isInstanceOf(AlreadyExistUserIdException.class)
+                .isInstanceOf(AlreadyExistNicknameException.class)
                 .hasMessage(ErrorCode.ALREADY_EXIST_NICKNAME.getMessage());
+    }
+
+    @Test
+    @DisplayName("password check 불일치 에러 반환 테스트")
+    void passwordCheckErrorTest() {
+        // given
+        String userId = "testId";
+        String password = "testPassword";
+        String passwordCheck = "testPasswordCheck";
+        String nickname = "testNickname";
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(userId, password, passwordCheck, nickname);
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> oAuthService.singUp(signUpRequestDto))
+                .isInstanceOf(PasswordCheckException.class)
+                .hasMessage(ErrorCode.PASSWORD_CHECK.getMessage());
     }
 }
