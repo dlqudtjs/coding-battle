@@ -8,6 +8,7 @@ import com.dlqudtjs.codingbattle.repository.JpaUserRepository;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistNicknameException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistUserIdException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
+import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordCheckException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -54,7 +55,7 @@ public class OAuthServiceImpl implements OAuthService {
         }
 
         if (!passwordCheck(signUpRequestDto.getPassword(), signUpRequestDto.getPasswordCheck())) {
-            return;
+            throw new PasswordCheckException(ErrorCode.PASSWORD_CHECK.getMessage());
         }
     }
 
