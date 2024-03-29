@@ -20,24 +20,18 @@ public class LogConfig {
     public void allService() {
     }
 
-    @Pointcut("execution(* com.dlqudtjs.codingbattle.repository..*.*(..)) && !@annotation(com.dlqudtjs.codingbattle.common.log.NoLogging)")
-    public void allRepository() {
-    }
+//    @Pointcut("execution(* com.dlqudtjs.codingbattle.repository..*.*(..)) && !@annotation(com.dlqudtjs.codingbattle.common.log.NoLogging)")
+//    public void allRepository() {
+//    }
 
-    @Around("allController() || allService() || allRepository()")
+    @Around("allController() || allService()")
     public Object log(ProceedingJoinPoint joinPoint) throws Throwable {
         String className = joinPoint.getSignature().getDeclaringTypeName();
         String methodName = joinPoint.getSignature().getName();
+        log.info("==============================execution method==============================");
         log.info("Start - {}.{}", className, methodName);
         Object result = joinPoint.proceed();
         log.info("End - {}.{}", className, methodName);
         return result;
-
-//        log.info("==============================execution method==============================");
-//        log.info("Target: {}", joinPoint.getTarget());
-//        log.info("Signature: {}", joinPoint.getSignature().getName());
-//
-//        Object result = joinPoint.proceed();
-//        return result;
     }
 }
