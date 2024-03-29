@@ -73,4 +73,23 @@ public class OAuthServiceTest {
                 .isInstanceOf(AlreadyExistUserIdException.class)
                 .hasMessage(ErrorCode.ALREADY_EXIST_USER_ID.getMessage());
     }
+
+    @Test
+    @DisplayName("Nickname 중복 에러 반환")
+    void duplicateNicknameErrorTest() {
+        // given
+        String userId = "testId";
+        String password = "testPassword";
+        String passwordCheck = "testPassword";
+        String nickname = "testNickname";
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(userId, password, passwordCheck, nickname);
+
+        Mockito.when(userRepository.existsByUserId(Mockito.anyString())).thenReturn(false);
+        Mockito.when(userRepository.existsByNickname(Mockito.anyString())).thenReturn(true);
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> oAuthService.singUp(signUpRequestDto))
+                .isInstanceOf(AlreadyExistUserIdException.class)
+                .hasMessage(ErrorCode.ALREADY_EXIST_NICKNAME.getMessage());
+    }
 }
