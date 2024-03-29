@@ -7,6 +7,8 @@ import com.dlqudtjs.codingbattle.model.user.UserRole;
 import com.dlqudtjs.codingbattle.repository.UserRepository;
 import com.dlqudtjs.codingbattle.service.oauth.OAuthServiceImpl;
 import com.dlqudtjs.codingbattle.service.oauth.SuccessCode;
+import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistUserIdException;
+import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,5 +54,23 @@ public class OAuthServiceTest {
         Assertions.assertThat(responseDto.getStatus()).isEqualTo(200);
         Assertions.assertThat(responseDto.getMessage()).isEqualTo(SuccessCode.LOGIN_SUCCESS.getMessage());
         Assertions.assertThat(responseDto.getData()).isEqualTo(1L);
+    }
+
+    @Test
+    @DisplayName("User Id 중복 에러 반환")
+    void duplicateUserIdErrorTest() {
+        // given
+        String userId = "testId";
+        String password = "testPassword";
+        String passwordCheck = "testPassword";
+        String nickname = "testNickname";
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(userId, password, passwordCheck, nickname);
+
+        Mockito.when(userRepository.existsByUserId(Mockito.anyString())).thenReturn(true);
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> oAuthService.singUp(signUpRequestDto))
+                .isInstanceOf(AlreadyExistUserIdException.class)
+                .hasMessage(ErrorCode.ALREADY_EXIST_USER_ID.getMessage());
     }
 }
