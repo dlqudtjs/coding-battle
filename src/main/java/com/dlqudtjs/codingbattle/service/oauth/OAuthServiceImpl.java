@@ -10,14 +10,12 @@ import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistUserIdExcep
 import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
 import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordCheckException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class OAuthServiceImpl implements OAuthService {
 
     private final UserRepository userRepository;
