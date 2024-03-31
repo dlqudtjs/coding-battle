@@ -4,6 +4,7 @@ import com.dlqudtjs.codingbattle.common.dto.ErrorResponseDto;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistNicknameException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistUserIdException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordCheckException;
+import com.dlqudtjs.codingbattle.service.oauth.exception.UserIdNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,5 +49,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handlePasswordCheckException(PasswordCheckException e) {
         log.error("handlePasswordCheckException", e);
         return buildErrorResponse(e, e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserIdNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleUserIdNotFoundException(UserIdNotFoundException e) {
+        log.error("handleUserIdNotFoundException", e);
+        return buildErrorResponse(e, e.getMessage(), HttpStatus.NOT_FOUND);
     }
 }
