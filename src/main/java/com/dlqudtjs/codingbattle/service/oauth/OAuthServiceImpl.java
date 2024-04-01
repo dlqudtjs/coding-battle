@@ -41,6 +41,12 @@ public class OAuthServiceImpl implements OAuthService {
                 .build();
     }
 
+    private void validateSignInRequest(SignInRequestDto signInRequestDto, User user) {
+        if (passwordEncoder.matches(signInRequestDto.getPassword(), user.getPassword())) {
+            throw new PasswordNotMatchException(ErrorCode.PASSWORD_NOT_MATCH.getMessage());
+        }
+    }
+
     private void validateSignUpRequest(SignUpRequestDto signUpRequestDto) {
         if (isExistUser(signUpRequestDto.getUserId())) {
             throw new AlreadyExistUserIdException(ErrorCode.ALREADY_EXIST_USER_ID.getMessage());
