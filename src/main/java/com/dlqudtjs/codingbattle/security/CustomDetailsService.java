@@ -18,6 +18,6 @@ public class CustomDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String userId) throws UserIdNotFoundException {
 
         return userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserIdNotFoundException(ErrorCode.NOT_FOUND_USER_ID.getMessage()));
+                .orElseThrow(() -> new UserIdNotFoundException(ErrorCode.USER_ID_NOT_FOUNT.getMessage()));
     }
 }
