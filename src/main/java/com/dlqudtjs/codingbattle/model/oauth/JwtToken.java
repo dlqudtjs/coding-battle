@@ -10,10 +10,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "token")
@@ -25,7 +27,7 @@ public class JwtToken {
     private Long id;
 
     @Column(name = "user_id", nullable = false, unique = true)
-    private String userId;
+    private Long userId;
 
     @Column(name = "refresh_token", nullable = false)
     private String refreshToken;
