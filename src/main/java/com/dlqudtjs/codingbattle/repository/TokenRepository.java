@@ -1,7 +1,9 @@
 package com.dlqudtjs.codingbattle.repository;
 
-import org.antlr.v4.runtime.Token;
+import com.dlqudtjs.codingbattle.model.oauth.JwtToken;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TokenRepository extends JpaRepository<Token, Long> {
+public interface TokenRepository extends JpaRepository<JwtToken, Long> {
+    Optional<JwtToken> findByUserId(Long userId);
 }
