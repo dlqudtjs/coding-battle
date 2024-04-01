@@ -18,10 +18,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private ResponseEntity<Object> buildErrorResponse(Exception exception, String message, HttpStatus status) {
+    private ResponseEntity<Object> buildErrorResponse(String message, HttpStatus status) {
         ErrorResponseDto errorResponseDto = ErrorResponseDto.builder()
                 .status(status.value())
-                .exception(exception.getClass().getName())
                 .message(message)
                 .build();
 
@@ -33,7 +32,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<Object> handleAlreadyExistUserIdException(AlreadyExistUserIdException e) {
         log.error("handleAlreadyExistUserIdException", e);
-        return buildErrorResponse(e, e.getMessage(), HttpStatus.CONFLICT);
+        return buildErrorResponse(e.getMessage(), HttpStatus.CONFLICT);
     }
 
     // 409 AlreadyExistNicknameException
@@ -41,7 +40,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<Object> handleAlreadyExistNicknameException(AlreadyExistNicknameException e) {
         log.error("handleAlreadyExistNicknameException", e);
-        return buildErrorResponse(e, e.getMessage(), HttpStatus.CONFLICT);
+        return buildErrorResponse(e.getMessage(), HttpStatus.CONFLICT);
     }
 
     // 400 PasswordCheckException
@@ -49,7 +48,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handlePasswordCheckException(PasswordCheckException e) {
         log.error("handlePasswordCheckException", e);
-        return buildErrorResponse(e, e.getMessage(), HttpStatus.BAD_REQUEST);
+        return buildErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     // 400 UserIdNotFoundException
@@ -57,7 +56,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleUserIdNotFoundException(UserIdNotFoundException e) {
         log.error("handleUserIdNotFoundException", e);
-        return buildErrorResponse(e, e.getMessage(), HttpStatus.NOT_FOUND);
+        return buildErrorResponse(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     // 400 PasswordNotMatchException
@@ -65,6 +64,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handlePasswordNotMatchException(PasswordNotMatchException e) {
         log.error("handlePasswordNotMatchException", e);
-        return buildErrorResponse(e, e.getMessage(), HttpStatus.BAD_REQUEST);
+        return buildErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

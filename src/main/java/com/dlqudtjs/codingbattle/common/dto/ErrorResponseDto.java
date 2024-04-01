@@ -9,6 +9,5 @@ import lombok.Getter;
 public class ErrorResponseDto {
     private final LocalDateTime timestamp = LocalDateTime.now();
     private final int status;
-    private final String exception;
     private final String message;
 }
