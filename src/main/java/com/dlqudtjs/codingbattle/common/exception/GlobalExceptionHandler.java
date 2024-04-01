@@ -4,6 +4,7 @@ import com.dlqudtjs.codingbattle.common.dto.ErrorResponseDto;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistNicknameException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistUserIdException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordCheckException;
+import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordNotMatchException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.UserIdNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -43,7 +44,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return buildErrorResponse(e, e.getMessage(), HttpStatus.CONFLICT);
     }
 
-    // 400 Exception
+    // 400 PasswordCheckException
     @ExceptionHandler(PasswordCheckException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handlePasswordCheckException(PasswordCheckException e) {
@@ -51,10 +52,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return buildErrorResponse(e, e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    // 400 UserIdNotFoundException
     @ExceptionHandler(UserIdNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleUserIdNotFoundException(UserIdNotFoundException e) {
         log.error("handleUserIdNotFoundException", e);
         return buildErrorResponse(e, e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    // 400 PasswordNotMatchException
+    @ExceptionHandler(PasswordNotMatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handlePasswordNotMatchException(PasswordNotMatchException e) {
+        log.error("handlePasswordNotMatchException", e);
+        return buildErrorResponse(e, e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
