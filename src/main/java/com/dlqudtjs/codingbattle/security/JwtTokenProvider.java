@@ -1,6 +1,6 @@
 package com.dlqudtjs.codingbattle.security;
 
-import com.dlqudtjs.codingbattle.model.oauth.JwtToken;
+import com.dlqudtjs.codingbattle.model.oauth.JwtTokenDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -44,7 +44,7 @@ public class JwtTokenProvider {
         key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
 
-    public JwtToken generateToken(Authentication authentication) {
+    public JwtTokenDto generateToken(Authentication authentication) {
         // 권한 가져오기 (ROLE_USER, ROLE_ADMIN 등)
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -70,7 +70,7 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
-        return JwtToken.builder()
+        return JwtTokenDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
