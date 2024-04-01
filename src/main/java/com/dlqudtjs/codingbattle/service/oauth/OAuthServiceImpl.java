@@ -81,8 +81,8 @@ public class OAuthServiceImpl implements OAuthService {
     public ResponseDto singUp(SignUpRequestDto signUpRequestDto) {
         validateSignUpRequest(signUpRequestDto);
 
-        User savedUser = userRepository.save(signUpRequestDto.toEntity().
-                encodePassword(passwordEncoder));
+        User savedUser = userRepository.save(signUpRequestDto.toEntity()
+                .encodePassword(passwordEncoder));
 
         return ResponseDto.builder()
                 .status(SuccessCode.SIGN_UP_SUCCESS.getStatus())
@@ -92,7 +92,7 @@ public class OAuthServiceImpl implements OAuthService {
     }
 
     private void validateSignInRequest(SignInRequestDto signInRequestDto, User user) {
-        if (passwordEncoder.matches(signInRequestDto.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(signInRequestDto.getPassword(), user.getPassword())) {
             throw new PasswordNotMatchException(ErrorCode.PASSWORD_NOT_MATCH.getMessage());
         }
     }
