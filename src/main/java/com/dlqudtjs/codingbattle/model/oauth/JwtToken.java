@@ -24,8 +24,8 @@ public class JwtToken {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "access_token", nullable = false)
-    private String accessToken;
+    @Column(name = "user_id", nullable = false, unique = true)
+    private String userId;
 
     @Column(name = "refresh_token", nullable = false)
     private String refreshToken;
