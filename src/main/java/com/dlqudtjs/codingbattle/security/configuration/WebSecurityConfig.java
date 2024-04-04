@@ -28,7 +28,9 @@ public class WebSecurityConfig {
                 )
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
-                                .anyRequest().permitAll()
+                                .requestMatchers("/v1/oauth/sign-up").permitAll()
+                                .requestMatchers("/v1/oauth/sign-in").permitAll()
+                                .anyRequest().authenticated()
                 )
                 .exceptionHandling((exceptionHandling) ->
                         exceptionHandling
