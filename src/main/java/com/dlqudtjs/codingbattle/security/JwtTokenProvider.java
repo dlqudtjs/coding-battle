@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.security;
 
 import com.dlqudtjs.codingbattle.model.oauth.JwtTokenDto;
+import com.dlqudtjs.codingbattle.model.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -44,9 +45,9 @@ public class JwtTokenProvider {
         key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
 
-    public JwtTokenDto generateToken(Authentication authentication) {
+    public JwtTokenDto generateToken(User user) {
         // 권한 가져오기 (ROLE_USER, ROLE_ADMIN 등)
-        String authorities = authentication.getAuthorities().stream()
+        String authorities = user.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
@@ -55,7 +56,7 @@ public class JwtTokenProvider {
         // Access Token 생성
         Date accessTokenExpiration = new Date(now + accessTokenValidityInMilliseconds);
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(user.getUsername())
                 .claim("authorities", authorities)
                 .setIssuedAt(new Date(now))
                 .setExpiration(accessTokenExpiration)
@@ -89,13 +90,14 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    private void validateToken(String token) {
+    public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
 
+            return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
         } catch (ExpiredJwtException e) {
@@ -105,9 +107,11 @@ public class JwtTokenProvider {
         } catch (IllegalArgumentException e) {
             log.info("JWT claims string is empty.", e);
         }
+
+        return false;
     }
 
-    public Claims parseClaims(String accessToken) {
+    private Claims parseClaims(String accessToken) {
         validateToken(accessToken);
 
         return Jwts.parserBuilder()
