@@ -4,6 +4,7 @@ import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.oauth.SignInRequestDto;
 import com.dlqudtjs.codingbattle.model.oauth.SignUpRequestDto;
 import com.dlqudtjs.codingbattle.service.oauth.OAuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,13 @@ public class OAuthController {
     @PostMapping("/v1/oauth/sign-in")
     public ResponseEntity<ResponseDto> signIn(@RequestBody SignInRequestDto signInRequestDto) {
         ResponseDto responseDto = oAuthService.signIn(signInRequestDto);
+
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
+    @PostMapping("/v1/oauth/refresh-token")
+    public ResponseEntity<ResponseDto> refreshToken(HttpServletRequest request) {
+        ResponseDto responseDto = oAuthService.refreshToken(request);
 
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
