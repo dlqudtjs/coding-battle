@@ -3,7 +3,7 @@ package com.dlqudtjs.codingbattle.security.configuration;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.security.exception.CustomAccessDeniedHandler;
 import com.dlqudtjs.codingbattle.security.exception.CustomAuthenticationEntryPoint;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,13 +13,20 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class WebSecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final HandlerExceptionResolver resolver;
+
+    public WebSecurityConfig(JwtTokenProvider jwtTokenProvider,
+                             @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.resolver = resolver;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -38,7 +45,7 @@ public class WebSecurityConfig {
                 )
                 .exceptionHandling((exceptionHandling) ->
                         exceptionHandling
-                                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                                .authenticationEntryPoint(new CustomAuthenticationEntryPoint(resolver))
                                 .accessDeniedHandler(new CustomAccessDeniedHandler())
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
