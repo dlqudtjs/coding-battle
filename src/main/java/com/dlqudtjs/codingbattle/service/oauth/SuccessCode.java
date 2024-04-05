@@ -8,7 +8,9 @@ import lombok.Getter;
 public enum SuccessCode {
 
     SIGN_UP_SUCCESS(200, "회원가입 성공"),
-    SIGN_IN_SUCCESS(200, "로그인 성공");
+    SIGN_IN_SUCCESS(200, "로그인 성공"),
+    REFRESH_TOKEN_SUCCESS(200, "토큰 재발급 성공"),
+    ;
 
     private final int status;
     private final String message;
