@@ -23,19 +23,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        try {
-            // 헤더에서 JWT 를 받아옴
-            String token = jwtTokenProvider.resolveToken(request).substring(7);
+        // 헤더에서 JWT 를 받아옴
+        String token = jwtTokenProvider.resolveToken(request);
 
-            // 유효한 토큰인지 확인
-            if (jwtTokenProvider.validateToken(token)) {
-                Authentication auth = jwtTokenProvider.getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(auth);
-            }
+        try {
+            // getAuthentication 메서드에서 토큰에 문제가 생기면 exception 발생
+            // 이 exception을 CustomAuthenticationEntryPoint에서 처리
+            Authentication auth = jwtTokenProvider.getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(auth);
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            request.setAttribute("exception", e);
         }
 
         filterChain.doFilter(request, response);
