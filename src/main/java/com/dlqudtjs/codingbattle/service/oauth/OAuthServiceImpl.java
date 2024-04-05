@@ -14,10 +14,12 @@ import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistUserIdExcep
 import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
 import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordCheckException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordNotMatchException;
+import com.dlqudtjs.codingbattle.service.oauth.exception.RefreshTokenNotFoundException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.UserIdNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +31,6 @@ public class OAuthServiceImpl implements OAuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final TokenRepository tokenRepository;
 
     @Override
@@ -51,18 +52,6 @@ public class OAuthServiceImpl implements OAuthService {
                 .build();
     }
 
-    private void saveRefreshToken(String refreshToken, Long userId) {
-        Optional<JwtToken> jwtToken = tokenRepository.findByUserId(userId);
-
-        if (jwtToken.isPresent()) {
-            jwtToken.get().setRefreshToken(refreshToken);
-        } else {
-            tokenRepository.save(JwtToken.builder()
-                    .userId(userId)
-                    .refreshToken(refreshToken)
-                    .build());
-        }
-    }
 
     @Override
     @Transactional
@@ -77,6 +66,47 @@ public class OAuthServiceImpl implements OAuthService {
                 .message(SuccessCode.SIGN_UP_SUCCESS.getMessage())
                 .data(savedUser.getId())
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public ResponseDto refreshToken(HttpServletRequest request) {
+        String refreshToken = jwtTokenProvider.resolveToken(request);
+        Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
+
+        User user = userRepository.findByUserId(authentication.getName())
+                .orElseThrow(() -> new UserIdNotFoundException(ErrorCode.USER_ID_NOT_FOUNT.getMessage()));
+
+        JwtToken jwtToken = tokenRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new RefreshTokenNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getMessage()));
+
+        // Refresh Token이 일치하지 않을 경우
+        if (!jwtToken.getRefreshToken().equals(refreshToken.substring(7))) {
+            throw new RefreshTokenNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getMessage());
+        }
+
+        JwtTokenDto jwtTokenDto = jwtTokenProvider.generateToken(user);
+
+        saveRefreshToken(jwtTokenDto.getRefreshToken(), user.getId());
+
+        return ResponseDto.builder()
+                .status(SuccessCode.REFRESH_TOKEN_SUCCESS.getStatus())
+                .message(SuccessCode.REFRESH_TOKEN_SUCCESS.getMessage())
+                .data(jwtTokenDto)
+                .build();
+    }
+
+    private void saveRefreshToken(String refreshToken, Long userId) {
+        Optional<JwtToken> jwtToken = tokenRepository.findByUserId(userId);
+
+        if (jwtToken.isPresent()) {
+            jwtToken.get().setRefreshToken(refreshToken);
+        } else {
+            tokenRepository.save(JwtToken.builder()
+                    .userId(userId)
+                    .refreshToken(refreshToken)
+                    .build());
+        }
     }
 
     private void validateSignInRequest(SignInRequestDto signInRequestDto, User user) {
