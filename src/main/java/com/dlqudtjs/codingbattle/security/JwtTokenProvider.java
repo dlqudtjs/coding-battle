@@ -2,6 +2,9 @@ package com.dlqudtjs.codingbattle.security;
 
 import com.dlqudtjs.codingbattle.model.oauth.JwtTokenDto;
 import com.dlqudtjs.codingbattle.model.user.User;
+import com.dlqudtjs.codingbattle.service.oauth.exception.CustomMalformedJwtException;
+import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
+import com.dlqudtjs.codingbattle.service.oauth.exception.UnknownException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -10,6 +13,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import java.security.Key;
@@ -66,6 +70,7 @@ public class JwtTokenProvider {
         // Refresh Token 생성
         Date refreshTokenExpiration = new Date(now + refreshTokenValidityInMilliseconds);
         String refreshToken = Jwts.builder()
+                .setSubject(user.getUsername())
                 .setIssuedAt(new Date(now))
                 .setExpiration(refreshTokenExpiration)
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -82,33 +87,32 @@ public class JwtTokenProvider {
     }
 
     // Jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
-    public Authentication getAuthentication(String accessToken) {
+    public Authentication getAuthentication(String token) {
         // Jwt 토큰 복호화
-        Claims claims = parseClaims(accessToken);
+        Claims claims = parseClaims(token);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    public boolean validateToken(String token) {
+    public void validateToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
-                    .parseClaimsJws(token);
+                    .parseClaimsJws(token.substring(7));
 
-            return true;
-        } catch (SecurityException | MalformedJwtException e) {
-            log.info("Invalid JWT Token", e);
+        } catch (SignatureException e) {
+            throw new CustomMalformedJwtException(ErrorCode.SIGNATURE.getMessage());
+        } catch (SecurityException | MalformedJwtException | NullPointerException e) {
+            throw new CustomMalformedJwtException(ErrorCode.MALFORMED_JWT.getMessage());
         } catch (ExpiredJwtException e) {
-            log.info("Expired JWT Token", e);
+            throw new CustomMalformedJwtException(ErrorCode.EXPIRED_JWT.getMessage());
         } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT Token", e);
-        } catch (IllegalArgumentException e) {
-            log.info("JWT claims string is empty.", e);
+            throw new CustomMalformedJwtException(ErrorCode.UNSUPPORTED_JWT.getMessage());
+        } catch (Exception e) {
+            throw new UnknownException(ErrorCode.UNKNOWN.getMessage());
         }
-
-        return false;
     }
 
     private Claims parseClaims(String accessToken) {
@@ -117,7 +121,7 @@ public class JwtTokenProvider {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
-                .parseClaimsJws(accessToken)
+                .parseClaimsJws(accessToken.substring(7))
                 .getBody();
     }
 }
