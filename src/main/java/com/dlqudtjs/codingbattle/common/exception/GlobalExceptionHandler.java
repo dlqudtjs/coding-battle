@@ -3,17 +3,11 @@ package com.dlqudtjs.codingbattle.common.exception;
 import com.dlqudtjs.codingbattle.common.dto.ErrorResponseDto;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistNicknameException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistUserIdException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.CustomExpiredJwtException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.CustomMalformedJwtException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.CustomSignatureException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.CustomUnsupportedJwtException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
+import com.dlqudtjs.codingbattle.service.oauth.exception.CustomAuthenticationException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordCheckException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordNotMatchException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.RefreshTokenNotFoundException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.UnknownException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.UserIdNotFoundException;
-import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,46 +69,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return buildErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    // 401 SignatureException
-    @ExceptionHandler(CustomSignatureException.class)
+
+    // 401 CustomAuthenticationException
+    @ExceptionHandler(CustomAuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<Object> handleSignatureException(SignatureException e) {
-        log.error("handleSignatureException", e);
-        return buildErrorResponse(ErrorCode.SIGNATURE.getMessage(), HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<Object> handleAuthenticationException(CustomAuthenticationException e) {
+        log.error("handleAuthenticationException", e);
+        return buildErrorResponse(e.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
-    // 401 MalformedJwtException
-    @ExceptionHandler(CustomMalformedJwtException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<Object> handleMalformedJwtException() {
-        return buildErrorResponse(ErrorCode.MALFORMED_JWT.getMessage(), HttpStatus.UNAUTHORIZED);
-    }
-
-    // 401 ExpiredJwtException
-    @ExceptionHandler(CustomExpiredJwtException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<Object> handleExpiredJwtException() {
-        return buildErrorResponse(ErrorCode.EXPIRED_JWT.getMessage(), HttpStatus.UNAUTHORIZED);
-    }
-
-    // 401 UnsupportedJwtException
-    @ExceptionHandler(CustomUnsupportedJwtException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<Object> handleUnsupportedOperationException() {
-        return buildErrorResponse(ErrorCode.UNSUPPORTED_JWT.getMessage(), HttpStatus.UNAUTHORIZED);
-    }
-
-    // 401 JwtUnknownException
+    // 500 UnknownException
     @ExceptionHandler(UnknownException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<Object> handleJwtUnknownException() {
-        return buildErrorResponse(ErrorCode.UNKNOWN.getMessage(), HttpStatus.UNAUTHORIZED);
-    }
-
-    // 401 RefreshTokenNotFoundException
-    @ExceptionHandler(RefreshTokenNotFoundException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<Object> handleRefreshTokenNotFoundException(RefreshTokenNotFoundException e) {
-        return buildErrorResponse(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getMessage(), HttpStatus.UNAUTHORIZED);
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<Object> handleUnknownException(UnknownException e) {
+        log.error("handleUnknownException", e);
+        return buildErrorResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
