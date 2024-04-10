@@ -41,6 +41,7 @@ public class WebSecurityConfig {
                         authorizeHttpRequests
                                 .requestMatchers("/v1/oauth/sign-up").permitAll()
                                 .requestMatchers("/v1/oauth/sign-in").permitAll()
+                                .requestMatchers("/socket-endpoint").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .exceptionHandling((exceptionHandling) ->
