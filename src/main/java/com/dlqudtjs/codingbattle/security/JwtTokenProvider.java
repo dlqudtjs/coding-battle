@@ -1,8 +1,9 @@
 package com.dlqudtjs.codingbattle.security;
 
+import com.dlqudtjs.codingbattle.common.constant.Header;
 import com.dlqudtjs.codingbattle.model.oauth.JwtTokenDto;
 import com.dlqudtjs.codingbattle.model.user.User;
-import com.dlqudtjs.codingbattle.service.oauth.exception.CustomMalformedJwtException;
+import com.dlqudtjs.codingbattle.service.oauth.exception.CustomAuthenticationException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
 import com.dlqudtjs.codingbattle.service.oauth.exception.UnknownException;
 import io.jsonwebtoken.Claims;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -83,7 +85,11 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("Authorization");
+        return request.getHeader(Header.AUTHORIZATION.getHeaderName());
+    }
+
+    public String resolveToken(StompHeaderAccessor accessor) {
+        return accessor.getFirstNativeHeader(Header.AUTHORIZATION.getHeaderName());
     }
 
     // Jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
@@ -102,15 +108,23 @@ public class JwtTokenProvider {
                     .build()
                     .parseClaimsJws(token.substring(7));
 
+        } catch (NullPointerException e) {
+            log.info("JWT token is null");
+            throw new CustomAuthenticationException(ErrorCode.TOKEN_NOT_FOUND.getMessage());
         } catch (SignatureException e) {
-            throw new CustomMalformedJwtException(ErrorCode.SIGNATURE.getMessage());
-        } catch (SecurityException | MalformedJwtException | NullPointerException e) {
-            throw new CustomMalformedJwtException(ErrorCode.MALFORMED_JWT.getMessage());
+            log.info("Invalid JWT signature");
+            throw new CustomAuthenticationException(ErrorCode.SIGNATURE.getMessage());
+        } catch (SecurityException | MalformedJwtException e) {
+            log.info("Invalid JWT token");
+            throw new CustomAuthenticationException(ErrorCode.MALFORMED_JWT.getMessage());
         } catch (ExpiredJwtException e) {
-            throw new CustomMalformedJwtException(ErrorCode.EXPIRED_JWT.getMessage());
+            log.info("Expired JWT token");
+            throw new CustomAuthenticationException(ErrorCode.EXPIRED_JWT.getMessage());
         } catch (UnsupportedJwtException e) {
-            throw new CustomMalformedJwtException(ErrorCode.UNSUPPORTED_JWT.getMessage());
+            log.info("Unsupported JWT token");
+            throw new CustomAuthenticationException(ErrorCode.UNSUPPORTED_JWT.getMessage());
         } catch (Exception e) {
+            log.info("Unknown JWT token");
             throw new UnknownException(ErrorCode.UNKNOWN.getMessage());
         }
     }
