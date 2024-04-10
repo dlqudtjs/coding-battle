@@ -23,10 +23,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        // 헤더에서 JWT 를 받아옴
-        String token = jwtTokenProvider.resolveToken(request);
-
         try {
+            // 헤더에서 JWT 를 받아옴
+            String token = jwtTokenProvider.resolveToken(request);
+
             // getAuthentication 메서드에서 토큰에 문제가 생기면 exception 발생
             // 이 exception을 CustomAuthenticationEntryPoint에서 처리
             Authentication auth = jwtTokenProvider.getAuthentication(token);
