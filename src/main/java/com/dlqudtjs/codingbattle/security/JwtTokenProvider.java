@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -88,10 +87,6 @@ public class JwtTokenProvider {
         return request.getHeader(Header.AUTHORIZATION.getHeaderName());
     }
 
-    public String resolveToken(StompHeaderAccessor accessor) {
-        return accessor.getFirstNativeHeader(Header.AUTHORIZATION.getHeaderName());
-    }
-
     // Jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
     public Authentication getAuthentication(String token) {
         // Jwt 토큰 복호화
@@ -103,6 +98,10 @@ public class JwtTokenProvider {
 
     public void validateToken(String token) {
         try {
+            if (!token.startsWith("Bearer ")) {
+                throw new UnsupportedJwtException(ErrorCode.UNSUPPORTED_JWT.getMessage());
+            }
+
             Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
