@@ -7,6 +7,7 @@ import com.dlqudtjs.codingbattle.service.oauth.OAuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +32,7 @@ public class OAuthController {
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
-    @PostMapping("/v1/oauth/refresh-token")
+    @GetMapping("/v1/oauth/refresh-token")
     public ResponseEntity<ResponseDto> refreshToken(HttpServletRequest request) {
         ResponseDto responseDto = oAuthService.refreshToken(request);
 
