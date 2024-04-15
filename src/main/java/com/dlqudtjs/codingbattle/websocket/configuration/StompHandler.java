@@ -32,6 +32,9 @@ public class StompHandler implements ChannelInterceptor {
             String token = headerAccessor.getFirstNativeHeader(Header.AUTHORIZATION.getHeaderName());
 
             jwtTokenProvider.validateToken(token);
+
+            // 기본으로 /queue/errors로 에러 메시지를 보내기 때문에 해당 메시지를 받아서 처리하려면 아래 주석을 해제
+            headerAccessor.setDestination("/queue/errors");
         }
 
         return message;
