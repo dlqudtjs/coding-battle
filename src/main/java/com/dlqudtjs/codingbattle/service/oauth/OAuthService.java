@@ -12,4 +12,6 @@ public interface OAuthService {
     ResponseDto singUp(SignUpRequestDto signUpRequestDto);
 
     ResponseDto refreshToken(HttpServletRequest request);
+
+    ResponseDto checkUserId(String userId);
 }
