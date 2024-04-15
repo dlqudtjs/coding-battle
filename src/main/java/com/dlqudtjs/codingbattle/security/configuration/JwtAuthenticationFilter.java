@@ -24,7 +24,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         try {
-            System.out.println(request.getRequestURI());
             // 헤더에서 JWT 를 받아옴
             String token = jwtTokenProvider.resolveToken(request);
 
