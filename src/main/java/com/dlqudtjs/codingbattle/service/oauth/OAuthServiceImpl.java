@@ -11,10 +11,10 @@ import com.dlqudtjs.codingbattle.repository.UserRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistNicknameException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistUserIdException;
+import com.dlqudtjs.codingbattle.service.oauth.exception.CustomAuthenticationException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
 import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordCheckException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordNotMatchException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.RefreshTokenNotFoundException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.UserIdNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -75,14 +75,14 @@ public class OAuthServiceImpl implements OAuthService {
         Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
 
         User user = userRepository.findByUserId(authentication.getName())
-                .orElseThrow(() -> new UserIdNotFoundException(ErrorCode.USER_ID_NOT_FOUNT.getMessage()));
+                .orElseThrow(() -> new CustomAuthenticationException(ErrorCode.USER_ID_NOT_FOUNT.getMessage()));
 
         JwtToken jwtToken = tokenRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new RefreshTokenNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new CustomAuthenticationException(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getMessage()));
 
         // Refresh Token이 일치하지 않을 경우
         if (!jwtToken.getRefreshToken().equals(refreshToken.substring(7))) {
-            throw new RefreshTokenNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getMessage());
+            throw new CustomAuthenticationException(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getMessage());
         }
 
         JwtTokenDto jwtTokenDto = jwtTokenProvider.generateToken(user);
@@ -93,6 +93,19 @@ public class OAuthServiceImpl implements OAuthService {
                 .status(SuccessCode.REFRESH_TOKEN_SUCCESS.getStatus())
                 .message(SuccessCode.REFRESH_TOKEN_SUCCESS.getMessage())
                 .data(jwtTokenDto)
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public ResponseDto checkUserId(String userId) {
+        if (isExistUser(userId)) {
+            throw new AlreadyExistUserIdException(ErrorCode.ALREADY_EXIST_USER_ID.getMessage());
+        }
+
+        return ResponseDto.builder()
+                .status(SuccessCode.CHECK_USER_ID_SUCCESS.getStatus())
+                .message(SuccessCode.CHECK_USER_ID_SUCCESS.getMessage())
                 .build();
     }
 
