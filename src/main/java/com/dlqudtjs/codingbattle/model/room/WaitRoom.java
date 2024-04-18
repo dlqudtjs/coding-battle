@@ -20,11 +20,11 @@ public class WaitRoom {
     private int maxUserCount;
     private int maxSummitCount;
     private int limitTime;
-    private ConcurrentHashMap<String, WebSocketSession> userMap;
+    private ConcurrentHashMap<String, WaitRoomUserStatus> userMap;
 
     public void addUser(String userId) {
         WebSocketSession session = WebsocketSessionHolder.getSessionFromUserId(userId);
-        userMap.put(userId, session);
+        userMap.put(userId, new WaitRoomUserStatus(session));
     }
 
     public void removeUser(String userId) {
