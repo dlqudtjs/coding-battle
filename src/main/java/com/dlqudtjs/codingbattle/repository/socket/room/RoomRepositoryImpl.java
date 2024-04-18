@@ -28,11 +28,6 @@ public class RoomRepositoryImpl implements RoomRepository {
         return roomMap.containsKey(roomId);
     }
 
-    @Override
-    public void remove(Integer roomId) {
-        roomMap.remove(roomId);
-    }
-
     private Integer availableRoomId() {
         int roomId = 1;
 

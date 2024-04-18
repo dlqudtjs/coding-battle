@@ -8,7 +8,5 @@ public interface RoomRepository {
 
     void leaveRoom(String userId, Integer roomId);
 
-    void remove(Integer roomId);
-
     Boolean isExistRoom(Integer roomId);
 }
