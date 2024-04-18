@@ -3,7 +3,6 @@ package com.dlqudtjs.codingbattle.websocket.configuration;
 import com.dlqudtjs.codingbattle.common.constant.Header;
 import com.dlqudtjs.codingbattle.repository.socket.sessiontatus.SessionStatusRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
-import java.nio.charset.StandardCharsets;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,14 +42,6 @@ public class StompHandler implements ChannelInterceptor {
             sessionStatusRepository.addSessionStatus(userId);
             // userId와 sessionId를 매핑
             WebsocketSessionHolder.addSession(userId, headerAccessor.getSessionId());
-        }
-
-        if (headerAccessor.getCommand() == StompCommand.SEND) {
-            // todo 방에 메시지를 보낼 때 해당 방에 존재하는지 확인하는 로직 추가
-            log.info("session id: {}", headerAccessor.getSessionId());
-            log.info("destination: {}", headerAccessor.getDestination());
-            String str = new String((byte[]) message.getPayload(), StandardCharsets.UTF_8);
-            log.info("message: {}", str);
         }
 
         if (headerAccessor.getCommand() == StompCommand.DISCONNECT) {
