@@ -2,7 +2,7 @@ package com.dlqudtjs.codingbattle.controller;
 
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.room.WaitRoomCreateRequestDto;
-import com.dlqudtjs.codingbattle.service.room.WaitRoomService;
+import com.dlqudtjs.codingbattle.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class RoomController {
 
-    private final WaitRoomService waitRoomService;
+    private final RoomService waitRoomService;
 
     @PostMapping("/v1/waitRoom")
     public ResponseEntity<ResponseDto> createRoom(@RequestBody WaitRoomCreateRequestDto requestDto,
