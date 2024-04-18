@@ -30,4 +30,9 @@ public class SessionStatusRepositoryImpl implements SessionStatusRepository {
     public void leaveRoom(String userId) {
         sessionStatusMap.get(userId).exitRoom();
     }
+
+    @Override
+    public Integer getUserInRoomId(String userId) {
+        return sessionStatusMap.get(userId).getEnterRoomId();
+    }
 }
