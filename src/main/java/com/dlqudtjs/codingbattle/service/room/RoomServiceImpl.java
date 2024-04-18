@@ -62,6 +62,7 @@ public class RoomServiceImpl implements RoomService {
         }
 
         roomRepository.joinRoom(userId, requestDto.getRoomId());
+        sessionService.enterRoom(userId, requestDto.getRoomId());
 
         return ResponseDto.builder()
                 .status(SuccessCode.JOIN_WAIT_ROOM_SUCCESS.getStatus())
