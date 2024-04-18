@@ -18,7 +18,7 @@ public class SessionStatus {
         this.enterRoomId = roomId;
     }
 
-    public void exitRoom() {
+    public void leaveRoom() {
         this.enterRoomId = null;
     }
 }
