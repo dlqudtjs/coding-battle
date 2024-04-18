@@ -27,6 +27,11 @@ public class RoomServiceImpl implements RoomService {
 
         validateCreateWaitRoomRequest(requestDto, userId);
 
+        Integer alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
+        if (alreadyEnterRoomId != null) {
+            roomRepository.leaveRoom(userId, alreadyEnterRoomId);
+        }
+
         // 방장 설정
         WaitRoom room = requestDto.toEntity();
         room.addUser(requestDto.getHostId());
