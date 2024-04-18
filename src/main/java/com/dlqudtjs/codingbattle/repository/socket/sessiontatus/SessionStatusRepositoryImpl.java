@@ -27,15 +27,6 @@ public class SessionStatusRepositoryImpl implements SessionStatusRepository {
     }
 
     @Override
-    public Boolean isAlreadyInRoom(String userId) {
-        if (!sessionStatusMap.containsKey(userId)) {
-            return false;
-        }
-
-        return sessionStatusMap.get(userId).getEnterRoomId() != null;
-    }
-
-    @Override
     public void leaveRoom(String userId) {
         sessionStatusMap.get(userId).exitRoom();
     }

@@ -8,7 +8,5 @@ public interface SessionStatusRepository {
 
     void enterRoom(String userId, Integer roomId);
 
-    Boolean isAlreadyInRoom(String userId);
-
     void leaveRoom(String userId);
 }
