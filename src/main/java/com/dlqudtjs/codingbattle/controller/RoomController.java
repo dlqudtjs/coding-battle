@@ -2,6 +2,7 @@ package com.dlqudtjs.codingbattle.controller;
 
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.room.WaitRoomCreateRequestDto;
+import com.dlqudtjs.codingbattle.model.room.WaitRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,9 @@ public class RoomController {
     }
 
     @PostMapping("/v1/waitRoom/enter")
-    public ResponseEntity<ResponseDto> enterRoom(@RequestBody WaitRoomCreateRequestDto requestDto) {
-        ResponseDto responseDto = waitRoomService.enterWaitRoom(requestDto);
+    public ResponseEntity<ResponseDto> enterRoom(@RequestBody WaitRoomEnterRequestDto requestDto,
+                                                 @RequestHeader("Authorization") String token) {
+        ResponseDto responseDto = waitRoomService.enterWaitRoom(requestDto, token);
 
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
