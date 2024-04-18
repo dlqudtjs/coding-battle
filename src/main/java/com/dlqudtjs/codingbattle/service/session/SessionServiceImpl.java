@@ -23,4 +23,9 @@ public class SessionServiceImpl implements SessionService {
     public void exitRoom(String userId) {
         sessionStatusRepository.leaveRoom(userId);
     }
+
+    @Override
+    public Integer getUserInRoomId(String userId) {
+        return sessionStatusRepository.getUserInRoomId(userId);
+    }
 }
