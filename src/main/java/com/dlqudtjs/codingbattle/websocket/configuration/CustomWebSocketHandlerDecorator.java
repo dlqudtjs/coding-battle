@@ -24,8 +24,6 @@ public class CustomWebSocketHandlerDecorator extends WebSocketHandlerDecorator {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
         super.afterConnectionClosed(session, closeStatus);
-        WebsocketSessionHolder.removeSession(session.getId());
+        WebsocketSessionHolder.removeSessionFromSessionId(session.getId());
     }
-
-
 }
