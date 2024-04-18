@@ -10,5 +10,5 @@ public interface SessionStatusRepository {
 
     Boolean isAlreadyInRoom(String userId);
 
-    void exitRoom(String userId);
+    void leaveRoom(String userId);
 }
