@@ -20,7 +20,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public void exitRoom(String userId) {
+    public void leaveRoom(String userId) {
         sessionStatusRepository.leaveRoom(userId);
     }
 
