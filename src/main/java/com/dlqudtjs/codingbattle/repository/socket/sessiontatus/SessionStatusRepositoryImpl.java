@@ -23,7 +23,7 @@ public class SessionStatusRepositoryImpl implements SessionStatusRepository {
 
     @Override
     public void enterRoom(String userId, Integer roomId) {
-
+        sessionStatusMap.get(userId).enterRoom(roomId);
     }
 
     @Override
@@ -36,11 +36,7 @@ public class SessionStatusRepositoryImpl implements SessionStatusRepository {
     }
 
     @Override
-    public void exitRoom(String userId) {
-        if (!sessionStatusMap.containsKey(userId)) {
-            return;
-        }
-
+    public void leaveRoom(String userId) {
         sessionStatusMap.get(userId).exitRoom();
     }
 }
