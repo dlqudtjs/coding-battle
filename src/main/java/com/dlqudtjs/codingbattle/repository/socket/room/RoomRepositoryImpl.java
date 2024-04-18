@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.repository.room;
+package com.dlqudtjs.codingbattle.repository.socket.room;
 
 import com.dlqudtjs.codingbattle.model.room.WaitRoom;
 import java.util.concurrent.ConcurrentHashMap;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class RoomRepositoryImpl implements RoomRepository {
 
-    ConcurrentHashMap<Integer, WaitRoom> roomMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Integer, WaitRoom> roomMap = new ConcurrentHashMap<>();
 
     @Override
     public Integer save(WaitRoom waitRoom) {
