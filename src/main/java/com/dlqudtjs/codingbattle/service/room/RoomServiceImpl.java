@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class WaitRoomServiceImpl implements WaitRoomService {
+public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
     private final JwtTokenProvider jwtTokenProvider;
