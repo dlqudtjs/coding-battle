@@ -30,4 +30,8 @@ public class WaitRoom {
     public void removeUser(String userId) {
         userMap.remove(userId);
     }
+
+    public boolean isFull() {
+        return userMap.size() >= maxUserCount;
+    }
 }
