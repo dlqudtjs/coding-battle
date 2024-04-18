@@ -10,5 +10,5 @@ public interface RoomService {
 
     ResponseDto enterWaitRoom(WaitRoomEnterRequestDto requestDto, String token);
 
-    ResponseDto leaveWaitRoom(String userId, Integer roomId);
+    ResponseDto leaveWaitRoom(Integer roomId, String token);
 }
