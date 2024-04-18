@@ -8,6 +8,8 @@ import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordCheckException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordNotMatchException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.UnknownException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.UserIdNotFoundException;
+import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
+import com.dlqudtjs.codingbattle.websocket.configuration.exception.CustomSocketException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -84,5 +86,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleUnknownException(UnknownException e) {
         log.error("handleUnknownException", e);
         return buildErrorResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // 400 BAD_REQUEST
+    @ExceptionHandler(CustomSocketException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleCustomSocketException(CustomSocketException e) {
+        log.error("CustomSocketException", e);
+        return buildErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    // 400 BAD_REQUEST
+    @ExceptionHandler(CustomRoomException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleCustomRoomException(CustomRoomException e) {
+        log.error("CustomRoomException", e);
+        return buildErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
