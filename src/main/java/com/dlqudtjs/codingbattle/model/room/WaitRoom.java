@@ -26,4 +26,8 @@ public class WaitRoom {
         WebSocketSession session = WebsocketSessionHolder.getSessionFromUserId(userId);
         userMap.put(userId, session);
     }
+
+    public void removeUser(String userId) {
+        userMap.remove(userId);
+    }
 }
