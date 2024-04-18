@@ -91,6 +91,11 @@ public class RoomServiceImpl implements RoomService {
         if (!roomRepository.isExistRoom(requestDto.getRoomId())) {
             throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
         }
+
+        // 방이 꽉 찼으면
+        if (roomRepository.isFullRoom(requestDto.getRoomId())) {
+            throw new CustomRoomException(ErrorCode.FULL_ROOM.getMessage());
+        }
     }
 
     private void validateCreateWaitRoomRequest(WaitRoomCreateRequestDto requestDto, String userId) {
