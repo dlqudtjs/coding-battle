@@ -16,10 +16,10 @@ public class WaitRoomCreateRequestDto {
     private String title;
     private String password;
     private String language;
-    private int problemLevel;
-    private int maxUserCount;
-    private int maxSummitCount;
-    private int limitTime;
+    private Integer problemLevel;
+    private Integer maxUserCount;
+    private Integer maxSummitCount;
+    private Integer limitTime;
 
     public WaitRoom toEntity() {
         return WaitRoom.builder()

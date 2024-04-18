@@ -16,10 +16,10 @@ public class WaitRoom {
     private String title;
     private String password;
     private String language;
-    private int problemLevel;
-    private int maxUserCount;
-    private int maxSummitCount;
-    private int limitTime;
+    private Integer problemLevel;
+    private Integer maxUserCount;
+    private Integer maxSummitCount;
+    private Integer limitTime;
     private ConcurrentHashMap<String, WaitRoomUserStatus> userMap;
 
     public void addUser(String userId) {
