@@ -4,7 +4,7 @@ import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.oauth.SignUpRequestDto;
 import com.dlqudtjs.codingbattle.model.user.User;
 import com.dlqudtjs.codingbattle.model.user.UserRole;
-import com.dlqudtjs.codingbattle.repository.UserRepository;
+import com.dlqudtjs.codingbattle.repository.user.UserRepository;
 import com.dlqudtjs.codingbattle.service.oauth.OAuthServiceImpl;
 import com.dlqudtjs.codingbattle.service.oauth.SuccessCode;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistNicknameException;
