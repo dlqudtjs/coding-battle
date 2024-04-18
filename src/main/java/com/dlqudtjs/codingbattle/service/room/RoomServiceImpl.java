@@ -66,14 +66,22 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public ResponseDto leaveWaitRoom(String userId, Integer roomId) {
+    public ResponseDto leaveWaitRoom(Integer roomId, String token) {
+        String userId = jwtTokenProvider.getUserName(token);
+
         if (!roomRepository.isExistRoom(roomId)) {
             throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
         }
 
         roomRepository.leaveRoom(userId, roomId);
+        sessionService.leaveRoom(userId);
 
-        return null;
+        // 상태 변경
+        return ResponseDto.builder()
+                .status(SuccessCode.LEAVE_WAIT_ROOM_SUCCESS.getStatus())
+                .message(SuccessCode.LEAVE_WAIT_ROOM_SUCCESS.getMessage())
+                .data(roomId)
+                .build();
     }
 
     private void validateEnterWaitRoomRequest(WaitRoomEnterRequestDto requestDto, String userId) {
