@@ -10,27 +10,30 @@ public class WebsocketSessionHolder {
     private static final ConcurrentHashMap<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, String> socketMap = new ConcurrentHashMap<>();
 
-    public static void addSession(String userId, String sessionId) throws IOException {
+    public static void addSession(String userId, String sessionId) {
         if (socketMap.containsKey(userId)) {
-            removeSession(socketMap.get(userId));
+            removeSessionFromSessionId(socketMap.get(userId));
             socketMap.remove(userId);
         }
 
         socketMap.put(userId, sessionId);
     }
 
-    public static void addSession(String sessionId, WebSocketSession session) throws IOException {
+    public static void addSession(String sessionId, WebSocketSession session) {
         sessions.put(sessionId, session);
     }
 
-    public static void removeSession(String sessionId) throws IOException {
-        if (!sessions.containsKey(sessionId)) {
-            return;
+    public static void removeSessionFromSessionId(String sessionId) {
+        try {
+            sessions.get(sessionId).close();
+        } catch (IOException e) {
+            log.error("Failed to close session: {}", e.getMessage());
         }
 
-        String userId = getUserIdFromSessionId(sessionId);
-        sessions.get(sessionId).close();
         sessions.remove(sessionId);
+    }
+
+    public static void removeSessionFromUserId(String userId) {
         socketMap.remove(userId);
     }
 
@@ -38,7 +41,7 @@ public class WebsocketSessionHolder {
         return sessions.get(socketMap.get(userId));
     }
 
-    private static String getUserIdFromSessionId(String sessionId) {
+    public static String getUserIdFromSessionId(String sessionId) {
         return socketMap.entrySet().stream()
                 .filter(entry -> entry.getValue().equals(sessionId))
                 .map(ConcurrentHashMap.Entry::getKey)
