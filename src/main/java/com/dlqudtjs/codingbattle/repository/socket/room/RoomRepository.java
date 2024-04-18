@@ -13,4 +13,6 @@ public interface RoomRepository {
     Boolean isExistRoom(Integer roomId);
 
     Boolean isFullRoom(Integer roomId);
+
+    Boolean isExistUserInRoom(String userId, Integer roomId);
 }

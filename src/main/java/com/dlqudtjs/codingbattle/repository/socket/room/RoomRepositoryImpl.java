@@ -38,6 +38,11 @@ public class RoomRepositoryImpl implements RoomRepository {
         return roomMap.get(roomId).isFull();
     }
 
+    @Override
+    public Boolean isExistUserInRoom(String userId, Integer roomId) {
+        return roomMap.get(roomId).isExistUser(userId);
+    }
+
     private Integer availableRoomId() {
         int roomId = 1;
 
