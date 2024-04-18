@@ -87,6 +87,10 @@ public class JwtTokenProvider {
         return request.getHeader(Header.AUTHORIZATION.getHeaderName());
     }
 
+    public String getUserName(String token) {
+        return parseClaims(token).getSubject();
+    }
+
     // Jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
     public Authentication getAuthentication(String token) {
         // Jwt 토큰 복호화
