@@ -6,6 +6,7 @@ import com.dlqudtjs.codingbattle.model.room.WaitRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -29,6 +30,15 @@ public class RoomController {
     public ResponseEntity<ResponseDto> enterRoom(@RequestBody WaitRoomEnterRequestDto requestDto,
                                                  @RequestHeader("Authorization") String token) {
         ResponseDto responseDto = waitRoomService.enterWaitRoom(requestDto, token);
+
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
+    @PostMapping("/v1/waitRoom/leave/{roomId}")
+    public ResponseEntity<ResponseDto> leaveRoom(@PathVariable Integer roomId,
+                                                 @RequestHeader("Authorization") String token) {
+
+        ResponseDto responseDto = waitRoomService.leaveWaitRoom(roomId, token);
 
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
