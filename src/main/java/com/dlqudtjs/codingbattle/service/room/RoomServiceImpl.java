@@ -40,6 +40,7 @@ public class RoomServiceImpl implements RoomService {
         Integer createdRoomId = roomRepository.save(room);
 
         // 유저의 세션 상태 변경
+        roomRepository.joinRoom(userId, createdRoomId);
         sessionService.enterRoom(userId, createdRoomId);
 
         return ResponseDto.builder()
@@ -58,7 +59,12 @@ public class RoomServiceImpl implements RoomService {
         Integer alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
 
         if (alreadyEnterRoomId != null) {
+            if (alreadyEnterRoomId.equals(requestDto.getRoomId())) {
+                throw new CustomRoomException(ErrorCode.SAME_USER_IN_ROOM.getMessage());
+            }
+
             roomRepository.leaveRoom(userId, alreadyEnterRoomId);
+            sessionService.leaveRoom(userId);
         }
 
         roomRepository.joinRoom(userId, requestDto.getRoomId());
