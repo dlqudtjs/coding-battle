@@ -69,9 +69,7 @@ public class RoomServiceImpl implements RoomService {
     public ResponseDto leaveWaitRoom(Integer roomId, String token) {
         String userId = jwtTokenProvider.getUserName(token);
 
-        if (!roomRepository.isExistRoom(roomId)) {
-            throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
-        }
+        validateLeaveWaitRoomRequest(roomId, userId);
 
         roomRepository.leaveRoom(userId, roomId);
         sessionService.leaveRoom(userId);
@@ -82,6 +80,23 @@ public class RoomServiceImpl implements RoomService {
                 .message(SuccessCode.LEAVE_WAIT_ROOM_SUCCESS.getMessage())
                 .data(roomId)
                 .build();
+    }
+
+    private void validateLeaveWaitRoomRequest(Integer roomId, String userId) {
+        // 방이 존재하지 않으면
+        if (!roomRepository.isExistRoom(roomId)) {
+            throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
+        }
+
+        // 요청한 유저가 웹 소켓 세션에 존재하지 않으면
+        if (!WebsocketSessionHolder.existUser(userId)) {
+            throw new CustomRoomException(ErrorCode.NOT_CONNECT_USER.getMessage());
+        }
+
+        // 방에 유저가 존재하지 않으면
+        if (!roomRepository.isExistUserInRoom(userId, roomId)) {
+            throw new CustomRoomException(ErrorCode.NOT_EXIST_USER_IN_ROOM.getMessage());
+        }
     }
 
     private void validateEnterWaitRoomRequest(WaitRoomEnterRequestDto requestDto, String userId) {
