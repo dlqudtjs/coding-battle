@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum SuccessCode {
 
     CREATE_WAIT_ROOM_SUCCESS(201, "대기방 생성 성공"),
+    JOIN_WAIT_ROOM_SUCCESS(200, "대기방 입장 성공"),
     ;
 
     private final int status;
