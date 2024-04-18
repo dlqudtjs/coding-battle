@@ -50,7 +50,19 @@ public class RoomServiceImpl implements RoomService {
 
         validateEnterWaitRoomRequest(requestDto, userId);
 
-        return null;
+        Integer alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
+
+        if (alreadyEnterRoomId != null) {
+            roomRepository.leaveRoom(userId, alreadyEnterRoomId);
+        }
+
+        roomRepository.joinRoom(userId, requestDto.getRoomId());
+
+        return ResponseDto.builder()
+                .status(SuccessCode.JOIN_WAIT_ROOM_SUCCESS.getStatus())
+                .message(SuccessCode.JOIN_WAIT_ROOM_SUCCESS.getMessage())
+                .data(requestDto.getRoomId())
+                .build();
     }
 
     @Override
@@ -73,6 +85,11 @@ public class RoomServiceImpl implements RoomService {
         // 요청한 유저가 웹 소켓 세션에 존재하지 않으면
         if (!WebsocketSessionHolder.existUser(userId)) {
             throw new CustomRoomException(ErrorCode.NOT_CONNECT_USER.getMessage());
+        }
+
+        // 방이 존재하지 않으면
+        if (!roomRepository.isExistRoom(requestDto.getRoomId())) {
+            throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
         }
     }
 
