@@ -1,6 +1,6 @@
 package com.dlqudtjs.codingbattle.security;
 
-import com.dlqudtjs.codingbattle.repository.UserRepository;
+import com.dlqudtjs.codingbattle.repository.user.UserRepository;
 import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
 import com.dlqudtjs.codingbattle.service.oauth.exception.UserIdNotFoundException;
 import lombok.RequiredArgsConstructor;
