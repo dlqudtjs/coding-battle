@@ -31,7 +31,11 @@ public class WaitRoom {
         userMap.remove(userId);
     }
 
-    public boolean isFull() {
+    public Boolean isFull() {
         return userMap.size() >= maxUserCount;
+    }
+
+    public Boolean isHost(String userId) {
+        return hostId.equals(userId);
     }
 }
