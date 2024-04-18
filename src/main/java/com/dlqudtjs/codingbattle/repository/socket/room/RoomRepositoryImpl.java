@@ -23,9 +23,12 @@ public class RoomRepositoryImpl implements RoomRepository {
 
     @Override
     public void leaveRoom(String userId, Integer roomId) {
-        // todo : 방장이 나가면 방 삭제
-        WaitRoom room = roomMap.get(roomId);
-        room.removeUser(userId);
+        if (roomMap.get(roomId).isHost(userId)) {
+            roomMap.remove(roomId);
+            return;
+        }
+
+        roomMap.get(roomId).removeUser(userId);
     }
 
     @Override
