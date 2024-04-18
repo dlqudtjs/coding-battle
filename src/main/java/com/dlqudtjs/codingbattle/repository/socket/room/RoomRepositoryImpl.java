@@ -33,6 +33,11 @@ public class RoomRepositoryImpl implements RoomRepository {
         return roomMap.containsKey(roomId);
     }
 
+    @Override
+    public Boolean isFullRoom(Integer roomId) {
+        return roomMap.get(roomId).isFull();
+    }
+
     private Integer availableRoomId() {
         int roomId = 1;
 
