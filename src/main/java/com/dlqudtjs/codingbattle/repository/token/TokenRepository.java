@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.repository;
+package com.dlqudtjs.codingbattle.repository.token;
 
 import com.dlqudtjs.codingbattle.model.oauth.JwtToken;
 import java.util.Optional;
