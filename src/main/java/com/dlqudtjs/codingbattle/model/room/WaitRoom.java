@@ -38,4 +38,8 @@ public class WaitRoom {
     public Boolean isHost(String userId) {
         return hostId.equals(userId);
     }
+
+    public Boolean isExistUser(String userId) {
+        return userMap.containsKey(userId);
+    }
 }
