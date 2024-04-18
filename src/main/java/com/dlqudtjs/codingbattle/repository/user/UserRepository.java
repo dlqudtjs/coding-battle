@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.repository;
+package com.dlqudtjs.codingbattle.repository.user;
 
 import com.dlqudtjs.codingbattle.model.user.User;
 import java.util.Optional;
