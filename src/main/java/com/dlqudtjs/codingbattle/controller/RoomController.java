@@ -35,7 +35,7 @@ public class RoomController {
     }
 
     @PostMapping("/v1/waitRoom/leave/{roomId}")
-    public ResponseEntity<ResponseDto> leaveRoom(@PathVariable Integer roomId,
+    public ResponseEntity<ResponseDto> leaveRoom(@PathVariable("roomId") Integer roomId,
                                                  @RequestHeader("Authorization") String token) {
 
         ResponseDto responseDto = waitRoomService.leaveWaitRoom(roomId, token);
