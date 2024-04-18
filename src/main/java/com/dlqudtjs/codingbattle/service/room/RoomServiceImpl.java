@@ -3,6 +3,7 @@ package com.dlqudtjs.codingbattle.service.room;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.room.WaitRoom;
 import com.dlqudtjs.codingbattle.model.room.WaitRoomCreateRequestDto;
+import com.dlqudtjs.codingbattle.model.room.WaitRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
@@ -44,12 +45,39 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public ResponseDto enterWaitRoom(WaitRoomCreateRequestDto requestDto) {
+    public ResponseDto enterWaitRoom(WaitRoomEnterRequestDto requestDto, String token) {
+        String userId = jwtTokenProvider.getUserName(token);
+
+        validateEnterWaitRoomRequest(requestDto, userId);
+
         return null;
     }
 
+    @Override
+    public ResponseDto leaveWaitRoom(String userId, Integer roomId) {
+        if (!roomRepository.isExistRoom(roomId)) {
+            throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
+        }
+
+        roomRepository.leaveRoom(userId, roomId);
+
+        return null;
+    }
+
+    private void validateEnterWaitRoomRequest(WaitRoomEnterRequestDto requestDto, String userId) {
+        // 요청한 유저와 토큰이 일치하지 않으면
+        if (!userId.equals(requestDto.getUserId())) {
+            throw new CustomRoomException(ErrorCode.INVALID_REQUEST.getMessage());
+        }
+
+        // 요청한 유저가 웹 소켓 세션에 존재하지 않으면
+        if (!WebsocketSessionHolder.existUser(userId)) {
+            throw new CustomRoomException(ErrorCode.NOT_CONNECT_USER.getMessage());
+        }
+    }
+
     private void validateCreateWaitRoomRequest(WaitRoomCreateRequestDto requestDto, String userId) {
-        // 요청한 유저가 방장이 아니면 예외 발생
+        // 요청한 유저와 토큰이 일치하지 않으면
         if (!userId.equals(requestDto.getHostId())) {
             throw new CustomRoomException(ErrorCode.INVALID_REQUEST.getMessage());
         }
