@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.repository.room;
+package com.dlqudtjs.codingbattle.repository.socket.room;
 
 import com.dlqudtjs.codingbattle.model.room.WaitRoom;
 

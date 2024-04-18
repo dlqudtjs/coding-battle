@@ -3,7 +3,7 @@ package com.dlqudtjs.codingbattle.service.room;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.room.WaitRoom;
 import com.dlqudtjs.codingbattle.model.room.WaitRoomCreateRequestDto;
-import com.dlqudtjs.codingbattle.repository.room.RoomRepository;
+import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
 import com.dlqudtjs.codingbattle.service.room.exception.ErrorCode;
@@ -33,9 +33,6 @@ public class WaitRoomServiceImpl implements WaitRoomService {
         }
 
         // 이미 다른 방에 있다면 해당 방 나가고 새로운 방 생성
-        /*
-        1. user, 방에 들어있는지 상태
-         */
 
         WaitRoom room = requestDto.toEntity();
         room.addUser(requestDto.getHostId());
