@@ -31,6 +31,7 @@ public class WaitRoomCreateRequestDto {
                 .problemLevel(problemLevel)
                 .maxUserCount(maxUserCount)
                 .maxSummitCount(maxSummitCount)
+                .limitTime(limitTime)
                 .userMap(new ConcurrentHashMap<>())
                 .build();
     }
