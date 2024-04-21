@@ -42,4 +42,12 @@ public class WaitRoom {
     public Boolean isExistUser(String userId) {
         return userMap.containsKey(userId);
     }
+
+    public Boolean isLocked() {
+        return password != null;
+    }
+
+    public List<WaitRoomUserStatus> getUserStatusList() {
+        return List.copyOf(userMap.values());
+    }
 }
