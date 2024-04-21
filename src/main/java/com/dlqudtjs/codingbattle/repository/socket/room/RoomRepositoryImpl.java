@@ -10,10 +10,11 @@ public class RoomRepositoryImpl implements RoomRepository {
     private final ConcurrentHashMap<Integer, WaitRoom> roomMap = new ConcurrentHashMap<>();
 
     @Override
-    public Integer save(WaitRoom waitRoom) {
+    public WaitRoom save(WaitRoom waitRoom) {
         Integer roomId = availableRoomId();
+        waitRoom.setRoomId(roomId);
         roomMap.put(roomId, waitRoom);
-        return roomId;
+        return roomMap.get(roomId);
     }
 
     @Override

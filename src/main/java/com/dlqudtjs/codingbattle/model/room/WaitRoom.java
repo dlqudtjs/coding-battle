@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.model.room;
 
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +13,7 @@ import org.springframework.web.socket.WebSocketSession;
 @AllArgsConstructor
 public class WaitRoom {
 
+    private Integer roomId;
     private String hostId;
     private String title;
     private String password;
@@ -24,7 +26,11 @@ public class WaitRoom {
 
     public void addUser(String userId) {
         WebSocketSession session = WebsocketSessionHolder.getSessionFromUserId(userId);
-        userMap.put(userId, new WaitRoomUserStatus(session));
+        userMap.put(userId, new WaitRoomUserStatus(userId, session));
+    }
+
+    public void setRoomId(Integer roomId) {
+        this.roomId = roomId;
     }
 
     public void removeUser(String userId) {
