@@ -1,8 +1,8 @@
 package com.dlqudtjs.codingbattle.controller;
 
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
-import com.dlqudtjs.codingbattle.model.room.WaitRoomCreateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.WaitRoomEnterRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestDto.WaitRoomCreateRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestDto.WaitRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

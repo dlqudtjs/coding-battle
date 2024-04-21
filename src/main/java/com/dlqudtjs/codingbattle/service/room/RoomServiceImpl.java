@@ -2,8 +2,8 @@ package com.dlqudtjs.codingbattle.service.room;
 
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.room.WaitRoom;
-import com.dlqudtjs.codingbattle.model.room.WaitRoomCreateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.WaitRoomEnterRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestDto.WaitRoomCreateRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestDto.WaitRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;

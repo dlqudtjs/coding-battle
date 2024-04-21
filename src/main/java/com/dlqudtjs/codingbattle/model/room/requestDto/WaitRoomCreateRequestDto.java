@@ -1,5 +1,6 @@
-package com.dlqudtjs.codingbattle.model.room;
+package com.dlqudtjs.codingbattle.model.room.requestDto;
 
+import com.dlqudtjs.codingbattle.model.room.WaitRoom;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
