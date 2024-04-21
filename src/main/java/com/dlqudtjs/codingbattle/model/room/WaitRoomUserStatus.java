@@ -7,11 +7,13 @@ import org.springframework.web.socket.WebSocketSession;
 @Getter
 public class WaitRoomUserStatus {
 
+    String userId;
     WebSocketSession session;
     Boolean isReady;
     ProgrammingLanguage useLanguage;
 
-    public WaitRoomUserStatus(WebSocketSession session) {
+    public WaitRoomUserStatus(String userId, WebSocketSession session) {
+        this.userId = userId;
         this.session = session;
         this.isReady = false;
         this.useLanguage = ProgrammingLanguage.JAVA;
