@@ -4,12 +4,16 @@ import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.room.WaitRoom;
 import com.dlqudtjs.codingbattle.model.room.requestDto.WaitRoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.WaitRoomEnterRequestDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.WaitRoomResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.WaitRoomStatusResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.WaitRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
 import com.dlqudtjs.codingbattle.service.room.exception.ErrorCode;
 import com.dlqudtjs.codingbattle.service.session.SessionService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,16 +41,18 @@ public class RoomServiceImpl implements RoomService {
         room.addUser(requestDto.getHostId());
 
         // 방 생성
-        Integer createdRoomId = roomRepository.save(room);
+        WaitRoom createdRoom = roomRepository.save(room);
 
         // 유저의 세션 상태 변경
-        roomRepository.joinRoom(userId, createdRoomId);
-        sessionService.enterRoom(userId, createdRoomId);
+        roomRepository.joinRoom(userId, createdRoom.getRoomId());
+        sessionService.enterRoom(userId, createdRoom.getRoomId());
+
+        WaitRoomResponseDto waitRoomResponseDto = CreateWaitRoomResponseDto(createdRoom);
 
         return ResponseDto.builder()
                 .status(SuccessCode.CREATE_WAIT_ROOM_SUCCESS.getStatus())
                 .message(SuccessCode.CREATE_WAIT_ROOM_SUCCESS.getMessage())
-                .data(createdRoomId)
+                .data(waitRoomResponseDto)
                 .build();
     }
 
@@ -91,6 +97,32 @@ public class RoomServiceImpl implements RoomService {
                 .status(SuccessCode.LEAVE_WAIT_ROOM_SUCCESS.getStatus())
                 .message(SuccessCode.LEAVE_WAIT_ROOM_SUCCESS.getMessage())
                 .data(roomId)
+                .build();
+    }
+
+    private WaitRoomResponseDto CreateWaitRoomResponseDto(WaitRoom room) {
+        WaitRoomStatusResponseDto roomStatus = WaitRoomStatusResponseDto.builder()
+                .roomId(room.getRoomId())
+                .hostId(room.getHostId())
+                .title(room.getTitle())
+                .isLocked(room.isLocked())
+                .problemLevel(room.getProblemLevel())
+                .maxUserCount(room.getMaxUserCount())
+                .maxSummitCount(room.getMaxSummitCount())
+                .limitTime(room.getLimitTime())
+                .build();
+
+        List<WaitRoomUserStatusResponseDto> userStatus = room.getUserStatusList().stream()
+                .map(status -> WaitRoomUserStatusResponseDto.builder()
+                        .userId(status.getUserId())
+                        .isReady(status.getIsReady())
+                        .language(status.getUseLanguage().getLanguageName())
+                        .build())
+                .toList();
+
+        return WaitRoomResponseDto.builder()
+                .roomStatus(roomStatus)
+                .userStatus(userStatus)
                 .build();
     }
 
