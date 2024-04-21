@@ -4,6 +4,7 @@ import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.WaitRoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.WaitRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +20,7 @@ public class RoomController {
     private final RoomService waitRoomService;
 
     @PostMapping("/v1/waitRoom")
-    public ResponseEntity<ResponseDto> createRoom(@RequestBody WaitRoomCreateRequestDto requestDto,
+    public ResponseEntity<ResponseDto> createRoom(@Valid @RequestBody WaitRoomCreateRequestDto requestDto,
                                                   @RequestHeader("Authorization") String token) {
         ResponseDto responseDto = waitRoomService.createWaitRoom(requestDto, token);
 
