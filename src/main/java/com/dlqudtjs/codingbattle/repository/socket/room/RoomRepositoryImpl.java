@@ -18,8 +18,9 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    public void joinRoom(String userId, Integer roomId) {
+    public WaitRoom joinRoom(String userId, Integer roomId) {
         roomMap.get(roomId).addUser(userId);
+        return roomMap.get(roomId);
     }
 
     @Override

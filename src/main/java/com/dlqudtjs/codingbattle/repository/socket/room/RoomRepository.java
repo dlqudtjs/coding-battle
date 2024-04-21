@@ -6,7 +6,7 @@ public interface RoomRepository {
 
     WaitRoom save(WaitRoom waitRoom);
 
-    void joinRoom(String userId, Integer roomId);
+    WaitRoom joinRoom(String userId, Integer roomId);
 
     void leaveRoom(String userId, Integer roomId);
 
