@@ -1,6 +1,8 @@
 package com.dlqudtjs.codingbattle.model.room;
 
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomStatusResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -61,5 +63,30 @@ public class GameRoom {
 
     public List<GameRoomUserStatus> getUserStatusList() {
         return List.copyOf(userMap.values());
+    }
+
+    public GameRoomStatusResponseDto toGameRoomStatusResponseDto() {
+        return GameRoomStatusResponseDto.builder()
+                .roomId(roomId)
+                .hostId(hostId)
+                .title(title)
+                .language(language.getLanguageName())
+                .isLocked(isLocked())
+                .isStarted(isStarted)
+                .problemLevel(problemLevel)
+                .maxUserCount(maxUserCount)
+                .maxSubmitCount(maxSubmitCount)
+                .limitTime(limitTime)
+                .build();
+    }
+
+    public List<GameRoomUserStatusResponseDto> toGameRoomUserStatusResponseDto() {
+        return userMap.values().stream()
+                .map(status -> GameRoomUserStatusResponseDto.builder()
+                        .userId(status.getUserId())
+                        .isReady(status.getIsReady())
+                        .language(status.getUseLanguage().getLanguageName())
+                        .build())
+                .toList();
     }
 }

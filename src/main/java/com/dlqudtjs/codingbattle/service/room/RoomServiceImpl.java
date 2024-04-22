@@ -6,8 +6,6 @@ import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomListResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomStatusResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
@@ -131,30 +129,9 @@ public class RoomServiceImpl implements RoomService {
     }
 
     private GameRoomResponseDto CreateGameRoomResponseDto(GameRoom room) {
-        GameRoomStatusResponseDto roomStatus = GameRoomStatusResponseDto.builder()
-                .roomId(room.getRoomId())
-                .hostId(room.getHostId())
-                .title(room.getTitle())
-                .language(room.getLanguage().getLanguageName())
-                .isLocked(room.isLocked())
-                .isStarted(room.getIsStarted())
-                .problemLevel(room.getProblemLevel())
-                .maxUserCount(room.getMaxUserCount())
-                .maxSubmitCount(room.getMaxSubmitCount())
-                .limitTime(room.getLimitTime())
-                .build();
-
-        List<GameRoomUserStatusResponseDto> userStatus = room.getUserStatusList().stream()
-                .map(status -> GameRoomUserStatusResponseDto.builder()
-                        .userId(status.getUserId())
-                        .isReady(status.getIsReady())
-                        .language(status.getUseLanguage().getLanguageName())
-                        .build())
-                .toList();
-
         return GameRoomResponseDto.builder()
-                .roomStatus(roomStatus)
-                .userStatus(userStatus)
+                .roomStatus(room.toGameRoomStatusResponseDto())
+                .userStatus(room.toGameRoomUserStatusResponseDto())
                 .build();
     }
 
