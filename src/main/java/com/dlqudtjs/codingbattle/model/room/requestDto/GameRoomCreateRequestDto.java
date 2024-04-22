@@ -73,6 +73,6 @@ public class GameRoomCreateRequestDto {
             }
         }
 
-        throw new Custom4XXException(ErrorCode.LANGUAGE_NOT_FOUND.getMessage());
+        throw new Custom4XXException(ErrorCode.INVALID_INPUT_VALUE.getMessage());
     }
 }
