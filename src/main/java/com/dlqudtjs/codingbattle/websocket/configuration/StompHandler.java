@@ -47,6 +47,10 @@ public class StompHandler implements ChannelInterceptor {
         if (headerAccessor.getCommand() == StompCommand.DISCONNECT) {
             String userId = WebsocketSessionHolder.getUserIdFromSessionId(headerAccessor.getSessionId());
 
+            if (userId == null) {
+                return message;
+            }
+
             // userId의 세션 상태 삭제
             sessionStatusRepository.removeSessionStatus(userId);
             // userId와 sessionId 매핑 삭제
