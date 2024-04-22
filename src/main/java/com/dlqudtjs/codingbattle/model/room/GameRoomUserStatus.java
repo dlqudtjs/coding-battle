@@ -5,14 +5,14 @@ import lombok.Getter;
 import org.springframework.web.socket.WebSocketSession;
 
 @Getter
-public class WaitRoomUserStatus {
+public class GameRoomUserStatus {
 
     String userId;
     WebSocketSession session;
     Boolean isReady;
     ProgrammingLanguage useLanguage;
 
-    public WaitRoomUserStatus(String userId, WebSocketSession session) {
+    public GameRoomUserStatus(String userId, WebSocketSession session) {
         this.userId = userId;
         this.session = session;
         this.isReady = false;

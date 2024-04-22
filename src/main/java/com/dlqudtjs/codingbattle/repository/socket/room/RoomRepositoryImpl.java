@@ -7,18 +7,18 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class RoomRepositoryImpl implements RoomRepository {
 
-    private final ConcurrentHashMap<Integer, WaitRoom> roomMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Integer, GameRoom> roomMap = new ConcurrentHashMap<>();
 
     @Override
-    public WaitRoom save(WaitRoom waitRoom) {
+    public GameRoom save(GameRoom gameRoom) {
         Integer roomId = availableRoomId();
-        waitRoom.setRoomId(roomId);
-        roomMap.put(roomId, waitRoom);
+        gameRoom.setRoomId(roomId);
+        roomMap.put(roomId, gameRoom);
         return roomMap.get(roomId);
     }
 
     @Override
-    public WaitRoom joinRoom(String userId, Integer roomId) {
+    public GameRoom joinRoom(String userId, Integer roomId) {
         roomMap.get(roomId).addUser(userId);
         return roomMap.get(roomId);
     }

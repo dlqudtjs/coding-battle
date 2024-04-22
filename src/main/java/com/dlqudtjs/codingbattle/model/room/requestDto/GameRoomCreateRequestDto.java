@@ -3,7 +3,7 @@ package com.dlqudtjs.codingbattle.model.room.requestDto;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.exception.ErrorCode;
-import com.dlqudtjs.codingbattle.model.room.WaitRoom;
+import com.dlqudtjs.codingbattle.model.room.GameRoom;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class WaitRoomCreateRequestDto {
+public class GameRoomCreateRequestDto {
 
     @NotBlank
     private String hostId;
@@ -51,8 +51,8 @@ public class WaitRoomCreateRequestDto {
     @Max(120)
     private Integer limitTime;
 
-    public WaitRoom toEntity() {
-        return WaitRoom.builder()
+    public GameRoom toEntity() {
+        return GameRoom.builder()
                 .hostId(hostId)
                 .title(title)
                 .password(password)

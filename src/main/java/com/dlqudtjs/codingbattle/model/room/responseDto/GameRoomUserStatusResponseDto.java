@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class WaitRoomUserStatusResponseDto {
+public class GameRoomUserStatusResponseDto {
     private String userId;
     private Boolean isReady;
     private String language;

@@ -1,12 +1,13 @@
 package com.dlqudtjs.codingbattle.service.room;
 
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
-import com.dlqudtjs.codingbattle.model.room.WaitRoom;
-import com.dlqudtjs.codingbattle.model.room.requestDto.WaitRoomCreateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.requestDto.WaitRoomEnterRequestDto;
-import com.dlqudtjs.codingbattle.model.room.responseDto.WaitRoomResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responseDto.WaitRoomStatusResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responseDto.WaitRoomUserStatusResponseDto;
+import com.dlqudtjs.codingbattle.model.room.GameRoom;
+import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomCreateRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomEnterRequestDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomListResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomStatusResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
@@ -26,10 +27,10 @@ public class RoomServiceImpl implements RoomService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public ResponseDto createWaitRoom(WaitRoomCreateRequestDto requestDto, String token) {
+    public ResponseDto createGameRoom(GameRoomCreateRequestDto requestDto, String token) {
         String userId = jwtTokenProvider.getUserName(token);
 
-        validateCreateWaitRoomRequest(requestDto, userId);
+        validateCreateGameRoomRequest(requestDto, userId);
 
         Integer alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
         if (alreadyEnterRoomId != null) {
@@ -37,30 +38,30 @@ public class RoomServiceImpl implements RoomService {
         }
 
         // 방장 설정
-        WaitRoom room = requestDto.toEntity();
+        GameRoom room = requestDto.toEntity();
         room.addUser(requestDto.getHostId());
 
         // 방 생성
-        WaitRoom createdRoom = roomRepository.save(room);
+        GameRoom createdRoom = roomRepository.save(room);
 
         // 유저의 세션 상태 변경
         roomRepository.joinRoom(userId, createdRoom.getRoomId());
         sessionService.enterRoom(userId, createdRoom.getRoomId());
 
-        WaitRoomResponseDto waitRoomResponseDto = CreateWaitRoomResponseDto(createdRoom);
+        GameRoomResponseDto gameRoomResponseDto = CreateGameRoomResponseDto(createdRoom);
 
         return ResponseDto.builder()
-                .status(SuccessCode.CREATE_WAIT_ROOM_SUCCESS.getStatus())
-                .message(SuccessCode.CREATE_WAIT_ROOM_SUCCESS.getMessage())
-                .data(waitRoomResponseDto)
+                .status(SuccessCode.CREATE_GAME_ROOM_SUCCESS.getStatus())
+                .message(SuccessCode.CREATE_GAME_ROOM_SUCCESS.getMessage())
+                .data(gameRoomResponseDto)
                 .build();
     }
 
     @Override
-    public ResponseDto enterWaitRoom(WaitRoomEnterRequestDto requestDto, String token) {
+    public ResponseDto enterGameRoom(GameRoomEnterRequestDto requestDto, String token) {
         String userId = jwtTokenProvider.getUserName(token);
 
-        validateEnterWaitRoomRequest(requestDto, userId);
+        validateEnterGameRoomRequest(requestDto, userId);
 
         Integer alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
 
@@ -73,31 +74,31 @@ public class RoomServiceImpl implements RoomService {
             sessionService.leaveRoom(userId);
         }
 
-        WaitRoom joinedRoom = roomRepository.joinRoom(userId, requestDto.getRoomId());
+        GameRoom joinedRoom = roomRepository.joinRoom(userId, requestDto.getRoomId());
         sessionService.enterRoom(userId, requestDto.getRoomId());
 
-        WaitRoomResponseDto waitRoomResponseDto = CreateWaitRoomResponseDto(joinedRoom);
+        GameRoomResponseDto gameRoomResponseDto = CreateGameRoomResponseDto(joinedRoom);
 
         return ResponseDto.builder()
-                .status(SuccessCode.JOIN_WAIT_ROOM_SUCCESS.getStatus())
-                .message(SuccessCode.JOIN_WAIT_ROOM_SUCCESS.getMessage())
-                .data(waitRoomResponseDto)
+                .status(SuccessCode.JOIN_GAME_ROOM_SUCCESS.getStatus())
+                .message(SuccessCode.JOIN_GAME_ROOM_SUCCESS.getMessage())
+                .data(gameRoomResponseDto)
                 .build();
     }
 
     @Override
-    public ResponseDto leaveWaitRoom(Integer roomId, String token) {
+    public ResponseDto leaveGameRoom(Integer roomId, String token) {
         String userId = jwtTokenProvider.getUserName(token);
 
-        validateLeaveWaitRoomRequest(roomId, userId);
+        validateLeaveGameRoomRequest(roomId, userId);
 
         roomRepository.leaveRoom(userId, roomId);
         sessionService.leaveRoom(userId);
 
         // 상태 변경
         return ResponseDto.builder()
-                .status(SuccessCode.LEAVE_WAIT_ROOM_SUCCESS.getStatus())
-                .message(SuccessCode.LEAVE_WAIT_ROOM_SUCCESS.getMessage())
+                .status(SuccessCode.LEAVE_GAME_ROOM_SUCCESS.getStatus())
+                .message(SuccessCode.LEAVE_GAME_ROOM_SUCCESS.getMessage())
                 .data(roomId)
                 .build();
     }
@@ -122,13 +123,13 @@ public class RoomServiceImpl implements RoomService {
                         .build())
                 .toList();
 
-        return WaitRoomResponseDto.builder()
+        return GameRoomResponseDto.builder()
                 .roomStatus(roomStatus)
                 .userStatus(userStatus)
                 .build();
     }
 
-    private void validateLeaveWaitRoomRequest(Integer roomId, String userId) {
+    private void validateLeaveGameRoomRequest(Integer roomId, String userId) {
         // 방이 존재하지 않으면
         if (!roomRepository.isExistRoom(roomId)) {
             throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
@@ -145,7 +146,7 @@ public class RoomServiceImpl implements RoomService {
         }
     }
 
-    private void validateEnterWaitRoomRequest(WaitRoomEnterRequestDto requestDto, String userId) {
+    private void validateEnterGameRoomRequest(GameRoomEnterRequestDto requestDto, String userId) {
         // 요청한 유저와 토큰이 일치하지 않으면
         if (!userId.equals(requestDto.getUserId())) {
             throw new CustomRoomException(ErrorCode.INVALID_REQUEST.getMessage());
@@ -167,7 +168,7 @@ public class RoomServiceImpl implements RoomService {
         }
     }
 
-    private void validateCreateWaitRoomRequest(WaitRoomCreateRequestDto requestDto, String userId) {
+    private void validateCreateGameRoomRequest(GameRoomCreateRequestDto requestDto, String userId) {
         // 요청한 유저와 토큰이 일치하지 않으면
         if (!userId.equals(requestDto.getHostId())) {
             throw new CustomRoomException(ErrorCode.INVALID_REQUEST.getMessage());

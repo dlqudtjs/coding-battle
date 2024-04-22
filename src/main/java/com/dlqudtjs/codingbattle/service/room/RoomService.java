@@ -1,14 +1,14 @@
 package com.dlqudtjs.codingbattle.service.room;
 
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
-import com.dlqudtjs.codingbattle.model.room.requestDto.WaitRoomCreateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.requestDto.WaitRoomEnterRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomCreateRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomEnterRequestDto;
 
 public interface RoomService {
 
-    ResponseDto createWaitRoom(WaitRoomCreateRequestDto requestDto, String token);
+    ResponseDto createGameRoom(GameRoomCreateRequestDto requestDto, String token);
 
-    ResponseDto enterWaitRoom(WaitRoomEnterRequestDto requestDto, String token);
+    ResponseDto enterGameRoom(GameRoomEnterRequestDto requestDto, String token);
 
     ResponseDto leaveWaitRoom(Integer roomId, String token);
 }

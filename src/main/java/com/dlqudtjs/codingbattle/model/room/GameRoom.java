@@ -23,11 +23,11 @@ public class WaitRoom {
     private Integer maxUserCount;
     private Integer maxSubmitCount;
     private Integer limitTime;
-    private ConcurrentHashMap<String, WaitRoomUserStatus> userMap;
+    private ConcurrentHashMap<String, GameRoomUserStatus> userMap;
 
     public void addUser(String userId) {
         WebSocketSession session = WebsocketSessionHolder.getSessionFromUserId(userId);
-        userMap.put(userId, new WaitRoomUserStatus(userId, session));
+        userMap.put(userId, new GameRoomUserStatus(userId, session));
     }
 
     public void setRoomId(Integer roomId) {
@@ -54,7 +54,7 @@ public class WaitRoom {
         return password != null;
     }
 
-    public List<WaitRoomUserStatus> getUserStatusList() {
+    public List<GameRoomUserStatus> getUserStatusList() {
         return List.copyOf(userMap.values());
     }
 }
