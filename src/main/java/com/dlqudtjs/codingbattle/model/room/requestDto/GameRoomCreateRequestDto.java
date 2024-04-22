@@ -33,11 +33,11 @@ public class GameRoomCreateRequestDto {
 
     @NotNull
     @Min(1)
-    @Max(5)
+    @Max(10)
     private Integer problemLevel;
 
     @NotNull
-    @Min(1)
+    @Min(2)
     @Max(4)
     private Integer maxUserCount;
 
