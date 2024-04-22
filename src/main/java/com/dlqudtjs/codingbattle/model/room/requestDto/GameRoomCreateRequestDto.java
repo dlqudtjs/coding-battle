@@ -57,6 +57,7 @@ public class GameRoomCreateRequestDto {
                 .title(title)
                 .password(password)
                 .language(validateLanguage(language))
+                .isStarted(false)
                 .problemLevel(problemLevel)
                 .maxUserCount(maxUserCount)
                 .maxSubmitCount(maxSubmitCount)

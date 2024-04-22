@@ -12,13 +12,14 @@ import org.springframework.web.socket.WebSocketSession;
 @Getter
 @Builder
 @AllArgsConstructor
-public class WaitRoom {
+public class GameRoom {
 
     private Integer roomId;
     private String hostId;
     private String title;
     private String password;
     private ProgrammingLanguage language;
+    private Boolean isStarted;
     private Integer problemLevel;
     private Integer maxUserCount;
     private Integer maxSubmitCount;
@@ -48,6 +49,10 @@ public class WaitRoom {
 
     public Boolean isExistUser(String userId) {
         return userMap.containsKey(userId);
+    }
+
+    public Integer getUserCount() {
+        return userMap.size();
     }
 
     public Boolean isLocked() {
