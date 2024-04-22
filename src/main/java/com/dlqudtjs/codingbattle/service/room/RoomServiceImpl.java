@@ -135,7 +135,7 @@ public class RoomServiceImpl implements RoomService {
         }
 
         // 요청한 유저가 웹 소켓 세션에 존재하지 않으면
-        if (!WebsocketSessionHolder.existUser(userId)) {
+        if (WebsocketSessionHolder.isNotConnected(userId)) {
             throw new CustomRoomException(ErrorCode.NOT_CONNECT_USER.getMessage());
         }
 
@@ -152,7 +152,7 @@ public class RoomServiceImpl implements RoomService {
         }
 
         // 요청한 유저가 웹 소켓 세션에 존재하지 않으면
-        if (!WebsocketSessionHolder.existUser(userId)) {
+        if (WebsocketSessionHolder.isNotConnected(userId)) {
             throw new CustomRoomException(ErrorCode.NOT_CONNECT_USER.getMessage());
         }
 
@@ -174,7 +174,7 @@ public class RoomServiceImpl implements RoomService {
         }
 
         // 요청한 유저가 웹 소켓 세션에 존재하지 않으면
-        if (!WebsocketSessionHolder.existUser(userId)) {
+        if (WebsocketSessionHolder.isNotConnected(userId)) {
             throw new CustomRoomException(ErrorCode.NOT_CONNECT_USER.getMessage());
         }
     }

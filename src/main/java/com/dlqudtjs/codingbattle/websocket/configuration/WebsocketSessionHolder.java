@@ -49,7 +49,7 @@ public class WebsocketSessionHolder {
                 .orElse(null);
     }
 
-    public static boolean existUser(String userId) {
-        return socketMap.containsKey(userId);
+    public static boolean isNotConnected(String userId) {
+        return !socketMap.containsKey(userId);
     }
 }
