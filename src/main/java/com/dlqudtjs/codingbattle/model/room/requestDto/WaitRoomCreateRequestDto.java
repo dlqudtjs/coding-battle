@@ -43,8 +43,8 @@ public class WaitRoomCreateRequestDto {
     private Integer maxSummitCount;
 
     @NotNull
-    @Min(1)
-    @Max(60)
+    @Min(10)
+    @Max(120)
     private Integer limitTime;
 
     public WaitRoom toEntity() {
