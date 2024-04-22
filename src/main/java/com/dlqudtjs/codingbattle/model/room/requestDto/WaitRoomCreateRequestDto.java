@@ -37,6 +37,7 @@ public class WaitRoomCreateRequestDto {
     @Min(1)
     @Max(4)
     private Integer maxUserCount;
+    
     @NotNull
     @Min(1)
     @Max(10)
