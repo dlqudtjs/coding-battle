@@ -5,7 +5,7 @@ import com.dlqudtjs.codingbattle.model.room.GameRoom;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomListResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomInfoResponseDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
@@ -46,12 +46,12 @@ public class RoomServiceImpl implements RoomService {
         roomRepository.joinRoom(userId, createdRoom.getRoomId());
         sessionService.enterRoom(userId, createdRoom.getRoomId());
 
-        GameRoomResponseDto gameRoomResponseDto = CreateGameRoomResponseDto(createdRoom);
+        GameRoomInfoResponseDto gameRoomInfoResponseDto = CreateGameRoomResponseDto(createdRoom);
 
         return ResponseDto.builder()
                 .status(SuccessCode.CREATE_GAME_ROOM_SUCCESS.getStatus())
                 .message(SuccessCode.CREATE_GAME_ROOM_SUCCESS.getMessage())
-                .data(gameRoomResponseDto)
+                .data(gameRoomInfoResponseDto)
                 .build();
     }
 
@@ -75,12 +75,12 @@ public class RoomServiceImpl implements RoomService {
         GameRoom joinedRoom = roomRepository.joinRoom(userId, requestDto.getRoomId());
         sessionService.enterRoom(userId, requestDto.getRoomId());
 
-        GameRoomResponseDto gameRoomResponseDto = CreateGameRoomResponseDto(joinedRoom);
+        GameRoomInfoResponseDto gameRoomInfoResponseDto = CreateGameRoomResponseDto(joinedRoom);
 
         return ResponseDto.builder()
                 .status(SuccessCode.JOIN_GAME_ROOM_SUCCESS.getStatus())
                 .message(SuccessCode.JOIN_GAME_ROOM_SUCCESS.getMessage())
-                .data(gameRoomResponseDto)
+                .data(gameRoomInfoResponseDto)
                 .build();
     }
 
@@ -128,8 +128,8 @@ public class RoomServiceImpl implements RoomService {
                 .build();
     }
 
-    private GameRoomResponseDto CreateGameRoomResponseDto(GameRoom room) {
-        return GameRoomResponseDto.builder()
+    private GameRoomInfoResponseDto CreateGameRoomResponseDto(GameRoom room) {
+        return GameRoomInfoResponseDto.builder()
                 .roomStatus(room.toGameRoomStatusResponseDto())
                 .userStatus(room.toGameRoomUserStatusResponseDto())
                 .build();
