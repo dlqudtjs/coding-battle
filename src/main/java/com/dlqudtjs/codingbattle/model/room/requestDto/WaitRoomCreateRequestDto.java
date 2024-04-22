@@ -1,5 +1,8 @@
 package com.dlqudtjs.codingbattle.model.room.requestDto;
 
+import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
+import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
+import com.dlqudtjs.codingbattle.common.exception.ErrorCode;
 import com.dlqudtjs.codingbattle.model.room.WaitRoom;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -53,12 +56,22 @@ public class WaitRoomCreateRequestDto {
                 .hostId(hostId)
                 .title(title)
                 .password(password)
-                .language(language)
+                .language(validateLanguage(language))
                 .problemLevel(problemLevel)
                 .maxUserCount(maxUserCount)
                 .maxSubmitCount(maxSubmitCount)
                 .limitTime(limitTime)
                 .userMap(new ConcurrentHashMap<>())
                 .build();
+    }
+
+    private ProgrammingLanguage validateLanguage(String language) {
+        for (ProgrammingLanguage pl : ProgrammingLanguage.values()) {
+            if (pl.getLanguageName().equals(language)) {
+                return pl;
+            }
+        }
+
+        throw new Custom4XXException(ErrorCode.LANGUAGE_NOT_FOUND.getMessage());
     }
 }

@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ProgrammingLanguage {
 
+    DEFAULT("default"),
     JAVA("java"),
     PYTHON("python"),
     C("c"),

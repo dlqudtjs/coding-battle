@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.model.room;
 
+import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,7 +18,7 @@ public class WaitRoom {
     private String hostId;
     private String title;
     private String password;
-    private String language;
+    private ProgrammingLanguage language;
     private Integer problemLevel;
     private Integer maxUserCount;
     private Integer maxSubmitCount;

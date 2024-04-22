@@ -103,4 +103,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error("CustomRoomException", e);
         return buildErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    // 400 BAD_REQUEST
+    @ExceptionHandler(Custom4XXException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleCustomEnumException(Custom4XXException e) {
+        log.error("CustomEnumException", e);
+        return buildErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }
