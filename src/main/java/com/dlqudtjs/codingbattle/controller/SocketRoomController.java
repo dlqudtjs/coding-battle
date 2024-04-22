@@ -1,7 +1,7 @@
 package com.dlqudtjs.codingbattle.controller;
 
+import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateResponseDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomUserStatusUpdateResponseDto;
 import com.dlqudtjs.codingbattle.model.socket.SendToRoomMessageDto;
@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
@@ -37,7 +38,10 @@ public class SocketRoomController {
     }
 
     @MessageMapping("/room/{roomId}/update/room-status")
-    public void updateRoom(@DestinationVariable("roomId") Integer roomId, String message) {
+    public void updateRoom(@DestinationVariable("roomId") Integer roomId, String message,
+                           SimpMessageHeaderAccessor headerAccessor) {
+        String sessionId = headerAccessor.getSessionId();
+
         GameRoomStatusUpdateRequestDto gameRoomStatusUpdateRequestDto =
                 (GameRoomStatusUpdateRequestDto) parseMessage(message, new GameRoomStatusUpdateRequestDto());
 
@@ -47,12 +51,8 @@ public class SocketRoomController {
             throw new CustomSocketException(ErrorCode.JSON_PARSE_ERROR.getMessage());
         }
 
-        roomService.updateGameRoomStatus(roomId, gameRoomStatusUpdateRequestDto);
-
         messagingTemplate.convertAndSend("/topic/room/" + roomId,
-                GameRoomStatusUpdateResponseDto.builder()
-                        .roomStatus(gameRoomStatusUpdateRequestDto)
-                        .build());
+                roomService.updateGameRoomStatus(roomId, sessionId, gameRoomStatusUpdateRequestDto));
     }
 
     @MessageMapping("/room/{roomId}/update/user-status")
