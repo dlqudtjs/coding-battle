@@ -61,10 +61,6 @@ public class GameRoom {
         return password != null;
     }
 
-    public List<GameRoomUserStatus> getUserStatusList() {
-        return List.copyOf(userMap.values());
-    }
-
     public GameRoomStatusResponseDto toGameRoomStatusResponseDto() {
         return GameRoomStatusResponseDto.builder()
                 .roomId(roomId)
