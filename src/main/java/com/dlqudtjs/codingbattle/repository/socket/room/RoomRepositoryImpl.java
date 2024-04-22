@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.repository.socket.room;
 
-import com.dlqudtjs.codingbattle.model.room.WaitRoom;
+import com.dlqudtjs.codingbattle.model.room.GameRoom;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Repository;
 
@@ -31,6 +32,11 @@ public class RoomRepositoryImpl implements RoomRepository {
         }
 
         roomMap.get(roomId).removeUser(userId);
+    }
+
+    @Override
+    public List<GameRoom> getGameRoomList() {
+        return List.copyOf(roomMap.values());
     }
 
     @Override
