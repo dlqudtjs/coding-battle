@@ -103,20 +103,49 @@ public class RoomServiceImpl implements RoomService {
                 .build();
     }
 
-    private WaitRoomResponseDto CreateWaitRoomResponseDto(WaitRoom room) {
-        WaitRoomStatusResponseDto roomStatus = WaitRoomStatusResponseDto.builder()
+    @Override
+    public ResponseDto getGameRoomList() {
+        List<GameRoom> gameRoomList = roomRepository.getGameRoomList();
+
+        List<GameRoomListResponseDto> responseDtoList = gameRoomList.stream()
+                .map(room -> GameRoomListResponseDto.builder()
+                        .roomId(room.getRoomId())
+                        .hostId(room.getHostId())
+                        .title(room.getTitle())
+                        .language(room.getLanguage().getLanguageName())
+                        .isLocked(room.isLocked())
+                        .isStarted(room.getIsStarted())
+                        .problemLevel(room.getProblemLevel())
+                        .maxUserCount(room.getMaxUserCount())
+                        .maxSubmitCount(room.getMaxSubmitCount())
+                        .limitTime(room.getLimitTime())
+                        .countUsersInRoom(room.getUserCount())
+                        .build())
+                .toList();
+
+        return ResponseDto.builder()
+                .status(SuccessCode.GET_GAME_ROOM_LIST_SUCCESS.getStatus())
+                .message(SuccessCode.GET_GAME_ROOM_LIST_SUCCESS.getMessage())
+                .data(responseDtoList)
+                .build();
+    }
+
+    private GameRoomResponseDto CreateGameRoomResponseDto(GameRoom room) {
+        GameRoomStatusResponseDto roomStatus = GameRoomStatusResponseDto.builder()
                 .roomId(room.getRoomId())
                 .hostId(room.getHostId())
                 .title(room.getTitle())
+                .language(room.getLanguage().getLanguageName())
                 .isLocked(room.isLocked())
+                .isStarted(room.getIsStarted())
                 .problemLevel(room.getProblemLevel())
                 .maxUserCount(room.getMaxUserCount())
-                .maxSummitCount(room.getMaxSubmitCount())
+                .maxSubmitCount(room.getMaxSubmitCount())
                 .limitTime(room.getLimitTime())
                 .build();
 
-        List<WaitRoomUserStatusResponseDto> userStatus = room.getUserStatusList().stream()
-                .map(status -> WaitRoomUserStatusResponseDto.builder()
+        List<GameRoomUserStatusResponseDto> userStatus = room.getUserStatusList().stream()
+                .map(status -> GameRoomUserStatusResponseDto.builder()
                         .userId(status.getUserId())
                         .isReady(status.getIsReady())
                         .language(status.getUseLanguage().getLanguageName())

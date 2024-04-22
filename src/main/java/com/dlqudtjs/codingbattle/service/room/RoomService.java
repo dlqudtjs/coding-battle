@@ -10,5 +10,7 @@ public interface RoomService {
 
     ResponseDto enterGameRoom(GameRoomEnterRequestDto requestDto, String token);
 
-    ResponseDto leaveWaitRoom(Integer roomId, String token);
+    ResponseDto leaveGameRoom(Integer roomId, String token);
+
+    ResponseDto getGameRoomList();
 }
