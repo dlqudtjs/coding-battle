@@ -41,6 +41,14 @@ public class SocketRoomController {
         GameRoomStatusUpdateRequestDto gameRoomStatusUpdateRequestDto =
                 (GameRoomStatusUpdateRequestDto) parseMessage(message, new GameRoomStatusUpdateRequestDto());
 
+        try {
+            gameRoomStatusUpdateRequestDto.validate();
+        } catch (Custom4XXException e) {
+            throw new CustomSocketException(ErrorCode.JSON_PARSE_ERROR.getMessage());
+        }
+
+        roomService.updateGameRoomStatus(roomId, gameRoomStatusUpdateRequestDto);
+
         messagingTemplate.convertAndSend("/topic/room/" + roomId,
                 GameRoomStatusUpdateResponseDto.builder()
                         .roomStatus(gameRoomStatusUpdateRequestDto)
@@ -51,6 +59,12 @@ public class SocketRoomController {
     public void updateUserStatus(@DestinationVariable("roomId") String roomId, String message) {
         GameRoomUserStatusUpdateRequestDto gameRoomUserStatusUpdateRequestDto =
                 (GameRoomUserStatusUpdateRequestDto) parseMessage(message, new GameRoomUserStatusUpdateRequestDto());
+
+        try {
+            gameRoomUserStatusUpdateRequestDto.validate();
+        } catch (Custom4XXException e) {
+            throw new CustomSocketException(ErrorCode.JSON_PARSE_ERROR.getMessage());
+        }
 
         messagingTemplate.convertAndSend("/topic/room/" + roomId,
                 GameRoomUserStatusUpdateResponseDto.builder()

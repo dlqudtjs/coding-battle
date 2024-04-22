@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
 
-    LANGUAGE_NOT_FOUND(400, "언어를 찾을 수 없습니다."),
+    INVALID_INPUT_VALUE(400, "유효하지 않은 값입니다."),
     ;
 
     private final int status;

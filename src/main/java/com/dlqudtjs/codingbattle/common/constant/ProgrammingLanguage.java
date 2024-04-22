@@ -16,4 +16,17 @@ public enum ProgrammingLanguage {
     ;
 
     private final String languageName;
+
+    public String getLanguageName() {
+        return languageName;
+    }
+
+    public static boolean isNotContains(String language) {
+        for (ProgrammingLanguage pl : ProgrammingLanguage.values()) {
+            if (pl.getLanguageName().equals(language)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
