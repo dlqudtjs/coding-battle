@@ -40,7 +40,14 @@ public class RoomController {
     public ResponseEntity<ResponseDto> leaveRoom(@PathVariable("roomId") Integer roomId,
                                                  @RequestHeader("Authorization") String token) {
 
-        ResponseDto responseDto = waitRoomService.leaveWaitRoom(roomId, token);
+        ResponseDto responseDto = gameRoomService.leaveGameRoom(roomId, token);
+
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
+    @GetMapping("/v1/gameRoomList")
+    public ResponseEntity<ResponseDto> getGameRoomList() {
+        ResponseDto responseDto = gameRoomService.getGameRoomList();
 
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
