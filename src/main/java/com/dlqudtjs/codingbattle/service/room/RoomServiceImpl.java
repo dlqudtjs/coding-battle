@@ -110,7 +110,7 @@ public class RoomServiceImpl implements RoomService {
                 .isLocked(room.isLocked())
                 .problemLevel(room.getProblemLevel())
                 .maxUserCount(room.getMaxUserCount())
-                .maxSummitCount(room.getMaxSummitCount())
+                .maxSummitCount(room.getMaxSubmitCount())
                 .limitTime(room.getLimitTime())
                 .build();
 

@@ -20,7 +20,7 @@ public class WaitRoom {
     private String language;
     private Integer problemLevel;
     private Integer maxUserCount;
-    private Integer maxSummitCount;
+    private Integer maxSubmitCount;
     private Integer limitTime;
     private ConcurrentHashMap<String, WaitRoomUserStatus> userMap;
 

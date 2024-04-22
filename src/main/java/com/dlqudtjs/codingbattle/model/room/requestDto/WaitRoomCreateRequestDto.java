@@ -37,11 +37,11 @@ public class WaitRoomCreateRequestDto {
     @Min(1)
     @Max(4)
     private Integer maxUserCount;
-    
+
     @NotNull
     @Min(1)
     @Max(10)
-    private Integer maxSummitCount;
+    private Integer maxSubmitCount;
 
     @NotNull
     @Min(10)
@@ -56,7 +56,7 @@ public class WaitRoomCreateRequestDto {
                 .language(language)
                 .problemLevel(problemLevel)
                 .maxUserCount(maxUserCount)
-                .maxSummitCount(maxSummitCount)
+                .maxSubmitCount(maxSubmitCount)
                 .limitTime(limitTime)
                 .userMap(new ConcurrentHashMap<>())
                 .build();
