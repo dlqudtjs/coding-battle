@@ -35,6 +35,11 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
+    public GameRoom getGameRoom(Integer roomId) {
+        return roomMap.get(roomId);
+    }
+
+    @Override
     public List<GameRoom> getGameRoomList() {
         return List.copyOf(roomMap.values());
     }
