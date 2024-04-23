@@ -45,6 +45,12 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
+    public GameRoom updateGameRoomStatus(Integer roomId, GameRoom gameRoom) {
+        roomMap.put(roomId, gameRoom);
+        return roomMap.get(roomId);
+    }
+
+    @Override
     public Boolean isExistRoom(Integer roomId) {
         return roomMap.containsKey(roomId);
     }

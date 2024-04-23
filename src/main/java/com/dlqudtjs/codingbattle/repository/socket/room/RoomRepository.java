@@ -15,6 +15,8 @@ public interface RoomRepository {
 
     List<GameRoom> getGameRoomList();
 
+    GameRoom updateGameRoomStatus(Integer roomId, GameRoom gameRoom);
+
     Boolean isExistRoom(Integer roomId);
 
     Boolean isFullRoom(Integer roomId);
