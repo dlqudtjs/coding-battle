@@ -6,14 +6,15 @@ import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomListResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomInfoResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomListResponseDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
 import com.dlqudtjs.codingbattle.service.room.exception.ErrorCode;
 import com.dlqudtjs.codingbattle.service.session.SessionService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
+import com.dlqudtjs.codingbattle.websocket.configuration.exception.CustomSocketException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -133,7 +134,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public GameRoomStatusUpdateResponseDto updateGameRoomStatus(
             Integer roomId, String sessionId, GameRoomStatusUpdateRequestDto requestDto) {
-        validateUpdateGameRoomStatusRequest(roomId, sessionId, requestDto);
+        GameRoom gameRoom = validateUpdateGameRoomStatusRequest(roomId, sessionId, requestDto);
 
         return null;
     }
@@ -145,13 +146,28 @@ public class RoomServiceImpl implements RoomService {
                 .build();
     }
 
-    private void validateUpdateGameRoomStatusRequest(
+    private GameRoom validateUpdateGameRoomStatusRequest(
             Integer roomId, String sessionId, GameRoomStatusUpdateRequestDto requestDto) {
-        
+
+        GameRoom gameRoom = roomRepository.getGameRoom(roomId);
+        String userId = WebsocketSessionHolder.getUserIdFromSessionId(sessionId);
+
         // 방이 존재하지 않으면
-        if (!roomRepository.isExistRoom(roomId)) {
+        if (gameRoom == null) {
             throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
         }
+
+        // 방장과 세션 아이디가 일치하지 않으면 (웹 소켓 세션에 존재하지 않으면)
+        if (!gameRoom.isHost(userId)) {
+            throw new CustomSocketException(ErrorCode.INVALID_REQUEST.getMessage());
+        }
+
+        // requestDto의 hostId와 userId가 일치하지 않으면
+        if (!requestDto.getHostId().equals(userId)) {
+            throw new CustomSocketException(ErrorCode.INVALID_REQUEST.getMessage());
+        }
+
+        return gameRoom;
     }
 
     private void validateLeaveGameRoomRequest(Integer roomId, String userId) {
