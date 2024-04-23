@@ -3,7 +3,7 @@ package com.dlqudtjs.codingbattle.controller;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomUserStatusUpdateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomUserStatusUpdateResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUserStatusUpdateResponseDto;
 import com.dlqudtjs.codingbattle.model.socket.SendToRoomMessageDto;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import com.dlqudtjs.codingbattle.websocket.configuration.exception.CustomSocketException;

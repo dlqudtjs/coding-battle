@@ -4,7 +4,7 @@ import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomStatusUpdateResponseDto;
 
 public interface RoomService {
 

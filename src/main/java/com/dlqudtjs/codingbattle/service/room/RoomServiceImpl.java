@@ -5,7 +5,7 @@ import com.dlqudtjs.codingbattle.model.room.GameRoom;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomStatusUpdateResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomInfoResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomListResponseDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
