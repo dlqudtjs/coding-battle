@@ -5,6 +5,7 @@ import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateReque
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.socket.SendToRoomMessageDto;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
+import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
 import com.dlqudtjs.codingbattle.websocket.configuration.exception.CustomSocketException;
 import com.dlqudtjs.codingbattle.websocket.configuration.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,13 +41,15 @@ public class SocketRoomController {
 
         try {
             gameRoomStatusUpdateRequestDto.validate();
+
+            messagingTemplate.convertAndSend("/topic/room/" + roomId,
+                    roomService.updateGameRoomStatus(roomId, headerAccessor.getSessionId(),
+                            gameRoomStatusUpdateRequestDto));
         } catch (Custom4XXException e) {
             throw new CustomSocketException(ErrorCode.JSON_PARSE_ERROR.getMessage());
+        } catch (CustomRoomException e) {
+            throw new CustomSocketException(e.getMessage());
         }
-
-        messagingTemplate.convertAndSend("/topic/room/" + roomId,
-                roomService.updateGameRoomStatus(roomId, headerAccessor.getSessionId(),
-                        gameRoomStatusUpdateRequestDto));
     }
 
     @MessageMapping("/room/{roomId}/update/user-status")
@@ -57,13 +60,15 @@ public class SocketRoomController {
 
         try {
             gameRoomUserStatusUpdateRequestDto.validate();
+
+            messagingTemplate.convertAndSend("/topic/room/" + roomId,
+                    roomService.updateGameRoomUserStatus(roomId, headerAccessor.getSessionId(),
+                            gameRoomUserStatusUpdateRequestDto));
         } catch (Custom4XXException e) {
             throw new CustomSocketException(ErrorCode.JSON_PARSE_ERROR.getMessage());
+        } catch (CustomRoomException e) {
+            throw new CustomSocketException(e.getMessage());
         }
-
-        messagingTemplate.convertAndSend("/topic/room/" + roomId,
-                roomService.updateGameRoomUserStatus(roomId, headerAccessor.getSessionId(),
-                        gameRoomUserStatusUpdateRequestDto));
     }
 
     @MessageExceptionHandler
