@@ -66,7 +66,7 @@ public class GameRoom {
     public GameRoom updateGameRoomStatus(GameRoomStatusUpdateRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.password = requestDto.getPassword();
-        this.language = ProgrammingLanguage.valueOf(requestDto.getLanguage());
+        this.language = ProgrammingLanguage.valueOf(requestDto.getLanguage().toUpperCase());
         this.problemLevel = requestDto.getProblemLevel();
         this.maxUserCount = requestDto.getMaxUserCount();
         this.maxSubmitCount = requestDto.getMaxSubmitCount();
