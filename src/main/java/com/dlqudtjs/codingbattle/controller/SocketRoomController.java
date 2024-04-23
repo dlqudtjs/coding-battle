@@ -3,7 +3,6 @@ package com.dlqudtjs.codingbattle.controller;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomUserStatusUpdateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUserStatusUpdateResponseDto;
 import com.dlqudtjs.codingbattle.model.socket.SendToRoomMessageDto;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import com.dlqudtjs.codingbattle.websocket.configuration.exception.CustomSocketException;
@@ -36,8 +35,6 @@ public class SocketRoomController {
     @MessageMapping("/room/{roomId}/update/room-status")
     public void updateRoom(@DestinationVariable("roomId") Integer roomId, String message,
                            SimpMessageHeaderAccessor headerAccessor) {
-        String sessionId = headerAccessor.getSessionId();
-
         GameRoomStatusUpdateRequestDto gameRoomStatusUpdateRequestDto =
                 (GameRoomStatusUpdateRequestDto) parseMessage(message, new GameRoomStatusUpdateRequestDto());
 
@@ -48,11 +45,13 @@ public class SocketRoomController {
         }
 
         messagingTemplate.convertAndSend("/topic/room/" + roomId,
-                roomService.updateGameRoomStatus(roomId, sessionId, gameRoomStatusUpdateRequestDto));
+                roomService.updateGameRoomStatus(roomId, headerAccessor.getSessionId(),
+                        gameRoomStatusUpdateRequestDto));
     }
 
     @MessageMapping("/room/{roomId}/update/user-status")
-    public void updateUserStatus(@DestinationVariable("roomId") String roomId, String message) {
+    public void updateUserStatus(@DestinationVariable("roomId") Integer roomId, String message,
+                                 SimpMessageHeaderAccessor headerAccessor) {
         GameRoomUserStatusUpdateRequestDto gameRoomUserStatusUpdateRequestDto =
                 (GameRoomUserStatusUpdateRequestDto) parseMessage(message, new GameRoomUserStatusUpdateRequestDto());
 
@@ -63,9 +62,8 @@ public class SocketRoomController {
         }
 
         messagingTemplate.convertAndSend("/topic/room/" + roomId,
-                GameRoomUserStatusUpdateResponseDto.builder()
-                        .userStatus(gameRoomUserStatusUpdateRequestDto)
-                        .build());
+                roomService.updateGameRoomUserStatus(roomId, headerAccessor.getSessionId(),
+                        gameRoomUserStatusUpdateRequestDto));
     }
 
     @MessageExceptionHandler
