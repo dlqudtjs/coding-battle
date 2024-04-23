@@ -136,7 +136,14 @@ public class RoomServiceImpl implements RoomService {
             Integer roomId, String sessionId, GameRoomStatusUpdateRequestDto requestDto) {
         GameRoom gameRoom = validateUpdateGameRoomStatusRequest(roomId, sessionId, requestDto);
 
-        return null;
+        GameRoom updatedGameRoom = roomRepository.updateGameRoomStatus(
+                roomId,
+                gameRoom.updateGameRoomStatus(requestDto)
+        );
+
+        return GameRoomStatusUpdateResponseDto.builder()
+                .roomStatus(updatedGameRoom.toGameRoomStatusResponseDto())
+                .build();
     }
 
     private GameRoomInfoResponseDto CreateGameRoomResponseDto(GameRoom room) {
