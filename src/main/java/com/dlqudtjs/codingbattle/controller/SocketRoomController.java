@@ -27,12 +27,8 @@ public class SocketRoomController {
 
     @MessageMapping("/default/room")
     public void sendToDefaultRoom(String message) {
-        SendToRoomMessageDto sendToRoomMessageDto;
-        try {
-            sendToRoomMessageDto = new ObjectMapper().readValue(message, SendToRoomMessageDto.class);
-        } catch (Exception e) {
-            throw new CustomSocketException(ErrorCode.JSON_PARSE_ERROR.getMessage());
-        }
+        SendToRoomMessageDto sendToRoomMessageDto =
+                (SendToRoomMessageDto) parseMessage(message, new SendToRoomMessageDto());
 
         messagingTemplate.convertAndSend("/topic/default/room", sendToRoomMessageDto);
     }
