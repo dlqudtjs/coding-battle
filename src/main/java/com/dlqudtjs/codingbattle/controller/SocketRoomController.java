@@ -33,6 +33,21 @@ public class SocketRoomController {
         messagingTemplate.convertAndSend("/topic/default/room", sendToRoomMessageDto);
     }
 
+    @MessageMapping("/room/message/{roomId}")
+    public void sendToRoom(@DestinationVariable("roomId") Integer roomId, String message,
+                           SimpMessageHeaderAccessor headerAccessor) {
+        SendToRoomMessageDto sendToRoomMessageDto =
+                (SendToRoomMessageDto) parseMessage(message, new SendToRoomMessageDto());
+
+        try {
+            roomService.validateSendMessage(roomId, headerAccessor.getSessionId(), sendToRoomMessageDto.getMessage());
+
+            messagingTemplate.convertAndSend("/topic/room/" + roomId, sendToRoomMessageDto);
+        } catch (CustomRoomException e) {
+            throw new CustomRoomException(e.getMessage());
+        }
+    }
+
     @MessageMapping("/room/{roomId}/update/room-status")
     public void updateRoom(@DestinationVariable("roomId") Integer roomId, String message,
                            SimpMessageHeaderAccessor headerAccessor) {
