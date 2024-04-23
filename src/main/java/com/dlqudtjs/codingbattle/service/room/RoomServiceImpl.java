@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.service.room;
 
+import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.room.GameRoom;
 import com.dlqudtjs.codingbattle.model.room.GameRoomUserStatus;
@@ -10,6 +11,7 @@ import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomUserStatusUpdateR
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomInfoResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomListResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomStatusUpdateResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUserStatusEnterResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUserStatusUpdateResponseDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
@@ -20,12 +22,14 @@ import com.dlqudtjs.codingbattle.service.session.SessionService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
 
+    private final SimpMessagingTemplate messagingTemplate;
     private final RoomRepository roomRepository;
     private final SessionService sessionService;
     private final JwtTokenProvider jwtTokenProvider;
@@ -82,6 +86,16 @@ public class RoomServiceImpl implements RoomService {
         sessionService.enterRoom(userId, requestDto.getRoomId());
 
         GameRoomInfoResponseDto gameRoomInfoResponseDto = CreateGameRoomResponseDto(joinedRoom);
+
+        GameRoomUserStatusEnterResponseDto responseDto = GameRoomUserStatusEnterResponseDto.builder()
+                .enterUserStatus(GameRoomUserStatusResponseDto.builder()
+                        .userId(userId)
+                        .isReady(false)
+                        .language(ProgrammingLanguage.DEFAULT.getLanguageName())
+                        .build())
+                .build();
+
+        sendMessageToRoom(requestDto.getRoomId(), responseDto);
 
         return ResponseDto.builder()
                 .status(SuccessCode.JOIN_GAME_ROOM_SUCCESS.getStatus())
@@ -179,12 +193,16 @@ public class RoomServiceImpl implements RoomService {
         GameRoomUserStatus updatedUserStatus = gameRoom.updateGameRoomUserStatus(requestDto);
 
         return GameRoomUserStatusUpdateResponseDto.builder()
-                .userStatus(GameRoomUserStatusResponseDto.builder()
+                .updateUserStatus(GameRoomUserStatusResponseDto.builder()
                         .userId(updatedUserStatus.getUserId())
                         .isReady(updatedUserStatus.getIsReady())
                         .language(updatedUserStatus.getUseLanguage().getLanguageName())
                         .build())
                 .build();
+    }
+
+    private void sendMessageToRoom(Integer roomId, Object message) {
+        messagingTemplate.convertAndSend("/topic/room/" + roomId, message);
     }
 
     private GameRoomInfoResponseDto CreateGameRoomResponseDto(GameRoom room) {
@@ -204,7 +222,7 @@ public class RoomServiceImpl implements RoomService {
         }
 
         // 세션 아이디와 요청한 유저 아이디가 일치하지 않으면
-        if (requestDto.getUserId().equals(userId)) {
+        if (!requestDto.getUserId().equals(userId)) {
             throw new CustomRoomException(ErrorCode.INVALID_REQUEST.getMessage());
         }
     }
