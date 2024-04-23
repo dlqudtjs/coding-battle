@@ -18,4 +18,9 @@ public class GameRoomUserStatus {
         this.isReady = false;
         this.useLanguage = ProgrammingLanguage.JAVA;
     }
+
+    public void updateStatus(Boolean isReady, String language) {
+        this.isReady = isReady;
+        this.useLanguage = ProgrammingLanguage.valueOf(language);
+    }
 }

@@ -2,13 +2,15 @@ package com.dlqudtjs.codingbattle.service.room;
 
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.room.GameRoom;
+import com.dlqudtjs.codingbattle.model.room.GameRoomUserStatus;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomUserStatusUpdateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomStatusUpdateResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomInfoResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomListResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomStatusUpdateResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUserStatusUpdateResponseDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
@@ -16,7 +18,6 @@ import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
 import com.dlqudtjs.codingbattle.service.room.exception.ErrorCode;
 import com.dlqudtjs.codingbattle.service.session.SessionService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
-import com.dlqudtjs.codingbattle.websocket.configuration.exception.CustomSocketException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -152,7 +153,18 @@ public class RoomServiceImpl implements RoomService {
     public GameRoomUserStatusUpdateResponseDto updateGameRoomUserStatus(
             Integer roomId, String sessionId,
             GameRoomUserStatusUpdateRequestDto requestDto) {
-        return null;
+        validateUpdateGameRoomUserStatusRequest(roomId, sessionId, requestDto);
+
+        GameRoom gameRoom = roomRepository.getGameRoom(roomId);
+        GameRoomUserStatus updatedUserStatus = gameRoom.updateGameRoomUserStatus(requestDto);
+
+        return GameRoomUserStatusUpdateResponseDto.builder()
+                .userStatus(GameRoomUserStatusResponseDto.builder()
+                        .userId(updatedUserStatus.getUserId())
+                        .isReady(updatedUserStatus.getIsReady())
+                        .language(updatedUserStatus.getUseLanguage().getLanguageName())
+                        .build())
+                .build();
     }
 
     private GameRoomInfoResponseDto CreateGameRoomResponseDto(GameRoom room) {
@@ -160,6 +172,21 @@ public class RoomServiceImpl implements RoomService {
                 .roomStatus(room.toGameRoomStatusResponseDto())
                 .userStatus(room.toGameRoomUserStatusResponseDto())
                 .build();
+    }
+
+    private void validateUpdateGameRoomUserStatusRequest(
+            Integer roomId, String sessionId, GameRoomUserStatusUpdateRequestDto requestDto) {
+        String userId = WebsocketSessionHolder.getUserIdFromSessionId(sessionId);
+
+        // 방이 존재하지 않으면
+        if (!roomRepository.isExistRoom(roomId)) {
+            throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
+        }
+
+        // 세션 아이디와 요청한 유저 아이디가 일치하지 않으면
+        if (requestDto.getUserId().equals(userId)) {
+            throw new CustomRoomException(ErrorCode.INVALID_REQUEST.getMessage());
+        }
     }
 
     private GameRoom validateUpdateGameRoomStatusRequest(
@@ -175,12 +202,12 @@ public class RoomServiceImpl implements RoomService {
 
         // 방장과 세션 아이디가 일치하지 않으면 (웹 소켓 세션에 존재하지 않으면)
         if (!gameRoom.isHost(userId)) {
-            throw new CustomSocketException(ErrorCode.INVALID_REQUEST.getMessage());
+            throw new CustomRoomException(ErrorCode.INVALID_REQUEST.getMessage());
         }
 
         // requestDto의 hostId와 userId가 일치하지 않으면
         if (!requestDto.getHostId().equals(userId)) {
-            throw new CustomSocketException(ErrorCode.INVALID_REQUEST.getMessage());
+            throw new CustomRoomException(ErrorCode.INVALID_REQUEST.getMessage());
         }
 
         return gameRoom;
