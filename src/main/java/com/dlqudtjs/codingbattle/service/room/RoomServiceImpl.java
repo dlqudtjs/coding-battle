@@ -42,7 +42,7 @@ public class RoomServiceImpl implements RoomService {
 
         Integer alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
         if (alreadyEnterRoomId != null) {
-            roomRepository.leaveRoom(userId, alreadyEnterRoomId);
+            leaveRoom(alreadyEnterRoomId, userId);
         }
 
         // 방장 설정
@@ -78,8 +78,7 @@ public class RoomServiceImpl implements RoomService {
                 throw new CustomRoomException(ErrorCode.SAME_USER_IN_ROOM.getMessage());
             }
 
-            roomRepository.leaveRoom(userId, alreadyEnterRoomId);
-            sessionService.leaveRoom(userId);
+            leaveRoom(alreadyEnterRoomId, userId);
         }
 
         GameRoom joinedRoom = roomRepository.joinRoom(userId, requestDto.getRoomId());
@@ -110,8 +109,7 @@ public class RoomServiceImpl implements RoomService {
 
         validateLeaveGameRoomRequest(roomId, userId);
 
-        roomRepository.leaveRoom(userId, roomId);
-        sessionService.leaveRoom(userId);
+        leaveRoom(roomId, userId);
 
         // 상태 변경
         return ResponseDto.builder()
@@ -199,6 +197,28 @@ public class RoomServiceImpl implements RoomService {
                         .language(updatedUserStatus.getUseLanguage().getLanguageName())
                         .build())
                 .build();
+    }
+
+    private void leaveRoom(Integer roomId, String userId) {
+        GameRoom gameRoom = roomRepository.getGameRoom(roomId);
+        // 만약 나가는 유저가 방장이라면 방 삭제 및 방에 있는 모든 유저 leaveRoom
+        if (gameRoom.isHost(userId)) {
+            leaveAllUserInRoom(roomId);
+            // Repository 에서 유저가 방장이라면 방 삭제함
+            roomRepository.leaveRoom(userId, roomId);
+            return;
+        }
+
+        // 세션 상태 변경
+        sessionService.leaveRoom(userId);
+    }
+
+    // 방에 있는 모든 유저 leaveRoom 하는 메서드
+    private void leaveAllUserInRoom(Integer roomId) {
+        GameRoom gameRoom = roomRepository.getGameRoom(roomId);
+        for (String userId : gameRoom.getUserList()) {
+            sessionService.leaveRoom(userId);
+        }
     }
 
     private void sendMessageToRoom(Integer roomId, Object message) {
