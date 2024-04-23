@@ -18,6 +18,8 @@ public interface RoomService {
 
     ResponseDto getGameRoomList();
 
+    void validateSendMessage(Integer roomId, String sessionId, String message);
+
     GameRoomStatusUpdateResponseDto updateGameRoomStatus(
             Integer roomId, String sessionId, GameRoomStatusUpdateRequestDto requestDto);
 

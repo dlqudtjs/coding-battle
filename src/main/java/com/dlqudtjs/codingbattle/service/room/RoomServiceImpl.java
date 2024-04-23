@@ -108,6 +108,26 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    public void validateSendMessage(Integer roomId, String sessionId, String message) {
+        String userId = WebsocketSessionHolder.getUserIdFromSessionId(sessionId);
+
+        // 방이 존재하지 않으면
+        if (!roomRepository.isExistRoom(roomId)) {
+            throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
+        }
+
+        // 세션이 존재하지 않으면
+        if (WebsocketSessionHolder.isNotConnected(userId)) {
+            throw new CustomRoomException(ErrorCode.NOT_CONNECT_USER.getMessage());
+        }
+
+        // 방에 유저가 존재하지 않으면
+        if (!roomRepository.isExistUserInRoom(userId, roomId)) {
+            throw new CustomRoomException(ErrorCode.NOT_EXIST_USER_IN_ROOM.getMessage());
+        }
+    }
+
+    @Override
     public ResponseDto getGameRoomList() {
         List<GameRoom> gameRoomList = roomRepository.getGameRoomList();
 
