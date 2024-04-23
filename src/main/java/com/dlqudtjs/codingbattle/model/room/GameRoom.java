@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.model.room;
 
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
+import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomStatusResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
@@ -59,6 +60,18 @@ public class GameRoom {
 
     public Boolean isLocked() {
         return password != null;
+    }
+
+    public GameRoom updateGameRoomStatus(GameRoomStatusUpdateRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.password = requestDto.getPassword();
+        this.language = ProgrammingLanguage.valueOf(requestDto.getLanguage());
+        this.problemLevel = requestDto.getProblemLevel();
+        this.maxUserCount = requestDto.getMaxUserCount();
+        this.maxSubmitCount = requestDto.getMaxSubmitCount();
+        this.limitTime = requestDto.getLimitTime();
+
+        return this;
     }
 
     public GameRoomStatusResponseDto toGameRoomStatusResponseDto() {
