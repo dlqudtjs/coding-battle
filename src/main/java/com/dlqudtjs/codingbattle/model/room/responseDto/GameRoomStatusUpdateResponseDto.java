@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class GameRoomStatusResponseWrapperDto {
+public class GameRoomStatusUpdateResponseDto {
     private GameRoomStatusResponseDto roomStatus;
 }
