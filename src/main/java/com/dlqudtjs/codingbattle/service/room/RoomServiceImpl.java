@@ -4,6 +4,8 @@ import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.room.GameRoom;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomEnterRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomListResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomInfoResponseDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
@@ -128,11 +130,28 @@ public class RoomServiceImpl implements RoomService {
                 .build();
     }
 
+    @Override
+    public GameRoomStatusUpdateResponseDto updateGameRoomStatus(
+            Integer roomId, String sessionId, GameRoomStatusUpdateRequestDto requestDto) {
+        validateUpdateGameRoomStatusRequest(roomId, sessionId, requestDto);
+
+        return null;
+    }
+
     private GameRoomInfoResponseDto CreateGameRoomResponseDto(GameRoom room) {
         return GameRoomInfoResponseDto.builder()
                 .roomStatus(room.toGameRoomStatusResponseDto())
                 .userStatus(room.toGameRoomUserStatusResponseDto())
                 .build();
+    }
+
+    private void validateUpdateGameRoomStatusRequest(
+            Integer roomId, String sessionId, GameRoomStatusUpdateRequestDto requestDto) {
+        
+        // 방이 존재하지 않으면
+        if (!roomRepository.isExistRoom(roomId)) {
+            throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
+        }
     }
 
     private void validateLeaveGameRoomRequest(Integer roomId, String userId) {
