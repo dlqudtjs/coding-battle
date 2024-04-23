@@ -2,6 +2,7 @@ package com.dlqudtjs.codingbattle.model.room;
 
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomStatusResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
@@ -74,6 +75,15 @@ public class GameRoom {
         return this;
     }
 
+    public GameRoomUserStatus updateGameRoomUserStatus(
+            GameRoomUserStatusUpdateRequestDto requestDto) {
+
+        GameRoomUserStatus userStatus = getUserStatus(requestDto.getUserId());
+        userStatus.updateStatus(requestDto.getIsReady(), requestDto.getLanguage());
+
+        return userStatus;
+    }
+
     public GameRoomStatusResponseDto toGameRoomStatusResponseDto() {
         return GameRoomStatusResponseDto.builder()
                 .roomId(roomId)
@@ -97,5 +107,9 @@ public class GameRoom {
                         .language(status.getUseLanguage().getLanguageName())
                         .build())
                 .toList();
+    }
+
+    private GameRoomUserStatus getUserStatus(String userId) {
+        return userMap.get(userId);
     }
 }
