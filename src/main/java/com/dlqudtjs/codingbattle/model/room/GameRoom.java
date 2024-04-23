@@ -63,6 +63,10 @@ public class GameRoom {
         return password != null;
     }
 
+    public List<String> getUserList() {
+        return userMap.keySet().stream().toList();
+    }
+
     public GameRoom updateGameRoomStatus(GameRoomStatusUpdateRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.password = requestDto.getPassword();
