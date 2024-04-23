@@ -234,6 +234,7 @@ public class RoomServiceImpl implements RoomService {
 
     private void validateUpdateGameRoomUserStatusRequest(
             Integer roomId, String sessionId, GameRoomUserStatusUpdateRequestDto requestDto) {
+        GameRoom gameRoom = roomRepository.getGameRoom(roomId);
         String userId = WebsocketSessionHolder.getUserIdFromSessionId(sessionId);
 
         // 방이 존재하지 않으면
@@ -243,6 +244,13 @@ public class RoomServiceImpl implements RoomService {
 
         // 세션 아이디와 요청한 유저 아이디가 일치하지 않으면
         if (!requestDto.getUserId().equals(userId)) {
+            throw new CustomRoomException(ErrorCode.INVALID_REQUEST.getMessage());
+        }
+
+        // 밤에 설정된 language외 다른 language로 변경하려고 하면
+        ProgrammingLanguage language = gameRoom.getLanguage();
+        if (language.equals(ProgrammingLanguage.DEFAULT) &&
+                language.equals(ProgrammingLanguage.valueOf(requestDto.getLanguage().toUpperCase()))) {
             throw new CustomRoomException(ErrorCode.INVALID_REQUEST.getMessage());
         }
     }
