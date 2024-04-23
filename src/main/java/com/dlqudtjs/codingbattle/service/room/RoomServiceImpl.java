@@ -5,9 +5,11 @@ import com.dlqudtjs.codingbattle.model.room.GameRoom;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomStatusUpdateResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomInfoResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomListResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUserStatusUpdateResponseDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
@@ -144,6 +146,13 @@ public class RoomServiceImpl implements RoomService {
         return GameRoomStatusUpdateResponseDto.builder()
                 .roomStatus(updatedGameRoom.toGameRoomStatusResponseDto())
                 .build();
+    }
+
+    @Override
+    public GameRoomUserStatusUpdateResponseDto updateGameRoomUserStatus(
+            Integer roomId, String sessionId,
+            GameRoomUserStatusUpdateRequestDto requestDto) {
+        return null;
     }
 
     private GameRoomInfoResponseDto CreateGameRoomResponseDto(GameRoom room) {
