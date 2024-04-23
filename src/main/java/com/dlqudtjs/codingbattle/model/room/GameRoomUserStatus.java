@@ -16,11 +16,11 @@ public class GameRoomUserStatus {
         this.userId = userId;
         this.session = session;
         this.isReady = false;
-        this.useLanguage = ProgrammingLanguage.JAVA;
+        this.useLanguage = ProgrammingLanguage.DEFAULT;
     }
 
     public void updateStatus(Boolean isReady, String language) {
         this.isReady = isReady;
-        this.useLanguage = ProgrammingLanguage.valueOf(language);
+        this.useLanguage = ProgrammingLanguage.valueOf(language.toUpperCase());
     }
 }
