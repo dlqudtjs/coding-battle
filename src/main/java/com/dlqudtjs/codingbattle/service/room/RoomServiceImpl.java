@@ -8,10 +8,10 @@ import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomUserStatusUpdateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomEnterUserStatusResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomEnterUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomInfoResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomListResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomStatusUpdateResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUpdateUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
@@ -86,7 +86,7 @@ public class RoomServiceImpl implements RoomService {
 
         GameRoomInfoResponseDto gameRoomInfoResponseDto = CreateGameRoomResponseDto(joinedRoom);
 
-        GameRoomEnterUserStatusResponseDto responseDto = GameRoomEnterUserStatusResponseDto.builder()
+        GameRoomEnterUserStatusMessageResponseDto responseDto = GameRoomEnterUserStatusMessageResponseDto.builder()
                 .enterUserStatus(GameRoomUserStatusResponseDto.builder()
                         .userId(userId)
                         .isReady(false)
@@ -110,6 +110,8 @@ public class RoomServiceImpl implements RoomService {
         validateLeaveGameRoomRequest(roomId, userId);
 
         leaveRoom(roomId, userId);
+
+        sendMessageToRoom(roomId, userId);
 
         // 상태 변경
         return ResponseDto.builder()
@@ -167,7 +169,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public GameRoomStatusUpdateResponseDto updateGameRoomStatus(
+    public GameRoomStatusUpdateMessageResponseDto updateGameRoomStatus(
             Integer roomId, String sessionId, GameRoomStatusUpdateRequestDto requestDto) {
         GameRoom gameRoom = validateUpdateGameRoomStatusRequest(roomId, sessionId, requestDto);
 
@@ -176,7 +178,7 @@ public class RoomServiceImpl implements RoomService {
                 gameRoom.updateGameRoomStatus(requestDto)
         );
 
-        return GameRoomStatusUpdateResponseDto.builder()
+        return GameRoomStatusUpdateMessageResponseDto.builder()
                 .roomStatus(updatedGameRoom.toGameRoomStatusResponseDto())
                 .build();
     }
@@ -250,8 +252,8 @@ public class RoomServiceImpl implements RoomService {
 
         // 밤에 설정된 language외 다른 language로 변경하려고 하면
         ProgrammingLanguage language = gameRoom.getLanguage();
-        if (language.equals(ProgrammingLanguage.DEFAULT) &&
-                language.equals(ProgrammingLanguage.valueOf(requestDto.getLanguage().toUpperCase()))) {
+        if (!language.equals(ProgrammingLanguage.DEFAULT) &&
+                !language.equals(ProgrammingLanguage.valueOf(requestDto.getLanguage().toUpperCase()))) {
             throw new CustomRoomException(ErrorCode.INVALID_REQUEST.getMessage());
         }
     }
