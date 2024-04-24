@@ -210,6 +210,7 @@ public class RoomServiceImpl implements RoomService {
         }
 
         // 세션 상태 변경
+        roomRepository.leaveRoom(userId, roomId);
         sessionService.leaveRoom(userId);
     }
 
