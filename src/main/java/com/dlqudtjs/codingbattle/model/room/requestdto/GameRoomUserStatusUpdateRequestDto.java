@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.model.room.requestDto;
+package com.dlqudtjs.codingbattle.model.room.requestdto;
 
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;

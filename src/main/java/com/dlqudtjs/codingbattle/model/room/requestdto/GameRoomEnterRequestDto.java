@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.model.room.requestDto;
+package com.dlqudtjs.codingbattle.model.room.requestdto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.model.room.responseDto;
+package com.dlqudtjs.codingbattle.model.room.responsedto;
 
 import java.util.List;
 import lombok.Builder;

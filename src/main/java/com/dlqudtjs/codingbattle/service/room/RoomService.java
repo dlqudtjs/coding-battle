@@ -1,12 +1,12 @@
 package com.dlqudtjs.codingbattle.service.room;
 
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
-import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomCreateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomEnterRequestDto;
-import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomUserStatusUpdateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomStatusUpdateMessageResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUpdateUserStatusMessageResponseDto;
+import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomCreateRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomEnterRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomStatusUpdateRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomUserStatusUpdateRequestDto;
+import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomStatusUpdateMessageResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomUpdateUserStatusMessageResponseDto;
 
 public interface RoomService {
 

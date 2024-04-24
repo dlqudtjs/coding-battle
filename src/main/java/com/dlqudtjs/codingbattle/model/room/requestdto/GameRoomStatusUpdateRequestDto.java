@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.model.room.requestDto;
+package com.dlqudtjs.codingbattle.model.room.requestdto;
 
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;

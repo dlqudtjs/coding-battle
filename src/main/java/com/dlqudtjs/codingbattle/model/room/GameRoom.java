@@ -1,10 +1,10 @@
 package com.dlqudtjs.codingbattle.model.room;
 
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
-import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomUserStatusUpdateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomStatusResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUserStatusResponseDto;
+import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomStatusUpdateRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomUserStatusUpdateRequestDto;
+import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomStatusResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;

@@ -1,8 +1,8 @@
 package com.dlqudtjs.codingbattle.controller;
 
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
-import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomCreateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomEnterRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomCreateRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
