@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.model.socket;
 
+import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import lombok.Getter;
 
 /*
@@ -12,6 +13,7 @@ public class SessionStatus {
     // todo : 추후 세션 상태 추가 (ex. 방해 금지)
 
     public SessionStatus() {
+        this.enterRoomId = GameSetting.DEFAULT_ROOM_ID.getValue();
     }
 
     public void enterRoom(Integer roomId) {
