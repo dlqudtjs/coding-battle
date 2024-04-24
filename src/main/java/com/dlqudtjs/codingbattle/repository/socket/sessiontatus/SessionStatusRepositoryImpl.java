@@ -14,7 +14,7 @@ public class SessionStatusRepositoryImpl implements SessionStatusRepository {
     private final ConcurrentHashMap<String, SessionStatus> sessionStatusMap = new ConcurrentHashMap<>();
 
     @Override
-    public void addSessionStatus(String userId) {
+    public void initSessionStatus(String userId) {
         sessionStatusMap.put(userId, new SessionStatus());
     }
 
@@ -28,7 +28,7 @@ public class SessionStatusRepositoryImpl implements SessionStatusRepository {
         if (!sessionStatusMap.containsKey(userId)) {
             throw new CustomSocketException(ErrorCode.NOT_CONNECT_USER.getMessage());
         }
-        
+
         sessionStatusMap.get(userId).enterRoom(roomId);
     }
 

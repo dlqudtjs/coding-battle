@@ -2,7 +2,7 @@ package com.dlqudtjs.codingbattle.repository.socket.sessiontatus;
 
 public interface SessionStatusRepository {
 
-    void addSessionStatus(String userId);
+    void initSessionStatus(String userId);
 
     void removeSessionStatus(String userId);
 
