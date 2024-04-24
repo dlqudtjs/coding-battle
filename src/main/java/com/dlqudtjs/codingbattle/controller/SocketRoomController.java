@@ -1,9 +1,10 @@
 package com.dlqudtjs.codingbattle.controller;
 
+import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomUserStatusUpdateRequestDto;
-import com.dlqudtjs.codingbattle.model.socket.SendToRoomMessageDto;
+import com.dlqudtjs.codingbattle.model.room.requestdto.SendToRoomMessageRequestDto;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
 import com.dlqudtjs.codingbattle.websocket.configuration.exception.CustomSocketException;
@@ -26,23 +27,30 @@ public class SocketRoomController {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @MessageMapping("/default/room")
-    public void sendToDefaultRoom(String message) {
-        SendToRoomMessageDto sendToRoomMessageDto =
-                (SendToRoomMessageDto) parseMessage(message, new SendToRoomMessageDto());
+    public void sendToDefaultRoom(String message, SimpMessageHeaderAccessor headerAccessor) {
+        SendToRoomMessageRequestDto sendToRoomMessageRequestDto =
+                (SendToRoomMessageRequestDto) parseMessage(message, new SendToRoomMessageRequestDto());
 
-        messagingTemplate.convertAndSend("/topic/default/room", sendToRoomMessageDto);
+        try {
+            messagingTemplate.convertAndSend("/topic/default/room",
+                    roomService.parseMessage(GameSetting.DEFAULT_ROOM_ID.getValue(), headerAccessor.getSessionId(),
+                            sendToRoomMessageRequestDto));
+        } catch (Custom4XXException e) {
+            throw new CustomSocketException(ErrorCode.JSON_PARSE_ERROR.getMessage());
+        }
+
     }
 
     @MessageMapping("/room/message/{roomId}")
     public void sendToRoom(@DestinationVariable("roomId") Integer roomId, String message,
                            SimpMessageHeaderAccessor headerAccessor) {
-        SendToRoomMessageDto sendToRoomMessageDto =
-                (SendToRoomMessageDto) parseMessage(message, new SendToRoomMessageDto());
+        SendToRoomMessageRequestDto sendToRoomMessageRequestDto =
+                (SendToRoomMessageRequestDto) parseMessage(message, new SendToRoomMessageRequestDto());
 
         try {
-            roomService.validateSendMessage(roomId, headerAccessor.getSessionId(), sendToRoomMessageDto.getMessage());
-
-            messagingTemplate.convertAndSend("/topic/room/" + roomId, sendToRoomMessageDto);
+            messagingTemplate.convertAndSend("/topic/room/" + roomId,
+                    roomService.parseMessage(roomId, headerAccessor.getSessionId(),
+                            sendToRoomMessageRequestDto));
         } catch (CustomRoomException e) {
             throw new CustomRoomException(e.getMessage());
         }
