@@ -108,12 +108,21 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public ResponseDto leaveGameRoom(Integer roomId, String token) {
         String userId = jwtTokenProvider.getUserName(token);
+        GameRoom gameRoom = roomRepository.getGameRoom(roomId);
 
         validateLeaveGameRoomRequest(roomId, userId);
 
         leaveRoom(roomId, userId);
 
-        sendMessageToRoom(roomId, userId);
+        GameRoomLeaveUserStatusMessageResponseDto responseDto =
+                GameRoomLeaveUserStatusMessageResponseDto.builder()
+                        .leaveUserStatus(GameRoomLeaveUserStatusResponseDto.builder()
+                                .userId(userId)
+                                .isHost(gameRoom.isHost(userId))
+                                .build())
+                        .build();
+
+        sendMessageToRoom(roomId, responseDto);
 
         // 상태 변경
         return ResponseDto.builder()
