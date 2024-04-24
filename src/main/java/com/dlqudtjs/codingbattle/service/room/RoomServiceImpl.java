@@ -8,13 +8,13 @@ import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomUserStatusUpdateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomEnterUserStatusMessageResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomEnterUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomInfoResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomLeaveUserStatusMessageResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomLeaveUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomLeaveUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomListResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomStatusUpdateMessageResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomUpdateUserStatusMessageResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomStatusUpdateMessageResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
@@ -195,7 +195,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public GameRoomUpdateUserStatusMessageResponseDto updateGameRoomUserStatus(
+    public GameRoomUserStatusUpdateMessageResponseDto updateGameRoomUserStatus(
             Integer roomId, String sessionId,
             GameRoomUserStatusUpdateRequestDto requestDto) {
         validateUpdateGameRoomUserStatusRequest(roomId, sessionId, requestDto);
@@ -203,7 +203,7 @@ public class RoomServiceImpl implements RoomService {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
         GameRoomUserStatus updatedUserStatus = gameRoom.updateGameRoomUserStatus(requestDto);
 
-        return GameRoomUpdateUserStatusMessageResponseDto.builder()
+        return GameRoomUserStatusUpdateMessageResponseDto.builder()
                 .updateUserStatus(GameRoomUserStatusResponseDto.builder()
                         .userId(updatedUserStatus.getUserId())
                         .isReady(updatedUserStatus.getIsReady())

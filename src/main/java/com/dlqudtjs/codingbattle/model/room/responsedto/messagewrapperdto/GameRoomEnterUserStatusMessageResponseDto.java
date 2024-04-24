@@ -1,5 +1,6 @@
-package com.dlqudtjs.codingbattle.model.room.responsedto;
+package com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto;
 
+import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomUserStatusResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 
