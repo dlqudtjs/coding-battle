@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.service.room;
 
+import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.MessageType;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
@@ -10,15 +11,15 @@ import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestdto.SendToRoomMessageRequestDto;
-import com.dlqudtjs.codingbattle.model.room.responsedto.SendToRoomMessageResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomEnterUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomInfoResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomLeaveUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomLeaveUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomListResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomUserStatusResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responsedto.SendToRoomMessageResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomEnterUserStatusMessageResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomLeaveUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
@@ -112,21 +113,10 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public ResponseDto leaveGameRoom(Integer roomId, String token) {
         String userId = jwtTokenProvider.getUserName(token);
-        GameRoom gameRoom = roomRepository.getGameRoom(roomId);
 
         validateLeaveGameRoomRequest(roomId, userId);
 
         leaveRoom(roomId, userId);
-
-        GameRoomLeaveUserStatusMessageResponseDto responseDto =
-                GameRoomLeaveUserStatusMessageResponseDto.builder()
-                        .leaveUserStatus(GameRoomLeaveUserStatusResponseDto.builder()
-                                .userId(userId)
-                                .isHost(gameRoom.isHost(userId))
-                                .build())
-                        .build();
-
-        sendMessageToRoom(roomId, responseDto);
 
         // 상태 변경
         return ResponseDto.builder()
@@ -228,15 +218,25 @@ public class RoomServiceImpl implements RoomService {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
         // 만약 나가는 유저가 방장이라면 방 삭제 및 방에 있는 모든 유저 leaveRoom
         if (gameRoom.isHost(userId)) {
+            // 방에 모든 유저 세션 상태 변경
             leaveAllUserInRoom(roomId);
-            // Repository 에서 유저가 방장이라면 방 삭제함
-            roomRepository.leaveRoom(userId, roomId);
-            return;
+        } else {
+            // 나간 유저만 세션 상태 변경
+            sessionService.leaveRoom(userId);
         }
-
-        // 세션 상태 변경
+        // 방 나감 (Repository 에서 유저가 방장이라면 방 삭제함)
         roomRepository.leaveRoom(userId, roomId);
-        sessionService.leaveRoom(userId);
+
+        // 방에 있는 모든 유저에게 나간 유저의 상태를 알림
+        GameRoomLeaveUserStatusMessageResponseDto responseDto =
+                GameRoomLeaveUserStatusMessageResponseDto.builder()
+                        .leaveUserStatus(GameRoomLeaveUserStatusResponseDto.builder()
+                                .userId(userId)
+                                .isHost(gameRoom.isHost(userId))
+                                .build())
+                        .build();
+
+        sendMessageToRoom(roomId, responseDto);
     }
 
     // 방에 있는 모든 유저 leaveRoom 하는 메서드
