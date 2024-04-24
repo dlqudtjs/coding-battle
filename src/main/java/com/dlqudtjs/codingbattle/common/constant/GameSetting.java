@@ -1,8 +1,10 @@
 package com.dlqudtjs.codingbattle.common.constant;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum GameSetting {
     DEFAULT_ROOM_ID(0),
     DEFAULT_ROOM_MAX_USER_COUNT(999),
@@ -16,12 +18,4 @@ public enum GameSetting {
     MAX_LIMIT_TIME(120);
 
     private final int value;
-
-    private GameSetting(int value) {
-        this.value = value;
-    }
-
-    public int getValue() {
-        return value;
-    }
 }
