@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.service.room;
 
+import com.dlqudtjs.codingbattle.common.constant.MessageType;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.room.GameRoom;
@@ -8,6 +9,8 @@ import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomUserStatusUpdateRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestdto.SendToRoomMessageRequestDto;
+import com.dlqudtjs.codingbattle.model.room.responsedto.SendToRoomMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomEnterUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomInfoResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomLeaveUserStatusMessageResponseDto;
@@ -22,6 +25,7 @@ import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
 import com.dlqudtjs.codingbattle.service.room.exception.ErrorCode;
 import com.dlqudtjs.codingbattle.service.session.SessionService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
+import java.sql.Timestamp;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -133,26 +137,6 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void validateSendMessage(Integer roomId, String sessionId, String message) {
-        String userId = WebsocketSessionHolder.getUserIdFromSessionId(sessionId);
-
-        // 방이 존재하지 않으면
-        if (!roomRepository.isExistRoom(roomId)) {
-            throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
-        }
-
-        // 세션이 존재하지 않으면
-        if (WebsocketSessionHolder.isNotConnected(userId)) {
-            throw new CustomRoomException(ErrorCode.NOT_CONNECT_USER.getMessage());
-        }
-
-        // 방에 유저가 존재하지 않으면
-        if (!roomRepository.isExistUserInRoom(userId, roomId)) {
-            throw new CustomRoomException(ErrorCode.NOT_EXIST_USER_IN_ROOM.getMessage());
-        }
-    }
-
-    @Override
     public ResponseDto getGameRoomList() {
         List<GameRoom> gameRoomList = roomRepository.getGameRoomList();
 
@@ -176,6 +160,34 @@ public class RoomServiceImpl implements RoomService {
                 .status(SuccessCode.GET_GAME_ROOM_LIST_SUCCESS.getStatus())
                 .message(SuccessCode.GET_GAME_ROOM_LIST_SUCCESS.getMessage())
                 .data(responseDtoList)
+                .build();
+    }
+
+    @Override
+    public SendToRoomMessageResponseDto parseMessage(Integer roomId, String sessionId,
+                                                     SendToRoomMessageRequestDto requestDto) {
+        String userId = WebsocketSessionHolder.getUserIdFromSessionId(sessionId);
+
+        // 방이 존재하지 않으면
+        if (!roomRepository.isExistRoom(roomId)) {
+            throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
+        }
+
+        // 세션이 존재하지 않으면
+        if (WebsocketSessionHolder.isNotConnected(userId)) {
+            throw new CustomRoomException(ErrorCode.NOT_CONNECT_USER.getMessage());
+        }
+
+        // 방에 유저가 존재하지 않으면
+        if (!roomRepository.isExistUserInRoom(userId, roomId)) {
+            throw new CustomRoomException(ErrorCode.NOT_EXIST_USER_IN_ROOM.getMessage());
+        }
+
+        return SendToRoomMessageResponseDto.builder()
+                .messageType(MessageType.USER.getMessageType())
+                .senderId(userId)
+                .message(requestDto.getMessage())
+                .sendTime(new Timestamp(System.currentTimeMillis()))
                 .build();
     }
 

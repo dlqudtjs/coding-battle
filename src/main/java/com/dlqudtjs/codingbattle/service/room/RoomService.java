@@ -5,6 +5,8 @@ import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomUserStatusUpdateRequestDto;
+import com.dlqudtjs.codingbattle.model.room.requestdto.SendToRoomMessageRequestDto;
+import com.dlqudtjs.codingbattle.model.room.responsedto.SendToRoomMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
 
@@ -18,7 +20,8 @@ public interface RoomService {
 
     ResponseDto getGameRoomList();
 
-    void validateSendMessage(Integer roomId, String sessionId, String message);
+    SendToRoomMessageResponseDto parseMessage(Integer roomId, String sessionId,
+                                              SendToRoomMessageRequestDto requestDto);
 
     GameRoomStatusUpdateMessageResponseDto updateGameRoomStatus(
             Integer roomId, String sessionId, GameRoomStatusUpdateRequestDto requestDto);
