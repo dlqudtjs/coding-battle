@@ -1,14 +1,31 @@
 package com.dlqudtjs.codingbattle.repository.socket.room;
 
+import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.model.room.GameRoom;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class RoomRepositoryImpl implements RoomRepository {
 
-    private final ConcurrentHashMap<Integer, GameRoom> roomMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Integer, GameRoom> roomMap = new ConcurrentHashMap<>(
+            Map.of(
+                    GameSetting.DEFAULT_ROOM_ID.getValue(),
+                    GameRoom.builder()
+                            .roomId(GameSetting.DEFAULT_ROOM_ID.getValue())
+                            .hostId("admin")
+                            .title("default")
+                            .password("")
+                            .isStarted(false)
+                            .problemLevel(0)
+                            .maxUserCount(GameSetting.DEFAULT_ROOM_MAX_USER_COUNT.getValue())
+                            .maxSubmitCount(0)
+                            .limitTime(0)
+                            .build()
+            )
+    );
 
     @Override
     public GameRoom save(GameRoom gameRoom) {

@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum GameSetting {
     DEFAULT_ROOM_ID(0),
+    DEFAULT_ROOM_MAX_USER_COUNT(999),
     MIN_USER_COUNT(2),
     MAX_USER_COUNT(4),
     MIN_PROBLEM_LEVEL(1),
