@@ -10,9 +10,11 @@ import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomStatusUpdateReque
 import com.dlqudtjs.codingbattle.model.room.requestDto.GameRoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomEnterUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomInfoResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomLeaveUserStatusMessageResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomLeaveUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomListResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomStatusUpdateMessageResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUpdateUserStatusResponseDto;
+import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUpdateUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responseDto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
@@ -184,7 +186,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public GameRoomUpdateUserStatusResponseDto updateGameRoomUserStatus(
+    public GameRoomUpdateUserStatusMessageResponseDto updateGameRoomUserStatus(
             Integer roomId, String sessionId,
             GameRoomUserStatusUpdateRequestDto requestDto) {
         validateUpdateGameRoomUserStatusRequest(roomId, sessionId, requestDto);
@@ -192,7 +194,7 @@ public class RoomServiceImpl implements RoomService {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
         GameRoomUserStatus updatedUserStatus = gameRoom.updateGameRoomUserStatus(requestDto);
 
-        return GameRoomUpdateUserStatusResponseDto.builder()
+        return GameRoomUpdateUserStatusMessageResponseDto.builder()
                 .updateUserStatus(GameRoomUserStatusResponseDto.builder()
                         .userId(updatedUserStatus.getUserId())
                         .isReady(updatedUserStatus.getIsReady())
