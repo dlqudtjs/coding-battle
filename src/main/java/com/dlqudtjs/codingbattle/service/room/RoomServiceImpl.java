@@ -47,7 +47,7 @@ public class RoomServiceImpl implements RoomService {
         validateCreateGameRoomRequest(requestDto, userId);
 
         Integer alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
-        if (alreadyEnterRoomId != null) {
+        if (alreadyEnterRoomId != GameSetting.DEFAULT_ROOM_ID.getValue()) {
             leaveRoom(alreadyEnterRoomId, userId);
         }
 
@@ -79,7 +79,7 @@ public class RoomServiceImpl implements RoomService {
 
         Integer alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
 
-        if (alreadyEnterRoomId != null) {
+        if (alreadyEnterRoomId != GameSetting.DEFAULT_ROOM_ID.getValue()) {
             if (alreadyEnterRoomId.equals(requestDto.getRoomId())) {
                 throw new CustomRoomException(ErrorCode.SAME_USER_IN_ROOM.getMessage());
             }
