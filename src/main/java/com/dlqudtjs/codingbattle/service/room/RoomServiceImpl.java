@@ -101,7 +101,7 @@ public class RoomServiceImpl implements RoomService {
                         .build())
                 .build();
 
-        sendMessageToRoom(requestDto.getRoomId(), responseDto);
+        sendToRoomMessage(requestDto.getRoomId(), responseDto);
 
         return ResponseDto.builder()
                 .status(SuccessCode.JOIN_GAME_ROOM_SUCCESS.getStatus())
@@ -214,6 +214,11 @@ public class RoomServiceImpl implements RoomService {
                 .build();
     }
 
+    @Override
+    public void sendToRoomMessage(Integer roomId, Object message) {
+        messagingTemplate.convertAndSend("/topic/room/" + roomId, message);
+    }
+
     private void leaveRoom(Integer roomId, String userId) {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
         // 만약 나가는 유저가 방장이라면 방 삭제 및 방에 있는 모든 유저 leaveRoom
@@ -236,7 +241,7 @@ public class RoomServiceImpl implements RoomService {
                                 .build())
                         .build();
 
-        sendMessageToRoom(roomId, responseDto);
+        sendToRoomMessage(roomId, responseDto);
     }
 
     // 방에 있는 모든 유저 leaveRoom 하는 메서드
@@ -245,10 +250,6 @@ public class RoomServiceImpl implements RoomService {
         for (String userId : gameRoom.getUserList()) {
             sessionService.leaveRoom(userId);
         }
-    }
-
-    private void sendMessageToRoom(Integer roomId, Object message) {
-        messagingTemplate.convertAndSend("/topic/room/" + roomId, message);
     }
 
     private GameRoomInfoResponseDto CreateGameRoomResponseDto(GameRoom room) {
