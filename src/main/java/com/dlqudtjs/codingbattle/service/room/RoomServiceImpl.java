@@ -208,11 +208,6 @@ public class RoomServiceImpl implements RoomService {
                 .build();
     }
 
-    @Override
-    public void sendToRoomMessage(Integer roomId, Object message) {
-        //messagingTemplate.convertAndSend("/topic/room/" + roomId, message);
-    }
-
     private GameRoomLeaveUserStatusResponseDto leaveRoom(Integer roomId, String userId) {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
         // 만약 나가는 유저가 방장이라면 방 삭제 및 방에 있는 모든 유저 leaveRoom

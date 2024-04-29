@@ -20,8 +20,6 @@ public interface RoomService {
 
     ResponseDto getGameRoomList();
 
-    void sendToRoomMessage(Integer roomId, Object requestDto);
-
     SendToRoomMessageResponseDto parseMessage(Integer roomId, String sessionId,
                                               SendToRoomMessageRequestDto requestDto);
 
