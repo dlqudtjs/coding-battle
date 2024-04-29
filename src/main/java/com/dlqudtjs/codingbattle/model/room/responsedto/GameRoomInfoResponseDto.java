@@ -8,5 +8,6 @@ import lombok.Getter;
 @Getter
 public class GameRoomInfoResponseDto {
     private GameRoomStatusResponseDto roomStatus;
+    private GameRoomLeaveUserStatusResponseDto leaveUserStatus;
     private List<GameRoomUserStatusResponseDto> userStatus;
 }
