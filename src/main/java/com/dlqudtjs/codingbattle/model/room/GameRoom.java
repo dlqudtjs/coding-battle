@@ -17,7 +17,6 @@ import org.springframework.web.socket.WebSocketSession;
 @Builder
 @AllArgsConstructor
 public class GameRoom {
-
     private Integer roomId;
     private String hostId;
     private String title;
