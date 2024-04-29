@@ -40,7 +40,8 @@ public class SocketRoomController {
             SendToRoomMessageResponseDto responseDto = roomService.parseMessage(
                     roomId, headerAccessor.getSessionId(), sendToRoomMessageRequestDto);
 
-            roomService.sendToRoomMessage(roomId, responseDto);
+            // 방에 메시지 전송
+            messagingTemplate.convertAndSend("/topic/room/" + roomId, responseDto);
         } catch (CustomRoomException e) {
             throw new CustomRoomException(e.getMessage());
         }
@@ -63,7 +64,8 @@ public class SocketRoomController {
             GameRoomStatusUpdateMessageResponseDto responseDto = roomService.updateGameRoomStatus(
                     roomId, headerAccessor.getSessionId(), gameRoomStatusUpdateRequestDto);
 
-            roomService.sendToRoomMessage(roomId, responseDto);
+            // 방에 메시지 전송
+            messagingTemplate.convertAndSend("/topic/room/" + roomId, responseDto);
         } catch (Custom4XXException e) {
             throw new CustomSocketException(ErrorCode.JSON_PARSE_ERROR.getMessage());
         } catch (CustomRoomException e) {
@@ -84,7 +86,8 @@ public class SocketRoomController {
             GameRoomUserStatusUpdateMessageResponseDto responseDto = roomService.updateGameRoomUserStatus(
                     roomId, headerAccessor.getSessionId(), gameRoomUserStatusUpdateRequestDto);
 
-            roomService.sendToRoomMessage(roomId, responseDto);
+            // 방에 메시지 전송
+            messagingTemplate.convertAndSend("/topic/room/" + roomId, responseDto);
         } catch (Custom4XXException e) {
             throw new CustomSocketException(ErrorCode.JSON_PARSE_ERROR.getMessage());
         } catch (CustomRoomException e) {
