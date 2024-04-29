@@ -16,8 +16,6 @@ import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomLeaveUserStatusR
 import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomListResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.SendToRoomMessageResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomEnterUserStatusMessageResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomLeaveUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
@@ -29,27 +27,26 @@ import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import java.sql.Timestamp;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
 
-    private final SimpMessagingTemplate messagingTemplate;
     private final RoomRepository roomRepository;
     private final SessionService sessionService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public ResponseDto createGameRoom(GameRoomCreateRequestDto requestDto, String token) {
+        GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto = null;
         String userId = jwtTokenProvider.getUserName(token);
 
         validateCreateGameRoomRequest(requestDto, userId);
 
         Integer alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
         if (alreadyEnterRoomId != GameSetting.DEFAULT_ROOM_ID.getValue()) {
-            leaveRoom(alreadyEnterRoomId, userId);
+            leaveUserStatusResponseDto = leaveRoom(alreadyEnterRoomId, userId);
         }
 
         // 방장 설정
@@ -63,7 +60,10 @@ public class RoomServiceImpl implements RoomService {
         roomRepository.joinRoom(userId, createdRoom.getRoomId());
         sessionService.enterRoom(userId, createdRoom.getRoomId());
 
-        GameRoomInfoResponseDto gameRoomInfoResponseDto = CreateGameRoomResponseDto(createdRoom);
+        GameRoomInfoResponseDto gameRoomInfoResponseDto = CreateGameRoomResponseDto(
+                createdRoom,
+                leaveUserStatusResponseDto
+        );
 
         return ResponseDto.builder()
                 .status(SuccessCode.CREATE_GAME_ROOM_SUCCESS.getStatus())
@@ -74,6 +74,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public ResponseDto enterGameRoom(GameRoomEnterRequestDto requestDto, String token) {
+        GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto = null;
         String userId = jwtTokenProvider.getUserName(token);
 
         validateEnterGameRoomRequest(requestDto, userId);
@@ -85,23 +86,16 @@ public class RoomServiceImpl implements RoomService {
                 throw new CustomRoomException(ErrorCode.SAME_USER_IN_ROOM.getMessage());
             }
 
-            leaveRoom(alreadyEnterRoomId, userId);
+            leaveUserStatusResponseDto = leaveRoom(alreadyEnterRoomId, userId);
         }
 
         GameRoom joinedRoom = roomRepository.joinRoom(userId, requestDto.getRoomId());
         sessionService.enterRoom(userId, requestDto.getRoomId());
 
-        GameRoomInfoResponseDto gameRoomInfoResponseDto = CreateGameRoomResponseDto(joinedRoom);
-
-        GameRoomEnterUserStatusMessageResponseDto responseDto = GameRoomEnterUserStatusMessageResponseDto.builder()
-                .enterUserStatus(GameRoomUserStatusResponseDto.builder()
-                        .userId(userId)
-                        .isReady(false)
-                        .language(ProgrammingLanguage.DEFAULT.getLanguageName())
-                        .build())
-                .build();
-
-        sendToRoomMessage(requestDto.getRoomId(), responseDto);
+        GameRoomInfoResponseDto gameRoomInfoResponseDto = CreateGameRoomResponseDto(
+                joinedRoom,
+                leaveUserStatusResponseDto
+        );
 
         return ResponseDto.builder()
                 .status(SuccessCode.JOIN_GAME_ROOM_SUCCESS.getStatus())
@@ -116,13 +110,13 @@ public class RoomServiceImpl implements RoomService {
 
         validateLeaveGameRoomRequest(roomId, userId);
 
-        leaveRoom(roomId, userId);
+        GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto = leaveRoom(roomId, userId);
 
         // 상태 변경
         return ResponseDto.builder()
                 .status(SuccessCode.LEAVE_GAME_ROOM_SUCCESS.getStatus())
                 .message(SuccessCode.LEAVE_GAME_ROOM_SUCCESS.getMessage())
-                .data(roomId)
+                .data(leaveUserStatusResponseDto)
                 .build();
     }
 
@@ -216,10 +210,10 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public void sendToRoomMessage(Integer roomId, Object message) {
-        messagingTemplate.convertAndSend("/topic/room/" + roomId, message);
+        //messagingTemplate.convertAndSend("/topic/room/" + roomId, message);
     }
 
-    private void leaveRoom(Integer roomId, String userId) {
+    private GameRoomLeaveUserStatusResponseDto leaveRoom(Integer roomId, String userId) {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
         // 만약 나가는 유저가 방장이라면 방 삭제 및 방에 있는 모든 유저 leaveRoom
         if (gameRoom.isHost(userId)) {
@@ -233,15 +227,10 @@ public class RoomServiceImpl implements RoomService {
         roomRepository.leaveRoom(userId, roomId);
 
         // 방에 있는 모든 유저에게 나간 유저의 상태를 알림
-        GameRoomLeaveUserStatusMessageResponseDto responseDto =
-                GameRoomLeaveUserStatusMessageResponseDto.builder()
-                        .leaveUserStatus(GameRoomLeaveUserStatusResponseDto.builder()
-                                .userId(userId)
-                                .isHost(gameRoom.isHost(userId))
-                                .build())
-                        .build();
-
-        sendToRoomMessage(roomId, responseDto);
+        return GameRoomLeaveUserStatusResponseDto.builder()
+                .userId(userId)
+                .isHost(gameRoom.isHost(userId))
+                .build();
     }
 
     // 방에 있는 모든 유저 leaveRoom 하는 메서드
@@ -252,9 +241,13 @@ public class RoomServiceImpl implements RoomService {
         }
     }
 
-    private GameRoomInfoResponseDto CreateGameRoomResponseDto(GameRoom room) {
+    private GameRoomInfoResponseDto CreateGameRoomResponseDto(
+            GameRoom room,
+            GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto
+    ) {
         return GameRoomInfoResponseDto.builder()
                 .roomStatus(room.toGameRoomStatusResponseDto())
+                .leaveUserStatus(leaveUserStatusResponseDto)
                 .userStatus(room.toGameRoomUserStatusResponseDto())
                 .build();
     }
