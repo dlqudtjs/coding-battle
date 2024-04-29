@@ -1,6 +1,5 @@
 package com.dlqudtjs.codingbattle.controller;
 
-import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomUserStatusUpdateRequestDto;
@@ -29,23 +28,6 @@ public class SocketRoomController {
     private final RoomService roomService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @MessageMapping("/default/room")
-    public void sendToDefaultRoom(String message, SimpMessageHeaderAccessor headerAccessor) {
-        // json -> dto
-        SendToRoomMessageRequestDto sendToRoomMessageRequestDto =
-                (SendToRoomMessageRequestDto) parseMessage(message, new SendToRoomMessageRequestDto());
-
-        try {
-            // SendToRoomMessageResponseDto로 parse 및 유효성 검사
-            SendToRoomMessageResponseDto responseDto = roomService.parseMessage(
-                    GameSetting.DEFAULT_ROOM_ID.getValue(), headerAccessor.getSessionId(), sendToRoomMessageRequestDto);
-
-            roomService.sendToRoomMessage(GameSetting.DEFAULT_ROOM_ID.getValue(), responseDto);
-        } catch (Custom4XXException e) {
-            throw new CustomSocketException(ErrorCode.JSON_PARSE_ERROR.getMessage());
-        }
-    }
-
     @MessageMapping("/room/message/{roomId}")
     public void sendToRoom(@DestinationVariable("roomId") Integer roomId, String message,
                            SimpMessageHeaderAccessor headerAccessor) {
@@ -62,6 +44,10 @@ public class SocketRoomController {
         } catch (CustomRoomException e) {
             throw new CustomRoomException(e.getMessage());
         }
+    }
+
+    public void sendToRoom(Integer roomId, Object responseDto) {
+        messagingTemplate.convertAndSend("/topic/room/" + roomId, responseDto);
     }
 
     @MessageMapping("/room/{roomId}/update/room-status")
