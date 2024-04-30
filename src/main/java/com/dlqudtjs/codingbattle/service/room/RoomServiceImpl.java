@@ -39,15 +39,13 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public ResponseDto createGameRoom(GameRoomCreateRequestDto requestDto, String token) {
-        GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto = null;
         String userId = jwtTokenProvider.getUserName(token);
 
         validateCreateGameRoomRequest(requestDto, userId);
 
         Integer alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
-        if (alreadyEnterRoomId != GameSetting.DEFAULT_ROOM_ID.getValue()) {
-            leaveUserStatusResponseDto = leaveRoom(alreadyEnterRoomId, userId);
-        }
+        GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto =
+                leaveRoom(alreadyEnterRoomId, userId);
 
         // 방장 설정
         GameRoom room = requestDto.toEntity();
