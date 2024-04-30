@@ -6,7 +6,6 @@ import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.room.GameRoom;
 import com.dlqudtjs.codingbattle.model.room.GameRoomUserStatus;
 import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomCreateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.model.room.requestdto.SendToRoomMessageRequestDto;
@@ -18,7 +17,6 @@ import com.dlqudtjs.codingbattle.model.room.responsedto.SendToRoomMessageRespons
 import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
-import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
 import com.dlqudtjs.codingbattle.service.room.exception.ErrorCode;
 import com.dlqudtjs.codingbattle.service.session.SessionService;
@@ -34,12 +32,9 @@ public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
     private final SessionService sessionService;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public ResponseDto createGameRoom(GameRoomCreateRequestDto requestDto, String token) {
-        String userId = jwtTokenProvider.getUserName(token);
-
+    public ResponseDto createGameRoom(GameRoomCreateRequestDto requestDto, String userId) {
         validateCreateGameRoomRequest(requestDto, userId);
 
         // 방 생성시 기존 방 나가기 (default 방 포함)
@@ -71,14 +66,12 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public ResponseDto enterGameRoom(GameRoomEnterRequestDto requestDto, String token) {
-        String userId = jwtTokenProvider.getUserName(token);
-
-        validateEnterGameRoomRequest(requestDto, userId);
+    public ResponseDto enterGameRoom(Integer roomId, String userId) {
+        validateEnterGameRoomRequest(roomId, userId);
 
         Integer alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
         // 이미 입장한 방에 다시 입장할 때 예외발생
-        if (alreadyEnterRoomId.equals(requestDto.getRoomId())) {
+        if (alreadyEnterRoomId.equals(roomId)) {
             throw new CustomRoomException(ErrorCode.SAME_USER_IN_ROOM.getMessage());
         }
 
@@ -86,8 +79,8 @@ public class RoomServiceImpl implements RoomService {
         GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto =
                 leaveRoom(alreadyEnterRoomId, userId);
 
-        GameRoom joinedRoom = roomRepository.joinRoom(userId, requestDto.getRoomId());
-        sessionService.enterRoom(userId, requestDto.getRoomId());
+        GameRoom joinedRoom = roomRepository.joinRoom(userId, roomId);
+        sessionService.enterRoom(userId, roomId);
 
         GameRoomInfoResponseDto gameRoomInfoResponseDto = CreateGameRoomResponseDto(
                 joinedRoom,
@@ -102,9 +95,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public ResponseDto leaveGameRoom(Integer roomId, String token) {
-        String userId = jwtTokenProvider.getUserName(token);
-
+    public ResponseDto leaveGameRoom(Integer roomId, String userId) {
         validateLeaveGameRoomRequest(roomId, userId);
 
         GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto = leaveRoom(roomId, userId);
@@ -311,30 +302,25 @@ public class RoomServiceImpl implements RoomService {
         }
     }
 
-    private void validateEnterGameRoomRequest(GameRoomEnterRequestDto requestDto, String userId) {
-        // 요청한 유저와 토큰이 일치하지 않으면
-        if (!userId.equals(requestDto.getUserId())) {
-            throw new CustomRoomException(ErrorCode.INVALID_REQUEST.getMessage());
-        }
-
+    private void validateEnterGameRoomRequest(Integer roomId, String userId) {
         // 요청한 유저가 웹 소켓 세션에 존재하지 않으면
         if (WebsocketSessionHolder.isNotConnected(userId)) {
             throw new CustomRoomException(ErrorCode.NOT_CONNECT_USER.getMessage());
         }
 
         // 방이 존재하지 않으면
-        if (!roomRepository.isExistRoom(requestDto.getRoomId())) {
+        if (!roomRepository.isExistRoom(roomId)) {
             throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
         }
 
         // 방이 꽉 찼으면
-        if (roomRepository.isFullRoom(requestDto.getRoomId())) {
+        if (roomRepository.isFullRoom(roomId)) {
             throw new CustomRoomException(ErrorCode.FULL_ROOM.getMessage());
         }
     }
 
     private void validateCreateGameRoomRequest(GameRoomCreateRequestDto requestDto, String userId) {
-        // 요청한 유저와 토큰이 일치하지 않으면
+        // userId와 requestDto의 hostId가 일치하지 않으면
         if (!userId.equals(requestDto.getHostId())) {
             throw new CustomRoomException(ErrorCode.INVALID_REQUEST.getMessage());
         }
