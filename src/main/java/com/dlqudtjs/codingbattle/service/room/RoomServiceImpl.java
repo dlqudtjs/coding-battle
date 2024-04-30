@@ -1,6 +1,5 @@
 package com.dlqudtjs.codingbattle.service.room;
 
-import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.MessageType;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
@@ -43,6 +42,7 @@ public class RoomServiceImpl implements RoomService {
 
         validateCreateGameRoomRequest(requestDto, userId);
 
+        // 방 생성시 기존 방 나가기 (default 방 포함)
         Integer alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
         GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto =
                 leaveRoom(alreadyEnterRoomId, userId);
@@ -72,17 +72,19 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public ResponseDto enterGameRoom(GameRoomEnterRequestDto requestDto, String token) {
-        GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto = null;
         String userId = jwtTokenProvider.getUserName(token);
 
         validateEnterGameRoomRequest(requestDto, userId);
 
         Integer alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
+        // 이미 입장한 방에 다시 입장할 때 예외발생
         if (alreadyEnterRoomId.equals(requestDto.getRoomId())) {
             throw new CustomRoomException(ErrorCode.SAME_USER_IN_ROOM.getMessage());
         }
 
-        leaveUserStatusResponseDto = leaveRoom(alreadyEnterRoomId, userId);
+        // 기존 방 나가기 (default 방 포함)
+        GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto =
+                leaveRoom(alreadyEnterRoomId, userId);
 
         GameRoom joinedRoom = roomRepository.joinRoom(userId, requestDto.getRoomId());
         sessionService.enterRoom(userId, requestDto.getRoomId());
