@@ -9,7 +9,7 @@ public interface RoomRepository {
 
     GameRoom joinRoom(String userId, Integer roomId);
 
-    void leaveRoom(String userId, Integer roomId);
+    void leaveRoom(Integer roomId, String userId);
 
     GameRoom getGameRoom(Integer roomId);
 

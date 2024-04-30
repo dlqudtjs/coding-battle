@@ -45,7 +45,7 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    public void leaveRoom(String userId, Integer roomId) {
+    public void leaveRoom(Integer roomId, String userId) {
         if (roomMap.get(roomId).isHost(userId)) {
             roomMap.remove(roomId);
             return;

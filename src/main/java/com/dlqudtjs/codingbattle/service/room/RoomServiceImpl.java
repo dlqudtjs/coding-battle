@@ -210,7 +210,7 @@ public class RoomServiceImpl implements RoomService {
             sessionService.leaveRoom(userId);
         }
         // 방 나감 (Repository 에서 유저가 방장이라면 방 삭제함)
-        roomRepository.leaveRoom(userId, roomId);
+        roomRepository.leaveRoom(roomId, userId);
 
         // 방에 있는 모든 유저에게 나간 유저의 상태를 알림
         return GameRoomLeaveUserStatusResponseDto.builder()
