@@ -9,6 +9,7 @@ import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomLeaveUserStatusR
 import com.dlqudtjs.codingbattle.model.room.responsedto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomEnterUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomLeaveUserStatusMessageResponseDto;
+import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +25,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class RoomController {
 
+    private final JwtTokenProvider jwtTokenProvider;
     private final RoomService gameRoomService;
     private final SocketRoomController socketRoomController;
 
     @PostMapping("/v1/gameRoom")
     public ResponseEntity<ResponseDto> createRoom(@Valid @RequestBody GameRoomCreateRequestDto requestDto,
                                                   @RequestHeader("Authorization") String token) {
-        ResponseDto responseDto = gameRoomService.createGameRoom(requestDto, token);
+        String userId = jwtTokenProvider.getUserName(token);
+        ResponseDto responseDto = gameRoomService.createGameRoom(requestDto, userId);
 
         // 방안에 사용자들에게 나간 유저의 정보를 전달
         GameRoomInfoResponseDto gameRoomInfoResponseDto = (GameRoomInfoResponseDto) responseDto.getData();
@@ -49,7 +52,8 @@ public class RoomController {
     @PostMapping("/v1/gameRoom/enter")
     public ResponseEntity<ResponseDto> enterRoom(@RequestBody GameRoomEnterRequestDto requestDto,
                                                  @RequestHeader("Authorization") String token) {
-        ResponseDto responseDto = gameRoomService.enterGameRoom(requestDto, token);
+        String userId = jwtTokenProvider.getUserName(token);
+        ResponseDto responseDto = gameRoomService.enterGameRoom(requestDto.getRoomId(), userId);
 
         // 방안에 사용자들에게 나간 유저의 정보를 전달
         GameRoomInfoResponseDto gameRoomInfoResponseDto = (GameRoomInfoResponseDto) responseDto.getData();
@@ -78,7 +82,8 @@ public class RoomController {
     @PostMapping("/v1/gameRoom/leave/{roomId}")
     public ResponseEntity<ResponseDto> leaveRoom(@PathVariable("roomId") Integer roomId,
                                                  @RequestHeader("Authorization") String token) {
-        ResponseDto responseDto = gameRoomService.leaveGameRoom(roomId, token);
+        String userId = jwtTokenProvider.getUserName(token);
+        ResponseDto responseDto = gameRoomService.leaveGameRoom(roomId, userId);
 
         GameRoomLeaveUserStatusResponseDto gameRoomLeaveUserStatusResponseDto =
                 (GameRoomLeaveUserStatusResponseDto) responseDto.getData();
