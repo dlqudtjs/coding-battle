@@ -1,6 +1,5 @@
 package com.dlqudtjs.codingbattle.websocket.configuration;
 
-import com.dlqudtjs.codingbattle.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +19,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final StompExceptionHandler stompExceptionHandler;
     private final StompHandler stompHandler;
-    private final RoomService roomService;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
@@ -49,6 +47,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Bean
     public WebSocketHandlerDecorator customWebSocketHandlerDecorator(WebSocketHandler webSocketHandler) {
-        return new CustomWebSocketHandlerDecorator(webSocketHandler, roomService);
+        return new CustomWebSocketHandlerDecorator(webSocketHandler);
     }
 }
