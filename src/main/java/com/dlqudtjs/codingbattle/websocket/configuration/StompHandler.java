@@ -38,7 +38,9 @@ public class StompHandler implements ChannelInterceptor {
 
             String userId = jwtTokenProvider.getUserName(token);
 
-            // userId의 세션 상태 추가
+            // 입장한 유저는 0번방을 입장
+            roomService.enterGameRoom(GameSetting.DEFAULT_ROOM_ID.getValue(), userId);
+            // 유저 세션 상태 추가
             sessionStatusRepository.initSessionStatus(userId);
             // userId와 sessionId를 매핑
             WebsocketSessionHolder.addSession(userId, headerAccessor.getSessionId());
