@@ -1,8 +1,10 @@
 package com.dlqudtjs.codingbattle.websocket.configuration;
 
+import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.Header;
 import com.dlqudtjs.codingbattle.repository.socket.sessiontatus.SessionStatusRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
+import com.dlqudtjs.codingbattle.service.room.RoomService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,7 @@ public class StompHandler implements ChannelInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final SessionStatusRepository sessionStatusRepository;
+    private final RoomService roomService;
 
     @Override
     public Message<?> preSend(@NonNull Message<?> message, @NonNull MessageChannel channel) {
@@ -53,7 +56,10 @@ public class StompHandler implements ChannelInterceptor {
                 return message;
             }
 
-            // userId의 세션 상태 삭제
+            // 유저가 입장한 방 나가기
+            Integer roomId = sessionStatusRepository.getUserInRoomId(userId);
+            roomService.leaveGameRoom(roomId, userId);
+            // 유저의 세션 상태 삭제
             sessionStatusRepository.removeSessionStatus(userId);
             // userId와 sessionId 매핑 삭제
             WebsocketSessionHolder.removeSessionFromUserId(userId);
