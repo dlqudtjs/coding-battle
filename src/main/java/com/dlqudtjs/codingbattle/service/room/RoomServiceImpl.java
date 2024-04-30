@@ -80,13 +80,11 @@ public class RoomServiceImpl implements RoomService {
         validateEnterGameRoomRequest(requestDto, userId);
 
         Integer alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
-        if (alreadyEnterRoomId != GameSetting.DEFAULT_ROOM_ID.getValue()) {
-            if (alreadyEnterRoomId.equals(requestDto.getRoomId())) {
-                throw new CustomRoomException(ErrorCode.SAME_USER_IN_ROOM.getMessage());
-            }
-
-            leaveUserStatusResponseDto = leaveRoom(alreadyEnterRoomId, userId);
+        if (alreadyEnterRoomId.equals(requestDto.getRoomId())) {
+            throw new CustomRoomException(ErrorCode.SAME_USER_IN_ROOM.getMessage());
         }
+
+        leaveUserStatusResponseDto = leaveRoom(alreadyEnterRoomId, userId);
 
         GameRoom joinedRoom = roomRepository.joinRoom(userId, requestDto.getRoomId());
         sessionService.enterRoom(userId, requestDto.getRoomId());
