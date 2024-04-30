@@ -144,6 +144,9 @@ public class RoomServiceImpl implements RoomService {
                 .build();
     }
 
+    /*
+     방에 보내는 메시지의 유효성을 검사하고 SendToRoomMessageResponseDto로 변환하는 메서드
+     */
     @Override
     public SendToRoomMessageResponseDto parseMessage(Integer roomId, String sessionId,
                                                      SendToRoomMessageRequestDto requestDto) {
