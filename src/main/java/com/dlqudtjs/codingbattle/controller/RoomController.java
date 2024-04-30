@@ -39,7 +39,7 @@ public class RoomController {
         GameRoomInfoResponseDto gameRoomInfoResponseDto = (GameRoomInfoResponseDto) responseDto.getData();
         if (gameRoomInfoResponseDto.getLeaveUserStatus() != null) {
             socketRoomController.sendToRoom(
-                    gameRoomInfoResponseDto.getRoomStatus().getRoomId(),
+                    gameRoomInfoResponseDto.getLeaveUserStatus().getRoomId(),
                     GameRoomLeaveUserStatusMessageResponseDto.builder()
                             .leaveUserStatus(gameRoomInfoResponseDto.getLeaveUserStatus())
                             .build()
@@ -59,7 +59,7 @@ public class RoomController {
         GameRoomInfoResponseDto gameRoomInfoResponseDto = (GameRoomInfoResponseDto) responseDto.getData();
         if (gameRoomInfoResponseDto.getLeaveUserStatus() != null) {
             socketRoomController.sendToRoom(
-                    gameRoomInfoResponseDto.getRoomStatus().getRoomId(),
+                    gameRoomInfoResponseDto.getLeaveUserStatus().getRoomId(),
                     GameRoomLeaveUserStatusMessageResponseDto.builder()
                             .leaveUserStatus(gameRoomInfoResponseDto.getLeaveUserStatus())
                             .build()

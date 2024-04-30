@@ -214,6 +214,7 @@ public class RoomServiceImpl implements RoomService {
 
         // 방에 있는 모든 유저에게 나간 유저의 상태를 알림
         return GameRoomLeaveUserStatusResponseDto.builder()
+                .roomId(roomId)
                 .userId(userId)
                 .isHost(gameRoom.isHost(userId))
                 .build();
