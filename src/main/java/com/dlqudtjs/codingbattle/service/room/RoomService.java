@@ -17,6 +17,8 @@ public interface RoomService {
 
     ResponseDto leaveGameRoom(Integer roomId, String userId);
 
+    void logout(String userId);
+
     ResponseDto getGameRoomList();
 
     SendToRoomMessageResponseDto parseMessage(Integer roomId, String sessionId,

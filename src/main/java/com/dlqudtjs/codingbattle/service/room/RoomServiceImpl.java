@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.service.room;
 
+import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.MessageType;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
@@ -76,8 +77,10 @@ public class RoomServiceImpl implements RoomService {
         }
 
         // 기존 방 나가기 (default 방 포함)
-        GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto =
-                leaveRoom(alreadyEnterRoomId, userId);
+        GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto = null;
+        if (!alreadyEnterRoomId.equals(GameSetting.NO_ROOM_ID.getValue())) {
+            leaveUserStatusResponseDto = leaveRoom(alreadyEnterRoomId, userId);
+        }
 
         GameRoom joinedRoom = roomRepository.joinRoom(userId, roomId);
         sessionService.enterRoom(userId, roomId);
@@ -99,6 +102,7 @@ public class RoomServiceImpl implements RoomService {
         validateLeaveGameRoomRequest(roomId, userId);
 
         GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto = leaveRoom(roomId, userId);
+        enterDefaultRoom(userId);
 
         // 상태 변경
         return ResponseDto.builder()
@@ -106,6 +110,15 @@ public class RoomServiceImpl implements RoomService {
                 .message(SuccessCode.LEAVE_GAME_ROOM_SUCCESS.getMessage())
                 .data(leaveUserStatusResponseDto)
                 .build();
+    }
+
+    @Override
+    public void logout(String userId) {
+        Integer roomId = sessionService.getUserInRoomId(userId);
+        leaveRoom(roomId, userId);
+
+        // default 방도 나가기
+        roomRepository.leaveRoom(GameSetting.DEFAULT_ROOM_ID.getValue(), userId);
     }
 
     @Override
@@ -199,18 +212,24 @@ public class RoomServiceImpl implements RoomService {
                 .build();
     }
 
+    /*
+     * 방을 나가는 메서드
+     * 방장이 아닐 경우 방을 나가고, 유저의 상태를 default 으로 변경
+     * 방장일 경우 방을 삭제하고, 방에 있던 유저들의 상태를 default 방으로 변경
+     */
     private GameRoomLeaveUserStatusResponseDto leaveRoom(Integer roomId, String userId) {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
-        // 만약 나가는 유저가 방장이라면 방 삭제 및 방에 있는 모든 유저 leaveRoom
+
+        // 방을 삭제해야 된다면 삭제하기 전 방에 있는 모든 유저 leaveRoom
         if (gameRoom.isHost(userId)) {
             // 방에 모든 유저 세션 상태 변경
-            leaveAllUserInRoom(roomId);
-        } else {
-            // 나간 유저만 세션 상태 변경
-            sessionService.leaveRoom(userId);
+            leaveAllUserInRoom(roomId, userId);
         }
+
         // 방 나감 (Repository 에서 유저가 방장이라면 방 삭제함)
         roomRepository.leaveRoom(roomId, userId);
+        // 나간 유저 세션 상태 변경
+        sessionService.leaveRoom(userId);
 
         // 방에 있는 모든 유저에게 나간 유저의 상태를 알림
         return GameRoomLeaveUserStatusResponseDto.builder()
@@ -221,11 +240,21 @@ public class RoomServiceImpl implements RoomService {
     }
 
     // 방에 있는 모든 유저 leaveRoom 하는 메서드
-    private void leaveAllUserInRoom(Integer roomId) {
+    private void leaveAllUserInRoom(Integer roomId, String hostId) {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
         for (String userId : gameRoom.getUserList()) {
+            if (userId.equals(hostId)) {
+                continue;
+            }
+            
             sessionService.leaveRoom(userId);
+            enterDefaultRoom(userId);
         }
+    }
+
+    private void enterDefaultRoom(String userId) {
+        roomRepository.joinRoom(userId, GameSetting.DEFAULT_ROOM_ID.getValue());
+        sessionService.enterRoom(userId, GameSetting.DEFAULT_ROOM_ID.getValue());
     }
 
     private GameRoomInfoResponseDto CreateGameRoomResponseDto(
