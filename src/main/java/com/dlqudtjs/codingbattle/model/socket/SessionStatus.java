@@ -21,6 +21,6 @@ public class SessionStatus {
     }
 
     public void leaveRoom() {
-        this.enterRoomId = GameSetting.DEFAULT_ROOM_ID.getValue();
+        this.enterRoomId = GameSetting.NO_ROOM_ID.getValue();
     }
 }
