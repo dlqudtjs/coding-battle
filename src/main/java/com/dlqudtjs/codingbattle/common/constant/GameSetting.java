@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum GameSetting {
+    NO_ROOM_ID(-1),
     DEFAULT_ROOM_ID(0),
     DEFAULT_ROOM_MAX_USER_COUNT(999),
     MIN_USER_COUNT(2),
