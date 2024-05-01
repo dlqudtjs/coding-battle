@@ -13,7 +13,7 @@ public class SessionStatus {
     // todo : 추후 세션 상태 추가 (ex. 방해 금지)
 
     public SessionStatus() {
-        this.enterRoomId = GameSetting.DEFAULT_ROOM_ID.getValue();
+        this.enterRoomId = GameSetting.NO_ROOM_ID.getValue();
     }
 
     public void enterRoom(Integer roomId) {
