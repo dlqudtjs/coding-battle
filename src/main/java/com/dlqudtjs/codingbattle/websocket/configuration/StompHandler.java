@@ -41,12 +41,12 @@ public class StompHandler implements ChannelInterceptor {
 
             String userId = jwtTokenProvider.getUserName(token);
 
-            // 입장한 유저는 0번방을 입장
-            roomService.enterGameRoom(GameSetting.DEFAULT_ROOM_ID.getValue(), userId);
             // 유저 세션 상태 추가
             sessionStatusRepository.initSessionStatus(userId);
             // userId와 sessionId를 매핑
             WebsocketSessionHolder.addSession(userId, headerAccessor.getSessionId());
+            // 입장한 유저는 0번방을 입장 및 방에 입장한 상태로 변경
+            roomService.enterGameRoom(GameSetting.DEFAULT_ROOM_ID.getValue(), userId);
         }
 
         if (headerAccessor.getCommand() == StompCommand.DISCONNECT) {
@@ -56,9 +56,8 @@ public class StompHandler implements ChannelInterceptor {
                 return message;
             }
 
-            // 유저가 입장한 방 나가기
-            Integer roomId = sessionStatusRepository.getUserInRoomId(userId);
-            roomService.leaveGameRoom(roomId, userId);
+            // 유저 세션 삭제 & 방에서 나가기
+            roomService.logout(userId);
             // 유저의 세션 상태 삭제
             sessionStatusRepository.removeSessionStatus(userId);
             // userId와 sessionId 매핑 삭제
