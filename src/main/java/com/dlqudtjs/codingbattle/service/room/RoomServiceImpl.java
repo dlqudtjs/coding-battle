@@ -262,7 +262,6 @@ public class RoomServiceImpl implements RoomService {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
         String userId = WebsocketSessionHolder.getUserIdFromSessionId(sessionId);
 
-        // 방이 존재하지 않으면
         validateRoomExistence(roomId);
 
         // 세션 아이디와 요청한 유저 아이디가 일치하지 않으면
@@ -284,7 +283,6 @@ public class RoomServiceImpl implements RoomService {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
         String userId = WebsocketSessionHolder.getUserIdFromSessionId(sessionId);
 
-        // 방이 존재하지 않으면
         validateRoomExistence(roomId);
 
         // 방장과 세션 아이디가 일치하지 않으면 (웹 소켓 세션에 존재하지 않으면)
@@ -301,21 +299,13 @@ public class RoomServiceImpl implements RoomService {
     }
 
     private void validateLeaveGameRoomRequest(Integer roomId, String userId) {
-        // 방이 존재하지 않으면
         validateRoomExistence(roomId);
-
-        // 요청한 유저가 웹 소켓 세션에 존재하지 않으면
         validateUserSession(userId);
-
-        // 방에 유저가 존재하지 않으면
         validateUserInRoom(roomId, userId);
     }
 
     private void validateEnterGameRoomRequest(Integer roomId, String userId) {
-        // 요청한 유저가 웹 소켓 세션에 존재하지 않으면
         validateUserSession(userId);
-
-        // 방이 존재하지 않으면
         validateRoomExistence(roomId);
 
         // 방이 꽉 찼으면
