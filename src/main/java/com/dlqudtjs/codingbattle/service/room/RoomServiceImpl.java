@@ -156,16 +156,9 @@ public class RoomServiceImpl implements RoomService {
                                                      SendToRoomMessageRequestDto requestDto) {
         String userId = WebsocketSessionHolder.getUserIdFromSessionId(sessionId);
 
-        // 방이 존재하지 않으면
         validateRoomExistence(roomId);
-
-        // 세션이 존재하지 않으면
         validateUserSession(userId);
-
-        // 방에 유저가 존재하지 않으면
-        if (!roomRepository.isExistUserInRoom(userId, roomId)) {
-            throw new CustomRoomException(ErrorCode.NOT_EXIST_USER_IN_ROOM.getMessage());
-        }
+        validateUserInRoom(roomId, userId);
 
         return SendToRoomMessageResponseDto.builder()
                 .messageType(MessageType.USER.getMessageType())
@@ -315,9 +308,7 @@ public class RoomServiceImpl implements RoomService {
         validateUserSession(userId);
 
         // 방에 유저가 존재하지 않으면
-        if (!roomRepository.isExistUserInRoom(userId, roomId)) {
-            throw new CustomRoomException(ErrorCode.NOT_EXIST_USER_IN_ROOM.getMessage());
-        }
+        validateUserInRoom(roomId, userId);
     }
 
     private void validateEnterGameRoomRequest(Integer roomId, String userId) {
@@ -352,6 +343,12 @@ public class RoomServiceImpl implements RoomService {
     private void validateRoomExistence(Integer roomId) {
         if (!roomRepository.isExistRoom(roomId)) {
             throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
+        }
+    }
+
+    private void validateUserInRoom(Integer roomId, String userId) {
+        if (!roomRepository.isExistUserInRoom(userId, roomId)) {
+            throw new CustomRoomException(ErrorCode.NOT_EXIST_USER_IN_ROOM.getMessage());
         }
     }
 }
