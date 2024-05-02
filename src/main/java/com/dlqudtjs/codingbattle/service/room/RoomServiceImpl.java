@@ -157,9 +157,7 @@ public class RoomServiceImpl implements RoomService {
         String userId = WebsocketSessionHolder.getUserIdFromSessionId(sessionId);
 
         // 방이 존재하지 않으면
-        if (!roomRepository.isExistRoom(roomId)) {
-            throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
-        }
+        validateRoomExistence(roomId);
 
         // 세션이 존재하지 않으면
         validateUserSession(userId);
@@ -272,9 +270,7 @@ public class RoomServiceImpl implements RoomService {
         String userId = WebsocketSessionHolder.getUserIdFromSessionId(sessionId);
 
         // 방이 존재하지 않으면
-        if (!roomRepository.isExistRoom(roomId)) {
-            throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
-        }
+        validateRoomExistence(roomId);
 
         // 세션 아이디와 요청한 유저 아이디가 일치하지 않으면
         if (!requestDto.getUserId().equals(userId)) {
@@ -296,9 +292,7 @@ public class RoomServiceImpl implements RoomService {
         String userId = WebsocketSessionHolder.getUserIdFromSessionId(sessionId);
 
         // 방이 존재하지 않으면
-        if (gameRoom == null) {
-            throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
-        }
+        validateRoomExistence(roomId);
 
         // 방장과 세션 아이디가 일치하지 않으면 (웹 소켓 세션에 존재하지 않으면)
         if (!gameRoom.isHost(userId)) {
@@ -315,9 +309,7 @@ public class RoomServiceImpl implements RoomService {
 
     private void validateLeaveGameRoomRequest(Integer roomId, String userId) {
         // 방이 존재하지 않으면
-        if (!roomRepository.isExistRoom(roomId)) {
-            throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
-        }
+        validateRoomExistence(roomId);
 
         // 요청한 유저가 웹 소켓 세션에 존재하지 않으면
         validateUserSession(userId);
@@ -333,9 +325,7 @@ public class RoomServiceImpl implements RoomService {
         validateUserSession(userId);
 
         // 방이 존재하지 않으면
-        if (!roomRepository.isExistRoom(roomId)) {
-            throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
-        }
+        validateRoomExistence(roomId);
 
         // 방이 꽉 찼으면
         if (roomRepository.isFullRoom(roomId)) {
@@ -356,6 +346,12 @@ public class RoomServiceImpl implements RoomService {
     private void validateUserSession(String userId) {
         if (WebsocketSessionHolder.isNotConnected(userId)) {
             throw new CustomRoomException(ErrorCode.NOT_CONNECT_USER.getMessage());
+        }
+    }
+
+    private void validateRoomExistence(Integer roomId) {
+        if (!roomRepository.isExistRoom(roomId)) {
+            throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
         }
     }
 }
