@@ -334,18 +334,21 @@ public class RoomServiceImpl implements RoomService {
         validateUserSession(userId);
     }
 
+    // 유저 세션이 존재하지 않으면
     private void validateUserSession(String userId) {
         if (WebsocketSessionHolder.isNotConnected(userId)) {
             throw new CustomRoomException(ErrorCode.NOT_CONNECT_USER.getMessage());
         }
     }
 
+    // 방이 존재하지 않으면
     private void validateRoomExistence(Integer roomId) {
         if (!roomRepository.isExistRoom(roomId)) {
             throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
         }
     }
 
+    // 방에 유저가 존재하지 않으면
     private void validateUserInRoom(Integer roomId, String userId) {
         if (!roomRepository.isExistUserInRoom(userId, roomId)) {
             throw new CustomRoomException(ErrorCode.NOT_EXIST_USER_IN_ROOM.getMessage());
