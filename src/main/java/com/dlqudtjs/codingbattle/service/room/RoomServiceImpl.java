@@ -162,9 +162,7 @@ public class RoomServiceImpl implements RoomService {
         }
 
         // 세션이 존재하지 않으면
-        if (WebsocketSessionHolder.isNotConnected(userId)) {
-            throw new CustomRoomException(ErrorCode.NOT_CONNECT_USER.getMessage());
-        }
+        validateUserSession(userId);
 
         // 방에 유저가 존재하지 않으면
         if (!roomRepository.isExistUserInRoom(userId, roomId)) {
@@ -246,7 +244,7 @@ public class RoomServiceImpl implements RoomService {
             if (userId.equals(hostId)) {
                 continue;
             }
-            
+
             sessionService.leaveRoom(userId);
             enterDefaultRoom(userId);
         }
@@ -322,9 +320,7 @@ public class RoomServiceImpl implements RoomService {
         }
 
         // 요청한 유저가 웹 소켓 세션에 존재하지 않으면
-        if (WebsocketSessionHolder.isNotConnected(userId)) {
-            throw new CustomRoomException(ErrorCode.NOT_CONNECT_USER.getMessage());
-        }
+        validateUserSession(userId);
 
         // 방에 유저가 존재하지 않으면
         if (!roomRepository.isExistUserInRoom(userId, roomId)) {
@@ -334,9 +330,7 @@ public class RoomServiceImpl implements RoomService {
 
     private void validateEnterGameRoomRequest(Integer roomId, String userId) {
         // 요청한 유저가 웹 소켓 세션에 존재하지 않으면
-        if (WebsocketSessionHolder.isNotConnected(userId)) {
-            throw new CustomRoomException(ErrorCode.NOT_CONNECT_USER.getMessage());
-        }
+        validateUserSession(userId);
 
         // 방이 존재하지 않으면
         if (!roomRepository.isExistRoom(roomId)) {
@@ -356,6 +350,10 @@ public class RoomServiceImpl implements RoomService {
         }
 
         // 요청한 유저가 웹 소켓 세션에 존재하지 않으면
+        validateUserSession(userId);
+    }
+
+    private void validateUserSession(String userId) {
         if (WebsocketSessionHolder.isNotConnected(userId)) {
             throw new CustomRoomException(ErrorCode.NOT_CONNECT_USER.getMessage());
         }
