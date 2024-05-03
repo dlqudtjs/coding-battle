@@ -9,7 +9,6 @@ import com.dlqudtjs.codingbattle.model.user.User;
 import com.dlqudtjs.codingbattle.repository.token.TokenRepository;
 import com.dlqudtjs.codingbattle.repository.user.UserRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
-import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistNicknameException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistUserIdException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.CustomAuthenticationException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
@@ -133,10 +132,6 @@ public class OAuthServiceImpl implements OAuthService {
             throw new AlreadyExistUserIdException(ErrorCode.ALREADY_EXIST_USER_ID.getMessage());
         }
 
-        if (isExistNickname(signUpRequestDto.getNickname())) {
-            throw new AlreadyExistNicknameException(ErrorCode.ALREADY_EXIST_NICKNAME.getMessage());
-        }
-
         if (!passwordCheck(signUpRequestDto.getPassword(), signUpRequestDto.getPasswordCheck())) {
             throw new PasswordCheckException(ErrorCode.PASSWORD_CHECK.getMessage());
         }
@@ -144,10 +139,6 @@ public class OAuthServiceImpl implements OAuthService {
 
     private boolean isExistUser(String userId) {
         return userRepository.existsByUserId(userId);
-    }
-
-    private boolean isExistNickname(String nickname) {
-        return userRepository.existsByNickname(nickname);
     }
 
     private boolean passwordCheck(String password, String passwordCheck) {
