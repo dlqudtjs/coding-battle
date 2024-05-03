@@ -7,7 +7,6 @@ import com.dlqudtjs.codingbattle.model.user.UserRole;
 import com.dlqudtjs.codingbattle.repository.user.UserRepository;
 import com.dlqudtjs.codingbattle.service.oauth.OAuthServiceImpl;
 import com.dlqudtjs.codingbattle.service.oauth.SuccessCode;
-import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistNicknameException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistUserIdException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
 import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordCheckException;
@@ -39,16 +38,13 @@ public class OAuthServiceTest {
         String userId = "testId";
         String password = "testPassword";
         String passwordCheck = "testPassword";
-        String nickname = "testNickname";
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(userId, password, passwordCheck, nickname);
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(userId, password, passwordCheck);
 
         Mockito.when(passwordEncoder.encode(Mockito.anyString())).thenReturn(password);
         Mockito.when(userRepository.existsByUserId(Mockito.anyString())).thenReturn(false);
-        Mockito.when(userRepository.existsByNickname(Mockito.anyString())).thenReturn(false);
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(User.builder()
                 .id(1L)
                 .userId(userId)
-                .nickname(nickname)
                 .password(password)
                 .role(UserRole.ROLE_USER)
                 .build());
@@ -69,8 +65,7 @@ public class OAuthServiceTest {
         String userId = "testId";
         String password = "testPassword";
         String passwordCheck = "testPassword";
-        String nickname = "testNickname";
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(userId, password, passwordCheck, nickname);
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(userId, password, passwordCheck);
 
         Mockito.when(userRepository.existsByUserId(Mockito.anyString())).thenReturn(true);
 
@@ -81,33 +76,13 @@ public class OAuthServiceTest {
     }
 
     @Test
-    @DisplayName("Nickname 중복 에러 반환 테스트")
-    void duplicateNicknameErrorTest() {
-        // given
-        String userId = "testId";
-        String password = "testPassword";
-        String passwordCheck = "testPassword";
-        String nickname = "testNickname";
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(userId, password, passwordCheck, nickname);
-
-        Mockito.when(userRepository.existsByUserId(Mockito.anyString())).thenReturn(false);
-        Mockito.when(userRepository.existsByNickname(Mockito.anyString())).thenReturn(true);
-
-        // when & then
-        Assertions.assertThatThrownBy(() -> oAuthService.singUp(signUpRequestDto))
-                .isInstanceOf(AlreadyExistNicknameException.class)
-                .hasMessage(ErrorCode.ALREADY_EXIST_NICKNAME.getMessage());
-    }
-
-    @Test
     @DisplayName("password check 불일치 에러 반환 테스트")
     void passwordCheckErrorTest() {
         // given
         String userId = "testId";
         String password = "testPassword";
         String passwordCheck = "testPasswordCheck";
-        String nickname = "testNickname";
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(userId, password, passwordCheck, nickname);
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(userId, password, passwordCheck);
 
         // when & then
         Assertions.assertThatThrownBy(() -> oAuthService.singUp(signUpRequestDto))
