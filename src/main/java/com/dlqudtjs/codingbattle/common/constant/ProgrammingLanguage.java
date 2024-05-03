@@ -22,6 +22,8 @@ public enum ProgrammingLanguage {
     }
 
     public static boolean isNotContains(String language) {
+        language = language.toLowerCase();
+
         for (ProgrammingLanguage pl : ProgrammingLanguage.values()) {
             if (pl.getLanguageName().equals(language)) {
                 return false;
