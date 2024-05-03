@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.service.oauth;
 
+import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.oauth.JwtToken;
 import com.dlqudtjs.codingbattle.model.oauth.JwtTokenDto;
@@ -134,6 +135,10 @@ public class OAuthServiceImpl implements OAuthService {
 
         if (!passwordCheck(signUpRequestDto.getPassword(), signUpRequestDto.getPasswordCheck())) {
             throw new PasswordCheckException(ErrorCode.PASSWORD_CHECK.getMessage());
+        }
+
+        if (ProgrammingLanguage.isNotContains(signUpRequestDto.getLanguage())) {
+            throw new CustomAuthenticationException(ErrorCode.LANGUAGE_NOT_FOUND.getMessage());
         }
     }
 
