@@ -9,6 +9,7 @@ public enum ErrorCode {
 
     ALREADY_EXIST_USER_ID(409, "이미 존재하는 아이디입니다."),
     PASSWORD_CHECK(400, "비밀번호가 일치하지 않습니다."),
+    LANGUAGE_NOT_FOUND(400, "지원하지 않는 언어입니다."),
     USER_ID_NOT_FOUNT(400, "존재하지 않는 유저입니다."),
     PASSWORD_NOT_MATCH(400, "비밀번호가 일치하지 않습니다."),
     SIGNATURE(401, "JWT 서명이 올바르지 않습니다."),
