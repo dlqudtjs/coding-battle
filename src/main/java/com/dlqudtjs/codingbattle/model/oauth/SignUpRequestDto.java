@@ -1,7 +1,7 @@
 package com.dlqudtjs.codingbattle.model.oauth;
 
 import com.dlqudtjs.codingbattle.model.user.User;
-import com.dlqudtjs.codingbattle.model.user.UserRole;
+import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +26,7 @@ public class SignUpRequestDto {
         return User.builder()
                 .userId(userId)
                 .password(password)
-                .role(UserRole.ROLE_USER)
+                .role(UserRoleType.ROLE_USER)
                 .build();
     }
 }
