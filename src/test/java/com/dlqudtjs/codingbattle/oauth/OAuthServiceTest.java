@@ -3,7 +3,7 @@ package com.dlqudtjs.codingbattle.oauth;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.oauth.SignUpRequestDto;
 import com.dlqudtjs.codingbattle.model.user.User;
-import com.dlqudtjs.codingbattle.model.user.UserRole;
+import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
 import com.dlqudtjs.codingbattle.repository.user.UserRepository;
 import com.dlqudtjs.codingbattle.service.oauth.OAuthServiceImpl;
 import com.dlqudtjs.codingbattle.service.oauth.SuccessCode;
@@ -38,7 +38,8 @@ public class OAuthServiceTest {
         String userId = "testId";
         String password = "testPassword";
         String passwordCheck = "testPassword";
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(userId, password, passwordCheck);
+        String language = "java";
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(userId, password, passwordCheck, language);
 
         Mockito.when(passwordEncoder.encode(Mockito.anyString())).thenReturn(password);
         Mockito.when(userRepository.existsByUserId(Mockito.anyString())).thenReturn(false);
@@ -46,7 +47,7 @@ public class OAuthServiceTest {
                 .id(1L)
                 .userId(userId)
                 .password(password)
-                .role(UserRole.ROLE_USER)
+                .role(UserRoleType.ROLE_USER)
                 .build());
 
         // when
@@ -65,7 +66,8 @@ public class OAuthServiceTest {
         String userId = "testId";
         String password = "testPassword";
         String passwordCheck = "testPassword";
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(userId, password, passwordCheck);
+        String language = "java";
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(userId, password, passwordCheck, language);
 
         Mockito.when(userRepository.existsByUserId(Mockito.anyString())).thenReturn(true);
 
@@ -82,7 +84,8 @@ public class OAuthServiceTest {
         String userId = "testId";
         String password = "testPassword";
         String passwordCheck = "testPasswordCheck";
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(userId, password, passwordCheck);
+        String language = "java";
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(userId, password, passwordCheck, language);
 
         // when & then
         Assertions.assertThatThrownBy(() -> oAuthService.singUp(signUpRequestDto))
