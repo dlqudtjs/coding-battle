@@ -1,8 +1,8 @@
 package com.dlqudtjs.codingbattle.controller;
 
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
-import com.dlqudtjs.codingbattle.model.oauth.SignInRequestDto;
-import com.dlqudtjs.codingbattle.model.oauth.SignUpRequestDto;
+import com.dlqudtjs.codingbattle.dto.oauth.SignInRequestDto;
+import com.dlqudtjs.codingbattle.dto.oauth.SignUpRequestDto;
 import com.dlqudtjs.codingbattle.service.oauth.OAuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;

@@ -1,8 +1,8 @@
 package com.dlqudtjs.codingbattle.security;
 
 import com.dlqudtjs.codingbattle.common.constant.Header;
-import com.dlqudtjs.codingbattle.model.oauth.JwtTokenDto;
-import com.dlqudtjs.codingbattle.model.user.User;
+import com.dlqudtjs.codingbattle.dto.oauth.JwtTokenDto;
+import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.service.oauth.exception.CustomAuthenticationException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
 import com.dlqudtjs.codingbattle.service.oauth.exception.UnknownException;

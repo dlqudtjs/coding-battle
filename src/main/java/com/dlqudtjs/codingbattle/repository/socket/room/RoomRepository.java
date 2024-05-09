@@ -1,6 +1,6 @@
 package com.dlqudtjs.codingbattle.repository.socket.room;
 
-import com.dlqudtjs.codingbattle.model.room.GameRoom;
+import com.dlqudtjs.codingbattle.entity.room.GameRoom;
 import java.util.List;
 
 public interface RoomRepository {

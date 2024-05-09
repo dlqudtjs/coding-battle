@@ -2,7 +2,7 @@ package com.dlqudtjs.codingbattle.repository.socket.room;
 
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
-import com.dlqudtjs.codingbattle.model.room.GameRoom;
+import com.dlqudtjs.codingbattle.entity.room.GameRoom;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

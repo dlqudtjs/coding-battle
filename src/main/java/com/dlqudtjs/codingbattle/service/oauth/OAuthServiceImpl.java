@@ -3,13 +3,13 @@ package com.dlqudtjs.codingbattle.service.oauth;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
-import com.dlqudtjs.codingbattle.model.oauth.JwtToken;
-import com.dlqudtjs.codingbattle.model.oauth.JwtTokenDto;
-import com.dlqudtjs.codingbattle.model.oauth.SignInRequestDto;
-import com.dlqudtjs.codingbattle.model.oauth.SignUpRequestDto;
-import com.dlqudtjs.codingbattle.model.user.Language;
-import com.dlqudtjs.codingbattle.model.user.User;
-import com.dlqudtjs.codingbattle.model.user.UserSetting;
+import com.dlqudtjs.codingbattle.entity.oauth.Token;
+import com.dlqudtjs.codingbattle.dto.oauth.JwtTokenDto;
+import com.dlqudtjs.codingbattle.dto.oauth.SignInRequestDto;
+import com.dlqudtjs.codingbattle.dto.oauth.SignUpRequestDto;
+import com.dlqudtjs.codingbattle.entity.user.Language;
+import com.dlqudtjs.codingbattle.entity.user.User;
+import com.dlqudtjs.codingbattle.entity.user.UserSetting;
 import com.dlqudtjs.codingbattle.repository.token.TokenRepository;
 import com.dlqudtjs.codingbattle.repository.user.LanguageRepository;
 import com.dlqudtjs.codingbattle.repository.user.UserRepository;
@@ -98,11 +98,11 @@ public class OAuthServiceImpl implements OAuthService {
         User user = userRepository.findByUserId(authentication.getName())
                 .orElseThrow(() -> new CustomAuthenticationException(ErrorCode.USER_ID_NOT_FOUNT.getMessage()));
 
-        JwtToken jwtToken = tokenRepository.findByUserId(user.getId())
+        Token token = tokenRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new CustomAuthenticationException(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getMessage()));
 
         // Refresh Token이 일치하지 않을 경우
-        if (!jwtToken.getRefreshToken().equals(refreshToken.substring(7))) {
+        if (!token.getRefreshToken().equals(refreshToken.substring(7))) {
             throw new CustomAuthenticationException(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getMessage());
         }
 
@@ -131,12 +131,12 @@ public class OAuthServiceImpl implements OAuthService {
     }
 
     private void saveRefreshToken(String refreshToken, Long userId) {
-        Optional<JwtToken> jwtToken = tokenRepository.findByUserId(userId);
+        Optional<Token> jwtToken = tokenRepository.findByUserId(userId);
 
         if (jwtToken.isPresent()) {
             jwtToken.get().setRefreshToken(refreshToken);
         } else {
-            tokenRepository.save(JwtToken.builder()
+            tokenRepository.save(Token.builder()
                     .userId(userId)
                     .refreshToken(refreshToken)
                     .build());

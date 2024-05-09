@@ -1,12 +1,12 @@
 package com.dlqudtjs.codingbattle.controller;
 
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
-import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomStatusUpdateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.requestdto.GameRoomUserStatusUpdateRequestDto;
-import com.dlqudtjs.codingbattle.model.room.requestdto.SendToRoomMessageRequestDto;
-import com.dlqudtjs.codingbattle.model.room.responsedto.SendToRoomMessageResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomStatusUpdateMessageResponseDto;
-import com.dlqudtjs.codingbattle.model.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomStatusUpdateRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomUserStatusUpdateRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.requestdto.SendToRoomMessageRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomStatusUpdateMessageResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
 import com.dlqudtjs.codingbattle.websocket.configuration.exception.CustomSocketException;

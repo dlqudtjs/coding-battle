@@ -1,6 +1,6 @@
 package com.dlqudtjs.codingbattle.repository.user;
 
-import com.dlqudtjs.codingbattle.model.user.User;
+import com.dlqudtjs.codingbattle.entity.user.User;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 

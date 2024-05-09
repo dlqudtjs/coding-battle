@@ -1,9 +1,10 @@
 package com.dlqudtjs.codingbattle.oauth;
 
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
-import com.dlqudtjs.codingbattle.model.oauth.SignUpRequestDto;
-import com.dlqudtjs.codingbattle.model.user.User;
+import com.dlqudtjs.codingbattle.dto.oauth.SignUpRequestDto;
+import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
+import com.dlqudtjs.codingbattle.entity.user.UserRole;
 import com.dlqudtjs.codingbattle.repository.user.UserRepository;
 import com.dlqudtjs.codingbattle.service.oauth.OAuthServiceImpl;
 import com.dlqudtjs.codingbattle.service.oauth.SuccessCode;
@@ -47,7 +48,7 @@ public class OAuthServiceTest {
                 .id(1L)
                 .userId(userId)
                 .password(password)
-                .role(UserRoleType.ROLE_USER)
+                .role(UserRole.builder().name(UserRoleType.ROLE_USER).build())
                 .build());
 
         // when

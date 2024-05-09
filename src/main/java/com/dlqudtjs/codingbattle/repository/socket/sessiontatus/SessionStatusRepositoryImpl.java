@@ -1,6 +1,6 @@
 package com.dlqudtjs.codingbattle.repository.socket.sessiontatus;
 
-import com.dlqudtjs.codingbattle.model.socket.SessionStatus;
+import com.dlqudtjs.codingbattle.entity.socket.SessionStatus;
 import com.dlqudtjs.codingbattle.service.room.exception.ErrorCode;
 import com.dlqudtjs.codingbattle.websocket.configuration.exception.CustomSocketException;
 import java.util.concurrent.ConcurrentHashMap;
