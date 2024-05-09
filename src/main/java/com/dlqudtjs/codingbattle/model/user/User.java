@@ -2,11 +2,11 @@ package com.dlqudtjs.codingbattle.model.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,19 +29,20 @@ public class User implements UserDetails {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @OneToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private UserRole role;
+
     @Column(name = "user_id", nullable = false, unique = true)
     private String userId;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "role", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(() -> role.name());
+        return Collections.singletonList(() -> role.getName().name());
     }
 
     public Long getId() {
