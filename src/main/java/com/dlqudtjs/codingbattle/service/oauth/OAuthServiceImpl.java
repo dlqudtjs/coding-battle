@@ -1,14 +1,20 @@
 package com.dlqudtjs.codingbattle.service.oauth;
 
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
+import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.model.oauth.JwtToken;
 import com.dlqudtjs.codingbattle.model.oauth.JwtTokenDto;
 import com.dlqudtjs.codingbattle.model.oauth.SignInRequestDto;
 import com.dlqudtjs.codingbattle.model.oauth.SignUpRequestDto;
+import com.dlqudtjs.codingbattle.model.user.Language;
 import com.dlqudtjs.codingbattle.model.user.User;
+import com.dlqudtjs.codingbattle.model.user.UserSetting;
 import com.dlqudtjs.codingbattle.repository.token.TokenRepository;
+import com.dlqudtjs.codingbattle.repository.user.LanguageRepository;
 import com.dlqudtjs.codingbattle.repository.user.UserRepository;
+import com.dlqudtjs.codingbattle.repository.user.UserRoleRepository;
+import com.dlqudtjs.codingbattle.repository.user.UserSettingRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistUserIdException;
 import com.dlqudtjs.codingbattle.service.oauth.exception.CustomAuthenticationException;
@@ -32,6 +38,9 @@ public class OAuthServiceImpl implements OAuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenRepository tokenRepository;
+    private final UserRoleRepository userRoleRepository;
+    private final LanguageRepository languageRepository;
+    private final UserSettingRepository userSettingRepository;
 
     @Override
     @Transactional
@@ -58,8 +67,20 @@ public class OAuthServiceImpl implements OAuthService {
     public ResponseDto singUp(SignUpRequestDto signUpRequestDto) {
         validateSignUpRequest(signUpRequestDto);
 
-        User savedUser = userRepository.save(signUpRequestDto.toEntity()
-                .encodePassword(passwordEncoder));
+        User user = User.builder()
+                .role(userRoleRepository.findByName(UserRoleType.ROLE_USER))
+                .userId(signUpRequestDto.getUserId())
+                .password(signUpRequestDto.getPassword())
+                .build()
+                .encodePassword(passwordEncoder);
+
+        User savedUser = userRepository.save(user);
+        Language language = languageRepository.findByName(signUpRequestDto.getLanguage().toLowerCase());
+
+        userSettingRepository.save(UserSetting.builder()
+                .user(savedUser)
+                .language(language)
+                .build());
 
         return ResponseDto.builder()
                 .status(SuccessCode.SIGN_UP_SUCCESS.getStatus())
