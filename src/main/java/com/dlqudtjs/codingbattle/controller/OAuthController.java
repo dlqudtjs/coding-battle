@@ -5,6 +5,7 @@ import com.dlqudtjs.codingbattle.model.oauth.SignInRequestDto;
 import com.dlqudtjs.codingbattle.model.oauth.SignUpRequestDto;
 import com.dlqudtjs.codingbattle.service.oauth.OAuthService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,7 @@ public class OAuthController {
     private final OAuthService oAuthService;
 
     @PostMapping("/v1/oauth/sign-up")
-    public ResponseEntity<ResponseDto> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
+    public ResponseEntity<ResponseDto> signUp(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
         ResponseDto responseDto = oAuthService.singUp(signUpRequestDto);
 
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
