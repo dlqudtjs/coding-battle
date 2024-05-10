@@ -17,7 +17,7 @@ import org.springframework.web.socket.WebSocketSession;
 @Builder
 @AllArgsConstructor
 public class GameRoom {
-    private Integer roomId;
+    private Long roomId;
     private String hostId;
     private String title;
     private String password;
@@ -34,7 +34,7 @@ public class GameRoom {
         userMap.put(userId, new GameRoomUserStatus(userId, session));
     }
 
-    public void setRoomId(Integer roomId) {
+    public void setRoomId(Long roomId) {
         this.roomId = roomId;
     }
 

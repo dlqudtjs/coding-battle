@@ -3,9 +3,9 @@ package com.dlqudtjs.codingbattle.security;
 import com.dlqudtjs.codingbattle.common.constant.Header;
 import com.dlqudtjs.codingbattle.dto.oauth.JwtTokenDto;
 import com.dlqudtjs.codingbattle.entity.user.User;
-import com.dlqudtjs.codingbattle.service.oauth.exception.CustomAuthenticationException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
-import com.dlqudtjs.codingbattle.service.oauth.exception.UnknownException;
+import com.dlqudtjs.codingbattle.common.exception.oauth.CustomAuthenticationException;
+import com.dlqudtjs.codingbattle.common.exception.oauth.OauthErrorCode;
+import com.dlqudtjs.codingbattle.common.exception.oauth.UnknownException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -103,7 +103,7 @@ public class JwtTokenProvider {
     public void validateToken(String token) {
         try {
             if (!token.startsWith("Bearer ")) {
-                throw new UnsupportedJwtException(ErrorCode.UNSUPPORTED_JWT.getMessage());
+                throw new UnsupportedJwtException(OauthErrorCode.UNSUPPORTED_JWT.getMessage());
             }
 
             Jwts.parserBuilder()
@@ -113,22 +113,22 @@ public class JwtTokenProvider {
 
         } catch (NullPointerException e) {
             log.info("JWT token is null");
-            throw new CustomAuthenticationException(ErrorCode.TOKEN_NOT_FOUND.getMessage());
+            throw new CustomAuthenticationException(OauthErrorCode.TOKEN_NOT_FOUND.getMessage());
         } catch (SignatureException e) {
             log.info("Invalid JWT signature");
-            throw new CustomAuthenticationException(ErrorCode.SIGNATURE.getMessage());
+            throw new CustomAuthenticationException(OauthErrorCode.SIGNATURE.getMessage());
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT token");
-            throw new CustomAuthenticationException(ErrorCode.MALFORMED_JWT.getMessage());
+            throw new CustomAuthenticationException(OauthErrorCode.MALFORMED_JWT.getMessage());
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT token");
-            throw new CustomAuthenticationException(ErrorCode.EXPIRED_JWT.getMessage());
+            throw new CustomAuthenticationException(OauthErrorCode.EXPIRED_JWT.getMessage());
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT token");
-            throw new CustomAuthenticationException(ErrorCode.UNSUPPORTED_JWT.getMessage());
+            throw new CustomAuthenticationException(OauthErrorCode.UNSUPPORTED_JWT.getMessage());
         } catch (Exception e) {
             log.info("Unknown JWT token");
-            throw new UnknownException(ErrorCode.UNKNOWN.getMessage());
+            throw new UnknownException(OauthErrorCode.UNKNOWN.getMessage());
         }
     }
 

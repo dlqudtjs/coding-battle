@@ -1,8 +1,8 @@
 package com.dlqudtjs.codingbattle.repository.socket.sessiontatus;
 
 import com.dlqudtjs.codingbattle.entity.socket.SessionStatus;
-import com.dlqudtjs.codingbattle.service.room.exception.ErrorCode;
-import com.dlqudtjs.codingbattle.websocket.configuration.exception.CustomSocketException;
+import com.dlqudtjs.codingbattle.common.exception.room.RoomErrorCode;
+import com.dlqudtjs.codingbattle.common.exception.socket.CustomSocketException;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,9 +24,9 @@ public class SessionStatusRepositoryImpl implements SessionStatusRepository {
     }
 
     @Override
-    public void enterRoom(String userId, Integer roomId) {
+    public void enterRoom(String userId, Long roomId) {
         if (!sessionStatusMap.containsKey(userId)) {
-            throw new CustomSocketException(ErrorCode.NOT_CONNECT_USER.getMessage());
+            throw new CustomSocketException(RoomErrorCode.NOT_CONNECT_USER.getMessage());
         }
 
         sessionStatusMap.get(userId).enterRoom(roomId);
@@ -35,16 +35,16 @@ public class SessionStatusRepositoryImpl implements SessionStatusRepository {
     @Override
     public void leaveRoom(String userId) {
         if (!sessionStatusMap.containsKey(userId)) {
-            throw new CustomSocketException(ErrorCode.NOT_CONNECT_USER.getMessage());
+            throw new CustomSocketException(RoomErrorCode.NOT_CONNECT_USER.getMessage());
         }
 
         sessionStatusMap.get(userId).leaveRoom();
     }
 
     @Override
-    public Integer getUserInRoomId(String userId) {
+    public Long getUserInRoomId(String userId) {
         if (!sessionStatusMap.containsKey(userId)) {
-            throw new CustomSocketException(ErrorCode.NOT_CONNECT_USER.getMessage());
+            throw new CustomSocketException(RoomErrorCode.NOT_CONNECT_USER.getMessage());
         }
 
         return sessionStatusMap.get(userId).getEnterRoomId();

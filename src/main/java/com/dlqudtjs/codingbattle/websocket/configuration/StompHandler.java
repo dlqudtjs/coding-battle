@@ -46,7 +46,7 @@ public class StompHandler implements ChannelInterceptor {
             // userId와 sessionId를 매핑
             WebsocketSessionHolder.addSession(userId, headerAccessor.getSessionId());
             // 입장한 유저는 0번방을 입장 및 방에 입장한 상태로 변경
-            roomService.enterGameRoom(GameSetting.DEFAULT_ROOM_ID.getValue(), userId);
+            roomService.enterGameRoom((long) GameSetting.DEFAULT_ROOM_ID.getValue(), userId);
         }
 
         if (headerAccessor.getCommand() == StompCommand.DISCONNECT) {

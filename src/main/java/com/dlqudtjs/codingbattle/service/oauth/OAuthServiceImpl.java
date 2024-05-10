@@ -3,6 +3,7 @@ package com.dlqudtjs.codingbattle.service.oauth;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
+import com.dlqudtjs.codingbattle.common.constant.OauthSuccessCode;
 import com.dlqudtjs.codingbattle.entity.oauth.Token;
 import com.dlqudtjs.codingbattle.dto.oauth.JwtTokenDto;
 import com.dlqudtjs.codingbattle.dto.oauth.SignInRequestDto;
@@ -16,12 +17,12 @@ import com.dlqudtjs.codingbattle.repository.user.UserRepository;
 import com.dlqudtjs.codingbattle.repository.user.UserRoleRepository;
 import com.dlqudtjs.codingbattle.repository.user.UserSettingRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
-import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistUserIdException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.CustomAuthenticationException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
-import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordCheckException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordNotMatchException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.UserIdNotFoundException;
+import com.dlqudtjs.codingbattle.common.exception.oauth.AlreadyExistUserIdException;
+import com.dlqudtjs.codingbattle.common.exception.oauth.CustomAuthenticationException;
+import com.dlqudtjs.codingbattle.common.exception.oauth.OauthErrorCode;
+import com.dlqudtjs.codingbattle.common.exception.oauth.PasswordCheckException;
+import com.dlqudtjs.codingbattle.common.exception.oauth.PasswordNotMatchException;
+import com.dlqudtjs.codingbattle.common.exception.oauth.UserIdNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +47,7 @@ public class OAuthServiceImpl implements OAuthService {
     @Transactional
     public ResponseDto signIn(SignInRequestDto signInRequestDto) {
         User user = userRepository.findByUserId(signInRequestDto.getUserId())
-                .orElseThrow(() -> new UserIdNotFoundException(ErrorCode.USER_ID_NOT_FOUNT.getMessage()));
+                .orElseThrow(() -> new UserIdNotFoundException(OauthErrorCode.USER_ID_NOT_FOUNT.getMessage()));
 
         validateSignInRequest(signInRequestDto, user);
 
@@ -55,8 +56,8 @@ public class OAuthServiceImpl implements OAuthService {
         saveRefreshToken(jwtTokenDto.getRefreshToken(), user.getId());
 
         return ResponseDto.builder()
-                .status(SuccessCode.SIGN_IN_SUCCESS.getStatus())
-                .message(SuccessCode.SIGN_IN_SUCCESS.getMessage())
+                .status(OauthSuccessCode.SIGN_IN_SUCCESS.getStatus())
+                .message(OauthSuccessCode.SIGN_IN_SUCCESS.getMessage())
                 .data(jwtTokenDto)
                 .build();
     }
@@ -83,8 +84,8 @@ public class OAuthServiceImpl implements OAuthService {
                 .build());
 
         return ResponseDto.builder()
-                .status(SuccessCode.SIGN_UP_SUCCESS.getStatus())
-                .message(SuccessCode.SIGN_UP_SUCCESS.getMessage())
+                .status(OauthSuccessCode.SIGN_UP_SUCCESS.getStatus())
+                .message(OauthSuccessCode.SIGN_UP_SUCCESS.getMessage())
                 .data(savedUser.getId())
                 .build();
     }
@@ -96,14 +97,15 @@ public class OAuthServiceImpl implements OAuthService {
         Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
 
         User user = userRepository.findByUserId(authentication.getName())
-                .orElseThrow(() -> new CustomAuthenticationException(ErrorCode.USER_ID_NOT_FOUNT.getMessage()));
+                .orElseThrow(() -> new CustomAuthenticationException(OauthErrorCode.USER_ID_NOT_FOUNT.getMessage()));
 
         Token token = tokenRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new CustomAuthenticationException(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getMessage()));
+                .orElseThrow(
+                        () -> new CustomAuthenticationException(OauthErrorCode.REFRESH_TOKEN_NOT_FOUND.getMessage()));
 
         // Refresh Token이 일치하지 않을 경우
         if (!token.getRefreshToken().equals(refreshToken.substring(7))) {
-            throw new CustomAuthenticationException(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getMessage());
+            throw new CustomAuthenticationException(OauthErrorCode.REFRESH_TOKEN_NOT_FOUND.getMessage());
         }
 
         JwtTokenDto jwtTokenDto = jwtTokenProvider.generateToken(user);
@@ -111,8 +113,8 @@ public class OAuthServiceImpl implements OAuthService {
         saveRefreshToken(jwtTokenDto.getRefreshToken(), user.getId());
 
         return ResponseDto.builder()
-                .status(SuccessCode.REFRESH_TOKEN_SUCCESS.getStatus())
-                .message(SuccessCode.REFRESH_TOKEN_SUCCESS.getMessage())
+                .status(OauthSuccessCode.REFRESH_TOKEN_SUCCESS.getStatus())
+                .message(OauthSuccessCode.REFRESH_TOKEN_SUCCESS.getMessage())
                 .data(jwtTokenDto)
                 .build();
     }
@@ -121,12 +123,12 @@ public class OAuthServiceImpl implements OAuthService {
     @Transactional
     public ResponseDto checkUserId(String userId) {
         if (isExistUser(userId)) {
-            throw new AlreadyExistUserIdException(ErrorCode.ALREADY_EXIST_USER_ID.getMessage());
+            throw new AlreadyExistUserIdException(OauthErrorCode.ALREADY_EXIST_USER_ID.getMessage());
         }
 
         return ResponseDto.builder()
-                .status(SuccessCode.CHECK_USER_ID_SUCCESS.getStatus())
-                .message(SuccessCode.CHECK_USER_ID_SUCCESS.getMessage())
+                .status(OauthSuccessCode.CHECK_USER_ID_SUCCESS.getStatus())
+                .message(OauthSuccessCode.CHECK_USER_ID_SUCCESS.getMessage())
                 .build();
     }
 
@@ -145,21 +147,21 @@ public class OAuthServiceImpl implements OAuthService {
 
     private void validateSignInRequest(SignInRequestDto signInRequestDto, User user) {
         if (!passwordEncoder.matches(signInRequestDto.getPassword(), user.getPassword())) {
-            throw new PasswordNotMatchException(ErrorCode.PASSWORD_NOT_MATCH.getMessage());
+            throw new PasswordNotMatchException(OauthErrorCode.PASSWORD_NOT_MATCH.getMessage());
         }
     }
 
     private void validateSignUpRequest(SignUpRequestDto signUpRequestDto) {
         if (isExistUser(signUpRequestDto.getUserId())) {
-            throw new AlreadyExistUserIdException(ErrorCode.ALREADY_EXIST_USER_ID.getMessage());
+            throw new AlreadyExistUserIdException(OauthErrorCode.ALREADY_EXIST_USER_ID.getMessage());
         }
 
         if (!passwordCheck(signUpRequestDto.getPassword(), signUpRequestDto.getPasswordCheck())) {
-            throw new PasswordCheckException(ErrorCode.PASSWORD_CHECK.getMessage());
+            throw new PasswordCheckException(OauthErrorCode.PASSWORD_CHECK.getMessage());
         }
 
         if (ProgrammingLanguage.isNotContains(signUpRequestDto.getLanguage())) {
-            throw new CustomAuthenticationException(ErrorCode.LANGUAGE_NOT_FOUND.getMessage());
+            throw new CustomAuthenticationException(OauthErrorCode.LANGUAGE_NOT_FOUND.getMessage());
         }
     }
 

@@ -15,7 +15,7 @@ public class SessionServiceImpl implements SessionService {
     private final SessionStatusRepository sessionStatusRepository;
 
     @Override
-    public void enterRoom(String userId, Integer roomId) {
+    public void enterRoom(String userId, Long roomId) {
         sessionStatusRepository.enterRoom(userId, roomId);
     }
 
@@ -25,7 +25,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public Integer getUserInRoomId(String userId) {
+    public Long getUserInRoomId(String userId) {
         return sessionStatusRepository.getUserInRoomId(userId);
     }
 }

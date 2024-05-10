@@ -9,5 +9,5 @@ public class GameRoomEnterRequestDto {
     @NotBlank
     private String userId;
     @NotBlank
-    private Integer roomId;
+    private Long roomId;
 }

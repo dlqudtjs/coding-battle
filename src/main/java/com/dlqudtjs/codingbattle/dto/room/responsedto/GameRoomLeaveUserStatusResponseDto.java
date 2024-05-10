@@ -6,7 +6,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class GameRoomLeaveUserStatusResponseDto {
-    private Integer roomId;
+    private Long roomId;
     private String userId;
     private Boolean isHost;
 }

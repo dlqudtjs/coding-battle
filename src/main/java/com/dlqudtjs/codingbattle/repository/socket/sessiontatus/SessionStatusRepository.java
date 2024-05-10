@@ -6,9 +6,9 @@ public interface SessionStatusRepository {
 
     void removeSessionStatus(String userId);
 
-    void enterRoom(String userId, Integer roomId);
+    void enterRoom(String userId, Long roomId);
 
     void leaveRoom(String userId);
 
-    Integer getUserInRoomId(String userId);
+    Long getUserInRoomId(String userId);
 }

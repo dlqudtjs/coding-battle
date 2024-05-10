@@ -11,11 +11,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class RoomRepositoryImpl implements RoomRepository {
 
-    private final ConcurrentHashMap<Integer, GameRoom> roomMap = new ConcurrentHashMap<>(
+    private final ConcurrentHashMap<Long, GameRoom> roomMap = new ConcurrentHashMap<>(
             Map.of(
-                    GameSetting.DEFAULT_ROOM_ID.getValue(),
+                    (long) GameSetting.DEFAULT_ROOM_ID.getValue(),
                     GameRoom.builder()
-                            .roomId(GameSetting.DEFAULT_ROOM_ID.getValue())
+                            .roomId((long) GameSetting.DEFAULT_ROOM_ID.getValue())
                             .hostId("admin")
                             .title("default")
                             .password("")
@@ -32,20 +32,20 @@ public class RoomRepositoryImpl implements RoomRepository {
 
     @Override
     public GameRoom save(GameRoom gameRoom) {
-        Integer roomId = availableRoomId();
+        Long roomId = availableRoomId();
         gameRoom.setRoomId(roomId);
         roomMap.put(roomId, gameRoom);
         return roomMap.get(roomId);
     }
 
     @Override
-    public GameRoom joinRoom(String userId, Integer roomId) {
+    public GameRoom joinRoom(String userId, Long roomId) {
         roomMap.get(roomId).addUser(userId);
         return roomMap.get(roomId);
     }
 
     @Override
-    public void leaveRoom(Integer roomId, String userId) {
+    public void leaveRoom(Long roomId, String userId) {
         if (roomMap.get(roomId).isHost(userId)) {
             roomMap.remove(roomId);
             return;
@@ -55,7 +55,7 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    public GameRoom getGameRoom(Integer roomId) {
+    public GameRoom getGameRoom(Long roomId) {
         return roomMap.get(roomId);
     }
 
@@ -65,28 +65,28 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    public GameRoom updateGameRoomStatus(Integer roomId, GameRoom gameRoom) {
+    public GameRoom updateGameRoomStatus(Long roomId, GameRoom gameRoom) {
         roomMap.put(roomId, gameRoom);
         return roomMap.get(roomId);
     }
 
     @Override
-    public Boolean isExistRoom(Integer roomId) {
+    public Boolean isExistRoom(Long roomId) {
         return roomMap.containsKey(roomId);
     }
 
     @Override
-    public Boolean isFullRoom(Integer roomId) {
+    public Boolean isFullRoom(Long roomId) {
         return roomMap.get(roomId).isFull();
     }
 
     @Override
-    public Boolean isExistUserInRoom(String userId, Integer roomId) {
+    public Boolean isExistUserInRoom(String userId, Long roomId) {
         return roomMap.get(roomId).isExistUser(userId);
     }
 
-    private Integer availableRoomId() {
-        int roomId = 1;
+    private Long availableRoomId() {
+        Long roomId = 1L;
 
         while (roomMap.containsKey(roomId)) {
             roomId++;

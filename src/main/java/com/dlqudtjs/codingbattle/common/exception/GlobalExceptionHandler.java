@@ -1,15 +1,15 @@
 package com.dlqudtjs.codingbattle.common.exception;
 
 import com.dlqudtjs.codingbattle.common.dto.ErrorResponseDto;
-import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistNicknameException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistUserIdException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.CustomAuthenticationException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordCheckException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordNotMatchException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.UnknownException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.UserIdNotFoundException;
-import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
-import com.dlqudtjs.codingbattle.websocket.configuration.exception.CustomSocketException;
+import com.dlqudtjs.codingbattle.common.exception.oauth.AlreadyExistNicknameException;
+import com.dlqudtjs.codingbattle.common.exception.oauth.AlreadyExistUserIdException;
+import com.dlqudtjs.codingbattle.common.exception.oauth.CustomAuthenticationException;
+import com.dlqudtjs.codingbattle.common.exception.oauth.PasswordCheckException;
+import com.dlqudtjs.codingbattle.common.exception.oauth.PasswordNotMatchException;
+import com.dlqudtjs.codingbattle.common.exception.oauth.UnknownException;
+import com.dlqudtjs.codingbattle.common.exception.oauth.UserIdNotFoundException;
+import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
+import com.dlqudtjs.codingbattle.common.exception.socket.CustomSocketException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

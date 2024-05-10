@@ -1,11 +1,11 @@
-package com.dlqudtjs.codingbattle.websocket.configuration.exception;
+package com.dlqudtjs.codingbattle.common.exception.socket;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum ErrorCode {
+public enum SocketErrorCode {
 
     JSON_PARSE_ERROR(400, "JSON 파싱 에러");
 

@@ -7,19 +7,19 @@ public interface RoomRepository {
 
     GameRoom save(GameRoom gameRoom);
 
-    GameRoom joinRoom(String userId, Integer roomId);
+    GameRoom joinRoom(String userId, Long roomId);
 
-    void leaveRoom(Integer roomId, String userId);
+    void leaveRoom(Long roomId, String userId);
 
-    GameRoom getGameRoom(Integer roomId);
+    GameRoom getGameRoom(Long roomId);
 
     List<GameRoom> getGameRoomList();
 
-    GameRoom updateGameRoomStatus(Integer roomId, GameRoom gameRoom);
+    GameRoom updateGameRoomStatus(Long roomId, GameRoom gameRoom);
 
-    Boolean isExistRoom(Integer roomId);
+    Boolean isExistRoom(Long roomId);
 
-    Boolean isFullRoom(Integer roomId);
+    Boolean isFullRoom(Long roomId);
 
-    Boolean isExistUserInRoom(String userId, Integer roomId);
+    Boolean isExistUserInRoom(String userId, Long roomId);
 }

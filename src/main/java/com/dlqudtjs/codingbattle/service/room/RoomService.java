@@ -13,20 +13,20 @@ public interface RoomService {
 
     ResponseDto createGameRoom(GameRoomCreateRequestDto requestDto, String userId);
 
-    ResponseDto enterGameRoom(Integer roomId, String userId);
+    ResponseDto enterGameRoom(Long roomId, String userId);
 
-    ResponseDto leaveGameRoom(Integer roomId, String userId);
+    ResponseDto leaveGameRoom(Long roomId, String userId);
 
     void logout(String userId);
 
     ResponseDto getGameRoomList();
 
-    SendToRoomMessageResponseDto parseMessage(Integer roomId, String sessionId,
+    SendToRoomMessageResponseDto parseMessage(Long roomId, String sessionId,
                                               SendToRoomMessageRequestDto requestDto);
 
     GameRoomStatusUpdateMessageResponseDto updateGameRoomStatus(
-            Integer roomId, String sessionId, GameRoomStatusUpdateRequestDto requestDto);
+            Long roomId, String sessionId, GameRoomStatusUpdateRequestDto requestDto);
 
     GameRoomUserStatusUpdateMessageResponseDto updateGameRoomUserStatus(
-            Integer roomId, String sessionId, GameRoomUserStatusUpdateRequestDto requestDto);
+            Long roomId, String sessionId, GameRoomUserStatusUpdateRequestDto requestDto);
 }

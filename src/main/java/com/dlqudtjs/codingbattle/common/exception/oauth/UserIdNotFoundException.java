@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.service.oauth.exception;
+package com.dlqudtjs.codingbattle.common.exception.oauth;
 
 public class UserIdNotFoundException extends RuntimeException {
     public UserIdNotFoundException(String message) {

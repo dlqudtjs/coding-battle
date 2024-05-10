@@ -1,8 +1,8 @@
 package com.dlqudtjs.codingbattle.security;
 
 import com.dlqudtjs.codingbattle.repository.user.UserRepository;
-import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
-import com.dlqudtjs.codingbattle.service.oauth.exception.UserIdNotFoundException;
+import com.dlqudtjs.codingbattle.common.exception.oauth.OauthErrorCode;
+import com.dlqudtjs.codingbattle.common.exception.oauth.UserIdNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,6 +18,6 @@ public class CustomDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String userId) throws UserIdNotFoundException {
 
         return userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserIdNotFoundException(ErrorCode.USER_ID_NOT_FOUNT.getMessage()));
+                .orElseThrow(() -> new UserIdNotFoundException(OauthErrorCode.USER_ID_NOT_FOUNT.getMessage()));
     }
 }

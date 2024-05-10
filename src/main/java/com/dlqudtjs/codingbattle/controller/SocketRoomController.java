@@ -8,9 +8,9 @@ import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseD
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
-import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
-import com.dlqudtjs.codingbattle.websocket.configuration.exception.CustomSocketException;
-import com.dlqudtjs.codingbattle.websocket.configuration.exception.ErrorCode;
+import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
+import com.dlqudtjs.codingbattle.common.exception.socket.CustomSocketException;
+import com.dlqudtjs.codingbattle.common.exception.socket.SocketErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -29,7 +29,7 @@ public class SocketRoomController {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @MessageMapping("/room/message/{roomId}")
-    public void sendToRoom(@DestinationVariable("roomId") Integer roomId, String message,
+    public void sendToRoom(@DestinationVariable("roomId") Long roomId, String message,
                            SimpMessageHeaderAccessor headerAccessor) {
         // json -> dto
         SendToRoomMessageRequestDto sendToRoomMessageRequestDto =
@@ -47,12 +47,12 @@ public class SocketRoomController {
         }
     }
 
-    public void sendToRoom(Integer roomId, Object responseDto) {
+    public void sendToRoom(Long roomId, Object responseDto) {
         messagingTemplate.convertAndSend("/topic/room/" + roomId, responseDto);
     }
 
     @MessageMapping("/room/{roomId}/update/room-status")
-    public void updateRoom(@DestinationVariable("roomId") Integer roomId, String message,
+    public void updateRoom(@DestinationVariable("roomId") Long roomId, String message,
                            SimpMessageHeaderAccessor headerAccessor) {
         // json -> dto
         GameRoomStatusUpdateRequestDto gameRoomStatusUpdateRequestDto =
@@ -67,14 +67,14 @@ public class SocketRoomController {
             // 방에 메시지 전송
             messagingTemplate.convertAndSend("/topic/room/" + roomId, responseDto);
         } catch (Custom4XXException e) {
-            throw new CustomSocketException(ErrorCode.JSON_PARSE_ERROR.getMessage());
+            throw new CustomSocketException(SocketErrorCode.JSON_PARSE_ERROR.getMessage());
         } catch (CustomRoomException e) {
             throw new CustomSocketException(e.getMessage());
         }
     }
 
     @MessageMapping("/room/{roomId}/update/user-status")
-    public void updateUserStatus(@DestinationVariable("roomId") Integer roomId, String message,
+    public void updateUserStatus(@DestinationVariable("roomId") Long roomId, String message,
                                  SimpMessageHeaderAccessor headerAccessor) {
         // json -> dto
         GameRoomUserStatusUpdateRequestDto gameRoomUserStatusUpdateRequestDto =
@@ -89,7 +89,7 @@ public class SocketRoomController {
             // 방에 메시지 전송
             messagingTemplate.convertAndSend("/topic/room/" + roomId, responseDto);
         } catch (Custom4XXException e) {
-            throw new CustomSocketException(ErrorCode.JSON_PARSE_ERROR.getMessage());
+            throw new CustomSocketException(SocketErrorCode.JSON_PARSE_ERROR.getMessage());
         } catch (CustomRoomException e) {
             throw new CustomSocketException(e.getMessage());
         }
@@ -105,7 +105,7 @@ public class SocketRoomController {
         try {
             return objectMapper.readValue(message, requestDto.getClass());
         } catch (Exception e) {
-            throw new CustomSocketException(ErrorCode.JSON_PARSE_ERROR.getMessage());
+            throw new CustomSocketException(SocketErrorCode.JSON_PARSE_ERROR.getMessage());
         }
     }
 }

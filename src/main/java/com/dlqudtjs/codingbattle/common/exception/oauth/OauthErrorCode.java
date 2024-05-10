@@ -1,11 +1,11 @@
-package com.dlqudtjs.codingbattle.service.oauth.exception;
+package com.dlqudtjs.codingbattle.common.exception.oauth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum ErrorCode {
+public enum OauthErrorCode {
 
     ALREADY_EXIST_USER_ID(409, "이미 존재하는 아이디입니다."),
     PASSWORD_CHECK(400, "비밀번호가 일치하지 않습니다."),

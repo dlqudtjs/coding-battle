@@ -1,11 +1,11 @@
-package com.dlqudtjs.codingbattle.service.oauth;
+package com.dlqudtjs.codingbattle.common.constant;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum SuccessCode {
+public enum OauthSuccessCode {
 
     SIGN_UP_SUCCESS(200, "회원가입 성공"),
     SIGN_IN_SUCCESS(200, "로그인 성공"),

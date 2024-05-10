@@ -4,6 +4,7 @@ import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.MessageType;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
+import com.dlqudtjs.codingbattle.common.constant.RoomSuccessCode;
 import com.dlqudtjs.codingbattle.entity.room.GameRoom;
 import com.dlqudtjs.codingbattle.entity.room.GameRoomUserStatus;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomCreateRequestDto;
@@ -18,8 +19,8 @@ import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseD
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
-import com.dlqudtjs.codingbattle.service.room.exception.CustomRoomException;
-import com.dlqudtjs.codingbattle.service.room.exception.ErrorCode;
+import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
+import com.dlqudtjs.codingbattle.common.exception.room.RoomErrorCode;
 import com.dlqudtjs.codingbattle.service.session.SessionService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import java.sql.Timestamp;
@@ -39,7 +40,7 @@ public class RoomServiceImpl implements RoomService {
         validateCreateGameRoomRequest(requestDto, userId);
 
         // 방 생성시 기존 방 나가기 (default 방 포함)
-        Integer alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
+        Long alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
         GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto =
                 leaveRoom(alreadyEnterRoomId, userId);
 
@@ -60,20 +61,20 @@ public class RoomServiceImpl implements RoomService {
         );
 
         return ResponseDto.builder()
-                .status(SuccessCode.CREATE_GAME_ROOM_SUCCESS.getStatus())
-                .message(SuccessCode.CREATE_GAME_ROOM_SUCCESS.getMessage())
+                .status(RoomSuccessCode.CREATE_GAME_ROOM_SUCCESS.getStatus())
+                .message(RoomSuccessCode.CREATE_GAME_ROOM_SUCCESS.getMessage())
                 .data(gameRoomInfoResponseDto)
                 .build();
     }
 
     @Override
-    public ResponseDto enterGameRoom(Integer roomId, String userId) {
+    public ResponseDto enterGameRoom(Long roomId, String userId) {
         validateEnterGameRoomRequest(roomId, userId);
 
-        Integer alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
+        Long alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
         // 이미 입장한 방에 다시 입장할 때 예외발생
         if (alreadyEnterRoomId.equals(roomId)) {
-            throw new CustomRoomException(ErrorCode.SAME_USER_IN_ROOM.getMessage());
+            throw new CustomRoomException(RoomErrorCode.SAME_USER_IN_ROOM.getMessage());
         }
 
         // 기존 방 나가기 (default 방 포함)
@@ -91,14 +92,14 @@ public class RoomServiceImpl implements RoomService {
         );
 
         return ResponseDto.builder()
-                .status(SuccessCode.JOIN_GAME_ROOM_SUCCESS.getStatus())
-                .message(SuccessCode.JOIN_GAME_ROOM_SUCCESS.getMessage())
+                .status(RoomSuccessCode.JOIN_GAME_ROOM_SUCCESS.getStatus())
+                .message(RoomSuccessCode.JOIN_GAME_ROOM_SUCCESS.getMessage())
                 .data(gameRoomInfoResponseDto)
                 .build();
     }
 
     @Override
-    public ResponseDto leaveGameRoom(Integer roomId, String userId) {
+    public ResponseDto leaveGameRoom(Long roomId, String userId) {
         validateLeaveGameRoomRequest(roomId, userId);
 
         GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto = leaveRoom(roomId, userId);
@@ -106,19 +107,19 @@ public class RoomServiceImpl implements RoomService {
 
         // 상태 변경
         return ResponseDto.builder()
-                .status(SuccessCode.LEAVE_GAME_ROOM_SUCCESS.getStatus())
-                .message(SuccessCode.LEAVE_GAME_ROOM_SUCCESS.getMessage())
+                .status(RoomSuccessCode.LEAVE_GAME_ROOM_SUCCESS.getStatus())
+                .message(RoomSuccessCode.LEAVE_GAME_ROOM_SUCCESS.getMessage())
                 .data(leaveUserStatusResponseDto)
                 .build();
     }
 
     @Override
     public void logout(String userId) {
-        Integer roomId = sessionService.getUserInRoomId(userId);
+        Long roomId = sessionService.getUserInRoomId(userId);
         leaveRoom(roomId, userId);
 
         // default 방도 나가기
-        roomRepository.leaveRoom(GameSetting.DEFAULT_ROOM_ID.getValue(), userId);
+        roomRepository.leaveRoom((long) GameSetting.DEFAULT_ROOM_ID.getValue(), userId);
     }
 
     @Override
@@ -142,8 +143,8 @@ public class RoomServiceImpl implements RoomService {
                 .toList();
 
         return ResponseDto.builder()
-                .status(SuccessCode.GET_GAME_ROOM_LIST_SUCCESS.getStatus())
-                .message(SuccessCode.GET_GAME_ROOM_LIST_SUCCESS.getMessage())
+                .status(RoomSuccessCode.GET_GAME_ROOM_LIST_SUCCESS.getStatus())
+                .message(RoomSuccessCode.GET_GAME_ROOM_LIST_SUCCESS.getMessage())
                 .data(responseDtoList)
                 .build();
     }
@@ -152,7 +153,7 @@ public class RoomServiceImpl implements RoomService {
      방에 보내는 메시지의 유효성을 검사하고 SendToRoomMessageResponseDto로 변환하는 메서드
      */
     @Override
-    public SendToRoomMessageResponseDto parseMessage(Integer roomId, String sessionId,
+    public SendToRoomMessageResponseDto parseMessage(Long roomId, String sessionId,
                                                      SendToRoomMessageRequestDto requestDto) {
         String userId = WebsocketSessionHolder.getUserIdFromSessionId(sessionId);
 
@@ -170,7 +171,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public GameRoomStatusUpdateMessageResponseDto updateGameRoomStatus(
-            Integer roomId, String sessionId, GameRoomStatusUpdateRequestDto requestDto) {
+            Long roomId, String sessionId, GameRoomStatusUpdateRequestDto requestDto) {
         GameRoom gameRoom = validateUpdateGameRoomStatusRequest(roomId, sessionId, requestDto);
 
         GameRoom updatedGameRoom = roomRepository.updateGameRoomStatus(
@@ -185,7 +186,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public GameRoomUserStatusUpdateMessageResponseDto updateGameRoomUserStatus(
-            Integer roomId, String sessionId,
+            Long roomId, String sessionId,
             GameRoomUserStatusUpdateRequestDto requestDto) {
         validateUpdateGameRoomUserStatusRequest(roomId, sessionId, requestDto);
 
@@ -206,7 +207,7 @@ public class RoomServiceImpl implements RoomService {
      * 방장이 아닐 경우 방을 나가고, 유저의 상태를 default 으로 변경
      * 방장일 경우 방을 삭제하고, 방에 있던 유저들의 상태를 default 방으로 변경
      */
-    private GameRoomLeaveUserStatusResponseDto leaveRoom(Integer roomId, String userId) {
+    private GameRoomLeaveUserStatusResponseDto leaveRoom(Long roomId, String userId) {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
 
         // 방을 삭제해야 된다면 삭제하기 전 방에 있는 모든 유저 leaveRoom
@@ -229,7 +230,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     // 방에 있는 모든 유저 leaveRoom 하는 메서드
-    private void leaveAllUserInRoom(Integer roomId, String hostId) {
+    private void leaveAllUserInRoom(Long roomId, String hostId) {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
         for (String userId : gameRoom.getUserList()) {
             if (userId.equals(hostId)) {
@@ -242,8 +243,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     private void enterDefaultRoom(String userId) {
-        roomRepository.joinRoom(userId, GameSetting.DEFAULT_ROOM_ID.getValue());
-        sessionService.enterRoom(userId, GameSetting.DEFAULT_ROOM_ID.getValue());
+        roomRepository.joinRoom(userId, (long) GameSetting.DEFAULT_ROOM_ID.getValue());
+        sessionService.enterRoom(userId, (long) GameSetting.DEFAULT_ROOM_ID.getValue());
     }
 
     private GameRoomInfoResponseDto CreateGameRoomResponseDto(
@@ -258,7 +259,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     private void validateUpdateGameRoomUserStatusRequest(
-            Integer roomId, String sessionId, GameRoomUserStatusUpdateRequestDto requestDto) {
+            Long roomId, String sessionId, GameRoomUserStatusUpdateRequestDto requestDto) {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
         String userId = WebsocketSessionHolder.getUserIdFromSessionId(sessionId);
 
@@ -266,19 +267,19 @@ public class RoomServiceImpl implements RoomService {
 
         // 세션 아이디와 요청한 유저 아이디가 일치하지 않으면
         if (!requestDto.getUserId().equals(userId)) {
-            throw new CustomRoomException(ErrorCode.INVALID_REQUEST.getMessage());
+            throw new CustomRoomException(RoomErrorCode.INVALID_REQUEST.getMessage());
         }
 
         // 밤에 설정된 language외 다른 language로 변경하려고 하면
         ProgrammingLanguage language = gameRoom.getLanguage();
         if (!language.equals(ProgrammingLanguage.DEFAULT) &&
                 !language.equals(ProgrammingLanguage.valueOf(requestDto.getLanguage().toUpperCase()))) {
-            throw new CustomRoomException(ErrorCode.INVALID_REQUEST.getMessage());
+            throw new CustomRoomException(RoomErrorCode.INVALID_REQUEST.getMessage());
         }
     }
 
     private GameRoom validateUpdateGameRoomStatusRequest(
-            Integer roomId, String sessionId, GameRoomStatusUpdateRequestDto requestDto) {
+            Long roomId, String sessionId, GameRoomStatusUpdateRequestDto requestDto) {
 
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
         String userId = WebsocketSessionHolder.getUserIdFromSessionId(sessionId);
@@ -287,37 +288,37 @@ public class RoomServiceImpl implements RoomService {
 
         // 방장과 세션 아이디가 일치하지 않으면 (웹 소켓 세션에 존재하지 않으면)
         if (!gameRoom.isHost(userId)) {
-            throw new CustomRoomException(ErrorCode.INVALID_REQUEST.getMessage());
+            throw new CustomRoomException(RoomErrorCode.INVALID_REQUEST.getMessage());
         }
 
         // requestDto의 hostId와 userId가 일치하지 않으면
         if (!requestDto.getHostId().equals(userId)) {
-            throw new CustomRoomException(ErrorCode.INVALID_REQUEST.getMessage());
+            throw new CustomRoomException(RoomErrorCode.INVALID_REQUEST.getMessage());
         }
 
         return gameRoom;
     }
 
-    private void validateLeaveGameRoomRequest(Integer roomId, String userId) {
+    private void validateLeaveGameRoomRequest(Long roomId, String userId) {
         validateRoomExistence(roomId);
         validateUserSession(userId);
         validateUserInRoom(roomId, userId);
     }
 
-    private void validateEnterGameRoomRequest(Integer roomId, String userId) {
+    private void validateEnterGameRoomRequest(Long roomId, String userId) {
         validateUserSession(userId);
         validateRoomExistence(roomId);
 
         // 방이 꽉 찼으면
         if (roomRepository.isFullRoom(roomId)) {
-            throw new CustomRoomException(ErrorCode.FULL_ROOM.getMessage());
+            throw new CustomRoomException(RoomErrorCode.FULL_ROOM.getMessage());
         }
     }
 
     private void validateCreateGameRoomRequest(GameRoomCreateRequestDto requestDto, String userId) {
         // userId와 requestDto의 hostId가 일치하지 않으면
         if (!userId.equals(requestDto.getHostId())) {
-            throw new CustomRoomException(ErrorCode.INVALID_REQUEST.getMessage());
+            throw new CustomRoomException(RoomErrorCode.INVALID_REQUEST.getMessage());
         }
 
         // 요청한 유저가 웹 소켓 세션에 존재하지 않으면
@@ -327,21 +328,21 @@ public class RoomServiceImpl implements RoomService {
     // 유저 세션이 존재하지 않으면
     private void validateUserSession(String userId) {
         if (WebsocketSessionHolder.isNotConnected(userId)) {
-            throw new CustomRoomException(ErrorCode.NOT_CONNECT_USER.getMessage());
+            throw new CustomRoomException(RoomErrorCode.NOT_CONNECT_USER.getMessage());
         }
     }
 
     // 방이 존재하지 않으면
-    private void validateRoomExistence(Integer roomId) {
+    private void validateRoomExistence(Long roomId) {
         if (!roomRepository.isExistRoom(roomId)) {
-            throw new CustomRoomException(ErrorCode.NOT_EXIST_ROOM.getMessage());
+            throw new CustomRoomException(RoomErrorCode.NOT_EXIST_ROOM.getMessage());
         }
     }
 
     // 방에 유저가 존재하지 않으면
-    private void validateUserInRoom(Integer roomId, String userId) {
+    private void validateUserInRoom(Long roomId, String userId) {
         if (!roomRepository.isExistUserInRoom(userId, roomId)) {
-            throw new CustomRoomException(ErrorCode.NOT_EXIST_USER_IN_ROOM.getMessage());
+            throw new CustomRoomException(RoomErrorCode.NOT_EXIST_USER_IN_ROOM.getMessage());
         }
     }
 }

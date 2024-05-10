@@ -7,10 +7,10 @@ import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
 import com.dlqudtjs.codingbattle.entity.user.UserRole;
 import com.dlqudtjs.codingbattle.repository.user.UserRepository;
 import com.dlqudtjs.codingbattle.service.oauth.OAuthServiceImpl;
-import com.dlqudtjs.codingbattle.service.oauth.SuccessCode;
-import com.dlqudtjs.codingbattle.service.oauth.exception.AlreadyExistUserIdException;
-import com.dlqudtjs.codingbattle.service.oauth.exception.ErrorCode;
-import com.dlqudtjs.codingbattle.service.oauth.exception.PasswordCheckException;
+import com.dlqudtjs.codingbattle.common.constant.OauthSuccessCode;
+import com.dlqudtjs.codingbattle.common.exception.oauth.AlreadyExistUserIdException;
+import com.dlqudtjs.codingbattle.common.exception.oauth.OauthErrorCode;
+import com.dlqudtjs.codingbattle.common.exception.oauth.PasswordCheckException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,7 +56,7 @@ public class OAuthServiceTest {
 
         // then
         Assertions.assertThat(responseDto.getStatus()).isEqualTo(200);
-        Assertions.assertThat(responseDto.getMessage()).isEqualTo(SuccessCode.SIGN_UP_SUCCESS.getMessage());
+        Assertions.assertThat(responseDto.getMessage()).isEqualTo(OauthSuccessCode.SIGN_UP_SUCCESS.getMessage());
         Assertions.assertThat(responseDto.getData()).isEqualTo(1L);
     }
 
@@ -75,7 +75,7 @@ public class OAuthServiceTest {
         // when & then
         Assertions.assertThatThrownBy(() -> oAuthService.singUp(signUpRequestDto))
                 .isInstanceOf(AlreadyExistUserIdException.class)
-                .hasMessage(ErrorCode.ALREADY_EXIST_USER_ID.getMessage());
+                .hasMessage(OauthErrorCode.ALREADY_EXIST_USER_ID.getMessage());
     }
 
     @Test
@@ -91,6 +91,6 @@ public class OAuthServiceTest {
         // when & then
         Assertions.assertThatThrownBy(() -> oAuthService.singUp(signUpRequestDto))
                 .isInstanceOf(PasswordCheckException.class)
-                .hasMessage(ErrorCode.PASSWORD_CHECK.getMessage());
+                .hasMessage(OauthErrorCode.PASSWORD_CHECK.getMessage());
     }
 }

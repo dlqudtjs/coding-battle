@@ -1,11 +1,11 @@
-package com.dlqudtjs.codingbattle.service.room;
+package com.dlqudtjs.codingbattle.common.constant;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum SuccessCode {
+public enum RoomSuccessCode {
 
     CREATE_GAME_ROOM_SUCCESS(201, "대기방 생성 성공"),
     JOIN_GAME_ROOM_SUCCESS(200, "대기방 입장 성공"),

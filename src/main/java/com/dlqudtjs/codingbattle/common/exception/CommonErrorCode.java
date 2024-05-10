@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum ErrorCode {
+public enum CommonErrorCode {
 
     INVALID_INPUT_VALUE(400, "유효하지 않은 값입니다."),
     ;

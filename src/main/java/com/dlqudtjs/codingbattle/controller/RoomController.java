@@ -80,7 +80,7 @@ public class RoomController {
     }
 
     @PostMapping("/v1/gameRoom/leave/{roomId}")
-    public ResponseEntity<ResponseDto> leaveRoom(@PathVariable("roomId") Integer roomId,
+    public ResponseEntity<ResponseDto> leaveRoom(@PathVariable("roomId") Long roomId,
                                                  @RequestHeader("Authorization") String token) {
         String userId = jwtTokenProvider.getUserName(token);
         ResponseDto responseDto = gameRoomService.leaveGameRoom(roomId, userId);

@@ -9,18 +9,18 @@ import lombok.Getter;
 @Getter
 public class SessionStatus {
 
-    private Integer enterRoomId;
+    private Long enterRoomId;
     // todo : 추후 세션 상태 추가 (ex. 방해 금지)
 
     public SessionStatus() {
-        this.enterRoomId = GameSetting.NO_ROOM_ID.getValue();
+        this.enterRoomId = (long) GameSetting.NO_ROOM_ID.getValue();
     }
 
-    public void enterRoom(Integer roomId) {
+    public void enterRoom(Long roomId) {
         this.enterRoomId = roomId;
     }
 
     public void leaveRoom() {
-        this.enterRoomId = GameSetting.NO_ROOM_ID.getValue();
+        this.enterRoomId = (long) GameSetting.NO_ROOM_ID.getValue();
     }
 }
