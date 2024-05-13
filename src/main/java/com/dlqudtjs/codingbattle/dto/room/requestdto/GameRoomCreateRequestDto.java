@@ -2,6 +2,7 @@ package com.dlqudtjs.codingbattle.dto.room.requestdto;
 
 import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
 
+import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.entity.room.GameRoom;
@@ -59,7 +60,7 @@ public class GameRoomCreateRequestDto {
                 .password(password)
                 .language(validateLanguage(language))
                 .isStarted(false)
-                .problemLevel(problemLevel)
+                .problemLevel(ProblemLevelType.getProblemLevel(problemLevel))
                 .maxUserCount(maxUserCount)
                 .maxSubmitCount(maxSubmitCount)
                 .limitTime(limitTime)

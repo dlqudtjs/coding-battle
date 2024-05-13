@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.repository.socket.room;
 
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
+import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.entity.room.GameRoom;
 import java.util.List;
@@ -21,7 +22,7 @@ public class RoomRepositoryImpl implements RoomRepository {
                             .password("")
                             .language(ProgrammingLanguage.DEFAULT)
                             .isStarted(false)
-                            .problemLevel(0)
+                            .problemLevel(ProblemLevelType.BRONZE1)
                             .maxUserCount(GameSetting.DEFAULT_ROOM_MAX_USER_COUNT.getValue())
                             .maxSubmitCount(0)
                             .limitTime(0)

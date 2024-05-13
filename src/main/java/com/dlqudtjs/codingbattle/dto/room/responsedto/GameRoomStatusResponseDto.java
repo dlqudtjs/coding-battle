@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.dto.room.responsedto;
 
+import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,7 +14,7 @@ public class GameRoomStatusResponseDto {
     private Boolean isLocked;
     private Boolean isStarted;
     private Integer maxUserCount;
-    private Integer problemLevel;
+    private ProblemLevelType problemLevel;
     private Integer maxSubmitCount;
     private Integer limitTime;
 }
