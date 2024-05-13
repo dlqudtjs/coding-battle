@@ -8,6 +8,7 @@ import com.dlqudtjs.codingbattle.dto.room.requestdto.SendToRoomMessageRequestDto
 import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
+import com.dlqudtjs.codingbattle.entity.room.GameRoom;
 
 public interface RoomService {
 
@@ -21,7 +22,7 @@ public interface RoomService {
 
     ResponseDto getGameRoomList();
 
-    void startGame(Long roomId);
+    GameRoom startGame(Long roomId);
 
     Boolean isExistRoom(Long roomId);
 

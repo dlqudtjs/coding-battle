@@ -4,6 +4,7 @@ import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
 import com.dlqudtjs.codingbattle.common.exception.room.RoomErrorCode;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.GameStartRequestDto;
+import com.dlqudtjs.codingbattle.entity.room.GameRoom;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class GameServiceImpl implements GameService {
         validateGameStartRequest(requestDto);
 
         // 게임 시작
-        roomService.startGame(requestDto.getRoomId());
+        GameRoom gameRoom = roomService.startGame(requestDto.getRoomId());
 
         return null;
     }

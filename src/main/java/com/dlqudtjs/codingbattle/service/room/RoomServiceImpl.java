@@ -117,14 +117,14 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void startGame(Long roomId) {
+    public GameRoom startGame(Long roomId) {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
-        
+
         if (canStartable(gameRoom)) {
             throw new Custom4XXException(GAME_START_ERROR.getMessage(), GAME_START_ERROR.getStatus());
         }
 
-
+        return gameRoom;
     }
 
 
