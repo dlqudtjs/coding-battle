@@ -22,7 +22,7 @@ public class GameServiceImpl implements GameService {
         validateGameStartRequest(requestDto);
 
         // 게임 시작 가능한지 확인
-        if (roomService.isStartable(requestDto.getRoomId())) {
+        if (roomService.canStartable(requestDto.getRoomId())) {
             throw new Custom4XXException(GAME_START_ERROR.getMessage(), GAME_START_ERROR.getStatus());
         }
 
