@@ -118,18 +118,15 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public void startGame(Long roomId) {
-        if (canStartable(roomId)) {
+        GameRoom gameRoom = roomRepository.getGameRoom(roomId);
+        
+        if (canStartable(gameRoom)) {
             throw new Custom4XXException(GAME_START_ERROR.getMessage(), GAME_START_ERROR.getStatus());
         }
+
+
     }
 
-    public Boolean canStartable(Long roomId) {
-        GameRoom gameRoom = roomRepository.getGameRoom(roomId);
-
-        return gameRoom != null &&
-                gameRoom.isAllUserReady() &&
-                gameRoom.isUserAndRoomLanguageMatch();
-    }
 
     @Override
     public Boolean isExistRoom(Long roomId) {
@@ -223,6 +220,16 @@ public class RoomServiceImpl implements RoomService {
                         .language(updatedUserStatus.getUseLanguage().getLanguageName())
                         .build())
                 .build();
+    }
+
+    /*
+     * 게임 시작 가능한지 확인하는 메서드
+     * 모든 유저가 준비 상태이고, 방에 있는 모든 유저의 언어가 일치하면 true 반환
+     */
+    public Boolean canStartable(GameRoom gameRoom) {
+        return gameRoom != null &&
+                gameRoom.isAllUserReady() &&
+                gameRoom.isUserAndRoomLanguageMatch();
     }
 
     /*
