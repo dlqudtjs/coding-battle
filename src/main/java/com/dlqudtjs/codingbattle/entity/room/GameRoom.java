@@ -66,6 +66,11 @@ public class GameRoom {
         return userMap.keySet().stream().toList();
     }
 
+    public Boolean isAllUserReady() {
+        return userMap.values().stream()
+                .allMatch(GameRoomUserStatus::getIsReady);
+    }
+
     public GameRoom updateGameRoomStatus(GameRoomStatusUpdateRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.password = requestDto.getPassword();
