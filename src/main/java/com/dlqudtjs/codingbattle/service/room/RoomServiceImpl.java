@@ -79,7 +79,7 @@ public class RoomServiceImpl implements RoomService {
 
         // 기존 방 나가기 (default 방 포함)
         GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto = null;
-        if (!alreadyEnterRoomId.equals(GameSetting.NO_ROOM_ID.getValue())) {
+        if (!alreadyEnterRoomId.equals((long) GameSetting.NO_ROOM_ID.getValue())) {
             leaveUserStatusResponseDto = leaveRoom(alreadyEnterRoomId, userId);
         }
 
