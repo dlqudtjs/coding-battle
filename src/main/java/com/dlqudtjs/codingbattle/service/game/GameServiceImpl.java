@@ -7,6 +7,7 @@ import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
 import com.dlqudtjs.codingbattle.common.exception.room.RoomErrorCode;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.GameStartRequestDto;
+import com.dlqudtjs.codingbattle.entity.room.GameRoom;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,24 @@ public class GameServiceImpl implements GameService {
         return null;
     }
 
+    // 게임 시작할 수 없는지 확인
+    private boolean isNotGameStartable(Long roomId) {
+        GameRoom gameRoom = roomService.getGameRoom(roomId);
+
+        if (isNotAllUserReady(gameRoom)) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    // 모든 유저가 레디되었는지 확인
+    private boolean isNotAllUserReady(GameRoom gameRoom) {
+        return !gameRoom.isAllUserReady();
+    }
+
+    // 게임 시작 요청 검증
     private void validateGameStartRequest(GameStartRequestDto requestDto) {
         validateRoomExistence(requestDto.getRoomId());
     }
@@ -38,18 +57,5 @@ public class GameServiceImpl implements GameService {
         if (roomService.isExistRoom(roomId)) {
             throw new CustomRoomException(RoomErrorCode.NOT_EXIST_ROOM.getMessage());
         }
-    }
-
-    // 게임 시작할 수 없는지 확인
-    private boolean isNotGameStartable(Long roomId) {
-        if (!isAllUserReady(roomId)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private boolean isAllUserReady(Long roomId) {
-        return roomService.isAllUserReady(roomId);
     }
 }
