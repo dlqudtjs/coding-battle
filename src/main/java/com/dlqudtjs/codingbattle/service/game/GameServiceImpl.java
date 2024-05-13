@@ -32,7 +32,7 @@ public class GameServiceImpl implements GameService {
 
     // 방이 존재하지 않으면
     private void validateRoomExistence(Long roomId) {
-        if (roomService.isExistRoom(roomId)) {
+        if (!roomService.isExistRoom(roomId)) {
             throw new CustomRoomException(RoomErrorCode.NOT_EXIST_ROOM.getMessage());
         }
     }
