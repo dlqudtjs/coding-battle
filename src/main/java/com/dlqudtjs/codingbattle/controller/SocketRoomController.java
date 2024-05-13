@@ -1,6 +1,10 @@
 package com.dlqudtjs.codingbattle.controller;
 
+import static com.dlqudtjs.codingbattle.common.exception.socket.SocketErrorCode.JSON_PARSE_ERROR;
+
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
+import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
+import com.dlqudtjs.codingbattle.common.exception.socket.CustomSocketException;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.SendToRoomMessageRequestDto;
@@ -8,9 +12,6 @@ import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseD
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
-import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
-import com.dlqudtjs.codingbattle.common.exception.socket.CustomSocketException;
-import com.dlqudtjs.codingbattle.common.exception.socket.SocketErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -67,7 +68,7 @@ public class SocketRoomController {
             // 방에 메시지 전송
             messagingTemplate.convertAndSend("/topic/room/" + roomId, responseDto);
         } catch (Custom4XXException e) {
-            throw new CustomSocketException(SocketErrorCode.JSON_PARSE_ERROR.getMessage());
+            throw new CustomSocketException(JSON_PARSE_ERROR.getMessage());
         } catch (CustomRoomException e) {
             throw new CustomSocketException(e.getMessage());
         }
@@ -89,7 +90,7 @@ public class SocketRoomController {
             // 방에 메시지 전송
             messagingTemplate.convertAndSend("/topic/room/" + roomId, responseDto);
         } catch (Custom4XXException e) {
-            throw new CustomSocketException(SocketErrorCode.JSON_PARSE_ERROR.getMessage());
+            throw new Custom4XXException(JSON_PARSE_ERROR.getMessage(), JSON_PARSE_ERROR.getStatus());
         } catch (CustomRoomException e) {
             throw new CustomSocketException(e.getMessage());
         }
@@ -105,7 +106,7 @@ public class SocketRoomController {
         try {
             return objectMapper.readValue(message, requestDto.getClass());
         } catch (Exception e) {
-            throw new CustomSocketException(SocketErrorCode.JSON_PARSE_ERROR.getMessage());
+            throw new CustomSocketException(JSON_PARSE_ERROR.getMessage());
         }
     }
 }

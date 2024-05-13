@@ -1,8 +1,9 @@
 package com.dlqudtjs.codingbattle.dto.room.requestdto;
 
+import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
+
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
-import com.dlqudtjs.codingbattle.common.exception.CommonErrorCode;
 import lombok.Getter;
 
 @Getter
@@ -13,11 +14,11 @@ public class GameRoomUserStatusUpdateRequestDto {
 
     public void validate() {
         if (userId == null || isReady == null || language == null) {
-            throw new Custom4XXException(CommonErrorCode.INVALID_INPUT_VALUE.getMessage());
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
         if (ProgrammingLanguage.isNotContains(language)) {
-            throw new Custom4XXException(CommonErrorCode.INVALID_INPUT_VALUE.getMessage());
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
     }
 }
