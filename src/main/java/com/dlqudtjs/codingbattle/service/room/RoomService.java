@@ -21,7 +21,7 @@ public interface RoomService {
 
     ResponseDto getGameRoomList();
 
-    Boolean canStartable(Long roomId);
+    void startGame(Long roomId);
 
     Boolean isExistRoom(Long roomId);
 

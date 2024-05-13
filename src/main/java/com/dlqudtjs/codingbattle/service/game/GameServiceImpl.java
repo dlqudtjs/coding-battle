@@ -1,9 +1,6 @@
 package com.dlqudtjs.codingbattle.service.game;
 
-import static com.dlqudtjs.codingbattle.common.exception.game.GameErrorCode.GAME_START_ERROR;
-
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
-import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
 import com.dlqudtjs.codingbattle.common.exception.room.RoomErrorCode;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.GameStartRequestDto;
@@ -21,10 +18,8 @@ public class GameServiceImpl implements GameService {
     public ResponseDto startGame(GameStartRequestDto requestDto) {
         validateGameStartRequest(requestDto);
 
-        // 게임 시작 가능한지 확인
-        if (roomService.canStartable(requestDto.getRoomId())) {
-            throw new Custom4XXException(GAME_START_ERROR.getMessage(), GAME_START_ERROR.getStatus());
-        }
+        // 게임 시작
+        roomService.startGame(requestDto.getRoomId());
 
         return null;
     }

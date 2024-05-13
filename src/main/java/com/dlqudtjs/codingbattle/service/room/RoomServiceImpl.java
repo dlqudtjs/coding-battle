@@ -1,10 +1,13 @@
 package com.dlqudtjs.codingbattle.service.room;
 
+import static com.dlqudtjs.codingbattle.common.exception.game.GameErrorCode.GAME_START_ERROR;
+
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.MessageType;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.constant.RoomSuccessCode;
+import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.entity.room.GameRoom;
 import com.dlqudtjs.codingbattle.entity.room.GameRoomUserStatus;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomCreateRequestDto;
@@ -113,8 +116,13 @@ public class RoomServiceImpl implements RoomService {
                 .build();
     }
 
-
     @Override
+    public void startGame(Long roomId) {
+        if (canStartable(roomId)) {
+            throw new Custom4XXException(GAME_START_ERROR.getMessage(), GAME_START_ERROR.getStatus());
+        }
+    }
+
     public Boolean canStartable(Long roomId) {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
 
