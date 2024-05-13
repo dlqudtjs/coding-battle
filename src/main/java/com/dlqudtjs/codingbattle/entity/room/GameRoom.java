@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.entity.room;
 
+import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomUserStatusUpdateRequestDto;
@@ -23,7 +24,7 @@ public class GameRoom {
     private String password;
     private ProgrammingLanguage language;
     private Boolean isStarted;
-    private Integer problemLevel;
+    private ProblemLevelType problemLevel;
     private Integer maxUserCount;
     private Integer maxSubmitCount;
     private Integer limitTime;
@@ -79,7 +80,7 @@ public class GameRoom {
         this.title = requestDto.getTitle();
         this.password = requestDto.getPassword();
         this.language = ProgrammingLanguage.valueOf(requestDto.getLanguage().toUpperCase());
-        this.problemLevel = requestDto.getProblemLevel();
+        this.problemLevel = ProblemLevelType.getProblemLevel(requestDto.getProblemLevel());
         this.maxUserCount = requestDto.getMaxUserCount();
         this.maxSubmitCount = requestDto.getMaxSubmitCount();
         this.limitTime = requestDto.getLimitTime();
