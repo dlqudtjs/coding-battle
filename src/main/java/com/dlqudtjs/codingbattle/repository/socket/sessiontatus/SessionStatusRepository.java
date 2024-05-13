@@ -11,4 +11,6 @@ public interface SessionStatusRepository {
     void leaveRoom(String userId);
 
     Long getUserInRoomId(String userId);
+
+    void startGame(String userId);
 }

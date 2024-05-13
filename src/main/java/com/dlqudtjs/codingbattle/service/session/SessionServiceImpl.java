@@ -28,4 +28,9 @@ public class SessionServiceImpl implements SessionService {
     public Long getUserInRoomId(String userId) {
         return sessionStatusRepository.getUserInRoomId(userId);
     }
+
+    @Override
+    public void startGame(String userId) {
+        sessionStatusRepository.startGame(userId);
+    }
 }
