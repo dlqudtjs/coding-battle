@@ -124,6 +124,12 @@ public class RoomServiceImpl implements RoomService {
             throw new Custom4XXException(GAME_START_ERROR.getMessage(), GAME_START_ERROR.getStatus());
         }
 
+        // GameRoom 상태 변경
+        gameRoom.startGame();
+
+        // GameRoom 내 유저 상태 변경
+        gameRoom.getUserList().forEach(sessionService::startGame);
+
         return gameRoom;
     }
 
