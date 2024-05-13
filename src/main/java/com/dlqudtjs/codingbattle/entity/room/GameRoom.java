@@ -29,6 +29,10 @@ public class GameRoom {
     private Integer limitTime;
     private ConcurrentHashMap<String, GameRoomUserStatus> userMap;
 
+    public void startGame() {
+        isStarted = true;
+    }
+
     public void addUser(String userId) {
         WebSocketSession session = WebsocketSessionHolder.getSessionFromUserId(userId);
         userMap.put(userId, new GameRoomUserStatus(userId, session));
