@@ -7,7 +7,7 @@ import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
 import com.dlqudtjs.codingbattle.common.exception.room.RoomErrorCode;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.GameStartRequestDto;
-import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
+import com.dlqudtjs.codingbattle.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
 
-    private final RoomRepository roomRepository;
+    private final RoomService roomService;
 
     @Override
     public ResponseDto startGame(GameStartRequestDto requestDto) {
@@ -30,7 +30,7 @@ public class GameServiceImpl implements GameService {
 
     // 방이 존재하지 않으면
     private void validateRoomExistence(Long roomId) {
-        if (!roomRepository.isExistRoom(roomId)) {
+        if (roomService.isExistRoom(roomId)) {
             throw new CustomRoomException(RoomErrorCode.NOT_EXIST_ROOM.getMessage());
         }
     }
