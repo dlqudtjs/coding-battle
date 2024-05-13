@@ -5,11 +5,11 @@ import static com.dlqudtjs.codingbattle.common.exception.game.GameErrorCode.GAME
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.MessageType;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
-import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.constant.RoomSuccessCode;
+import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
-import com.dlqudtjs.codingbattle.entity.room.GameRoom;
-import com.dlqudtjs.codingbattle.entity.room.GameRoomUserStatus;
+import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
+import com.dlqudtjs.codingbattle.common.exception.room.RoomErrorCode;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomUserStatusUpdateRequestDto;
@@ -21,9 +21,9 @@ import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomUserStatusResponse
 import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
+import com.dlqudtjs.codingbattle.entity.room.GameRoom;
+import com.dlqudtjs.codingbattle.entity.room.GameRoomUserStatus;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
-import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
-import com.dlqudtjs.codingbattle.common.exception.room.RoomErrorCode;
 import com.dlqudtjs.codingbattle.service.session.SessionService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import java.sql.Timestamp;
