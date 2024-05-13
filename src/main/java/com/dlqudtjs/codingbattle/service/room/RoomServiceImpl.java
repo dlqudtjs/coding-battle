@@ -117,8 +117,8 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Boolean isStartable(Long roomId) {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
-        
-        if (gameRoom == null || !gameRoom.isAllUserReady()) {
+
+        if (gameRoom == null || !gameRoom.isAllUserReady() || !gameRoom.isUserAndRoomLanguageMatch()) {
             return false;
         }
 
