@@ -7,7 +7,6 @@ import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
 import com.dlqudtjs.codingbattle.common.exception.room.RoomErrorCode;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.GameStartRequestDto;
-import com.dlqudtjs.codingbattle.entity.room.GameRoom;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,29 +21,12 @@ public class GameServiceImpl implements GameService {
     public ResponseDto startGame(GameStartRequestDto requestDto) {
         validateGameStartRequest(requestDto);
 
-        // 모든 방이 레디되었는지 확인
-        if (isNotGameStartable(requestDto.getRoomId())) {
+        // 게임 시작 가능한지 확인
+        if (roomService.isStartable(requestDto.getRoomId())) {
             throw new Custom4XXException(GAME_START_ERROR.getMessage(), GAME_START_ERROR.getStatus());
         }
 
         return null;
-    }
-
-    // 게임 시작할 수 없는지 확인
-    private boolean isNotGameStartable(Long roomId) {
-        GameRoom gameRoom = roomService.getGameRoom(roomId);
-
-        if (isNotAllUserReady(gameRoom)) {
-            return true;
-        }
-
-        return false;
-    }
-
-
-    // 모든 유저가 레디되었는지 확인
-    private boolean isNotAllUserReady(GameRoom gameRoom) {
-        return !gameRoom.isAllUserReady();
     }
 
     // 게임 시작 요청 검증
