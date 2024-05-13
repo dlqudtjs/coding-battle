@@ -11,9 +11,12 @@ public class SessionStatus {
 
     private Long enterRoomId;
     // todo : 추후 세션 상태 추가 (ex. 방해 금지)
+    private Boolean isGameInProgress;
+
 
     public SessionStatus() {
         this.enterRoomId = (long) GameSetting.NO_ROOM_ID.getValue();
+        this.isGameInProgress = false;
     }
 
     public void enterRoom(Long roomId) {
