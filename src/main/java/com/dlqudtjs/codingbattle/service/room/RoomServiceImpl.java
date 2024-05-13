@@ -114,6 +114,11 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    public GameRoom getGameRoom(Long roomId) {
+        return roomRepository.getGameRoom(roomId);
+    }
+
+    @Override
     public Boolean isAllUserReady(Long roomId) {
         return roomRepository.getGameRoom(roomId).isAllUserReady();
     }
