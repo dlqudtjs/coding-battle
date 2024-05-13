@@ -21,6 +21,11 @@ public class GameServiceImpl implements GameService {
     public ResponseDto startGame(GameStartRequestDto requestDto) {
         validateGameStartRequest(requestDto);
 
+        // 모든 방이 레디되었는지 확인
+        if (isNotGameStartable(requestDto.getRoomId())) {
+            throw new Custom4XXException(GAME_START_ERROR.getMessage(), GAME_START_ERROR.getStatus());
+        }
+
         return null;
     }
 
@@ -35,4 +40,16 @@ public class GameServiceImpl implements GameService {
         }
     }
 
+    // 게임 시작할 수 없는지 확인
+    private boolean isNotGameStartable(Long roomId) {
+        if (!isAllUserReady(roomId)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isAllUserReady(Long roomId) {
+        return roomService.isAllUserReady(roomId);
+    }
 }
