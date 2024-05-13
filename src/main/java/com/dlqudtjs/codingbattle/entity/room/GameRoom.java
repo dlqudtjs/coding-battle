@@ -117,6 +117,15 @@ public class GameRoom {
                 .toList();
     }
 
+    public Boolean isUserAndRoomLanguageMatch() {
+        if (language.equals(ProgrammingLanguage.DEFAULT)) {
+            return true;
+        }
+
+        return userMap.values().stream()
+                .allMatch(user -> user.getUseLanguage().equals(language));
+    }
+
     private GameRoomUserStatus getUserStatus(String userId) {
         return userMap.get(userId);
     }
