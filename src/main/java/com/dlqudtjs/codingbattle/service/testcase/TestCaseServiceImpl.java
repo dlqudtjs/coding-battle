@@ -18,6 +18,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +30,7 @@ public class TestCaseServiceImpl implements TestCaseService {
     private final ProblemRepository problemRepository;
 
     @Override
+    @Transactional
     public ResponseDto addTestCase(Long problemId, MultipartFile testCaseFile) {
         // zip 파일이 아닌 경우 예외 발생
         if (!isZipFile(testCaseFile)) {
@@ -61,7 +63,6 @@ public class TestCaseServiceImpl implements TestCaseService {
                 .message("테스트케이스 추가 성공")
                 .build();
     }
-
 
     private void saveTestCaseToRepository(Long problemId, String input, String output) {
         Problem problem = problemRepository.findById(problemId).orElse(null);
