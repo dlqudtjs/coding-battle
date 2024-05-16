@@ -19,6 +19,8 @@ public class GameController {
     @PostMapping("/v1/game/start")
     public ResponseEntity<ResponseDto> startGame(@Valid @RequestBody GameStartRequestDto requestDto) {
 
+        gameService.startGame(requestDto);
+
         return ResponseEntity.ok().build();
     }
 }

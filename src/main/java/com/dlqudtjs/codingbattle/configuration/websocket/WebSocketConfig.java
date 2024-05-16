@@ -1,5 +1,8 @@
-package com.dlqudtjs.codingbattle.websocket.configuration;
+package com.dlqudtjs.codingbattle.configuration.websocket;
 
+import com.dlqudtjs.codingbattle.websocket.configuration.CustomWebSocketHandlerDecorator;
+import com.dlqudtjs.codingbattle.websocket.configuration.StompExceptionHandler;
+import com.dlqudtjs.codingbattle.websocket.configuration.StompHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

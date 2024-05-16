@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.security.configuration;
+package com.dlqudtjs.codingbattle.configuration.security;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;

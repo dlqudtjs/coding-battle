@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.security.configuration;
+package com.dlqudtjs.codingbattle.configuration.security;
 
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
