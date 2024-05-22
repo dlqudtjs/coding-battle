@@ -27,4 +27,8 @@ public class ProblemLevel {
     public Long getId() {
         return id;
     }
+
+    public String getName() {
+        return name;
+    }
 }
