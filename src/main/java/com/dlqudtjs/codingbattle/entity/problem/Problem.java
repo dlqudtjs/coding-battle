@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.entity.problem;
 
+import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemResponseDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -48,5 +49,18 @@ public class Problem {
 
     public Long getId() {
         return id;
+    }
+
+    public ProblemResponseDto toResponseDto() {
+        return ProblemResponseDto.builder()
+                .id(id)
+                .algorithmClassification(algorithmClassification.getName())
+                .problemLevel(problemLevel.getName())
+                .title(title)
+                .problemDescription(problemDescription)
+                .inputDescription(inputDescription)
+                .outputDescription(outputDescription)
+                .hint(hint)
+                .build();
     }
 }
