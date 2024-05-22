@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
-
+    static Map<Long, GameSession> gameSessionMap = new ConcurrentHashMap<>();
     private final RoomService roomService;
     private final ProblemService problemService;
 
@@ -29,15 +29,19 @@ public class GameServiceImpl implements GameService {
 
         // 난이도에 따른 문제 리스트 가져오기
         ProblemLevelType problemLevel = gameRoom.getProblemLevel();
-        GameSession.builder()
+        GameSession gameSession = GameSession.builder()
                 .gameRoom(gameRoom)
                 .problemList(problemService.getProblemList(null, problemLevel, 1))
                 .build();
 
+        gameSessionMap.put(requestDto.getRoomId(), gameSession);
+
         return ResponseDto.builder()
                 .status(GameSuccessCode.GAME_START_SUCCESS.getStatus())
                 .message(GameSuccessCode.GAME_START_SUCCESS.getMessage())
-                .data(null)
+                .data(StartGameResponseDto.builder()
+                        .problemList(gameSession.getProblemList())
+                        .build())
                 .build();
     }
 
