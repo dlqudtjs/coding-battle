@@ -59,6 +59,10 @@ public class GameRoom {
         return userMap.containsKey(userId);
     }
 
+    public Boolean isStarted() {
+        return isStarted;
+    }
+
     public Integer getUserCount() {
         return userMap.size();
     }
