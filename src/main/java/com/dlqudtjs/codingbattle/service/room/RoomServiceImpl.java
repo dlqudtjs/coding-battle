@@ -133,6 +133,10 @@ public class RoomServiceImpl implements RoomService {
         return gameRoom;
     }
 
+    @Override
+    public Boolean isExistUserInRoom(Long roomId, String userId) {
+        return roomRepository.isExistUserInRoom(userId, roomId);
+    }
 
     @Override
     public Boolean isExistRoom(Long roomId) {
