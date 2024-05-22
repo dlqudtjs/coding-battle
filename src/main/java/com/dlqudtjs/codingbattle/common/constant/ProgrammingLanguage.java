@@ -24,7 +24,7 @@ public enum ProgrammingLanguage {
             }
         }
 
-        return null;
+        return DEFAULT;
     }
 
     public String getLanguageName() {
