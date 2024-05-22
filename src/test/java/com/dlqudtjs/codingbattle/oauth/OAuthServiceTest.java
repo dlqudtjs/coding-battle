@@ -7,7 +7,7 @@ import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
 import com.dlqudtjs.codingbattle.entity.user.UserRole;
 import com.dlqudtjs.codingbattle.repository.user.UserRepository;
 import com.dlqudtjs.codingbattle.service.oauth.OAuthServiceImpl;
-import com.dlqudtjs.codingbattle.common.constant.OauthSuccessCode;
+import com.dlqudtjs.codingbattle.common.constant.code.OauthSuccessCode;
 import com.dlqudtjs.codingbattle.common.exception.oauth.AlreadyExistUserIdException;
 import com.dlqudtjs.codingbattle.common.exception.oauth.OauthErrorCode;
 import com.dlqudtjs.codingbattle.common.exception.oauth.PasswordCheckException;

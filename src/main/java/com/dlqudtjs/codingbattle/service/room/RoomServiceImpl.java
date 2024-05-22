@@ -5,7 +5,7 @@ import static com.dlqudtjs.codingbattle.common.exception.game.GameErrorCode.GAME
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.MessageType;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
-import com.dlqudtjs.codingbattle.common.constant.RoomSuccessCode;
+import com.dlqudtjs.codingbattle.common.constant.code.RoomSuccessCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;

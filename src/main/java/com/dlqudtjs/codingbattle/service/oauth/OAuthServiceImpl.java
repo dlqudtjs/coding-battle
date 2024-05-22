@@ -3,7 +3,7 @@ package com.dlqudtjs.codingbattle.service.oauth;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
-import com.dlqudtjs.codingbattle.common.constant.OauthSuccessCode;
+import com.dlqudtjs.codingbattle.common.constant.code.OauthSuccessCode;
 import com.dlqudtjs.codingbattle.entity.oauth.Token;
 import com.dlqudtjs.codingbattle.dto.oauth.JwtTokenDto;
 import com.dlqudtjs.codingbattle.dto.oauth.SignInRequestDto;
