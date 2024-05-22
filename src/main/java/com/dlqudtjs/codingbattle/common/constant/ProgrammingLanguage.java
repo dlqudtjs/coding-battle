@@ -17,6 +17,16 @@ public enum ProgrammingLanguage {
     private final String dockerImageName;
     private final String fileName;
 
+    public static ProgrammingLanguage getLanguage(String language) {
+        for (ProgrammingLanguage pl : ProgrammingLanguage.values()) {
+            if (pl.getLanguageName().equals(language)) {
+                return pl;
+            }
+        }
+
+        return null;
+    }
+
     public String getLanguageName() {
         return languageName;
     }
