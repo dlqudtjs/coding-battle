@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class GameController {
 
+
     private final GameService gameService;
 
     @PostMapping("/v1/game/start")
     public ResponseEntity<ResponseDto> startGame(@Valid @RequestBody GameStartRequestDto requestDto) {
+        ResponseDto responseDto = gameService.startGame(requestDto);
 
-        gameService.startGame(requestDto);
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 }
