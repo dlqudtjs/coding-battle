@@ -26,6 +26,8 @@ public interface RoomService {
 
     Boolean isExistRoom(Long roomId);
 
+    Boolean isStartedGame(Long roomId);
+
     SendToRoomMessageResponseDto parseMessage(Long roomId, String sessionId,
                                               SendToRoomMessageRequestDto requestDto);
 
