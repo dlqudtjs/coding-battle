@@ -6,10 +6,15 @@ import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
 import com.dlqudtjs.codingbattle.common.exception.room.RoomErrorCode;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.GameStartRequestDto;
+import com.dlqudtjs.codingbattle.dto.game.responseDto.StartGameResponseDto;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
+import com.dlqudtjs.codingbattle.entity.problem.Problem;
 import com.dlqudtjs.codingbattle.entity.room.GameRoom;
 import com.dlqudtjs.codingbattle.service.problem.ProblemService;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +48,11 @@ public class GameServiceImpl implements GameService {
                         .problemList(gameSession.getProblemList())
                         .build())
                 .build();
+    }
+
+    @Override
+    public List<Problem> getProblemList(Long roomId) {
+        return gameSessionMap.get(roomId).getProblemList();
     }
 
     // 게임 시작 요청 검증
