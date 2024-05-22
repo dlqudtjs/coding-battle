@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.common.constant;
+package com.dlqudtjs.codingbattle.common.constant.code;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
