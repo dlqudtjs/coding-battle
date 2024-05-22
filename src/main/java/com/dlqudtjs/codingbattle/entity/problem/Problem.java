@@ -45,4 +45,8 @@ public class Problem {
 
     @Column(name = "hint", nullable = false)
     private String hint;
+
+    public Long getId() {
+        return id;
+    }
 }
