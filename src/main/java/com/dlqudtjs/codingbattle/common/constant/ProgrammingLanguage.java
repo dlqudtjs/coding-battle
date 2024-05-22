@@ -7,15 +7,15 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ProgrammingLanguage {
 
-    DEFAULT("default"),
-    JAVA("java"),
-    PYTHON("python"),
-    C("c"),
-    CPP("cpp"),
-    JAVASCRIPT("javascript"),
-    ;
+    DEFAULT("default", "default", "default"),
+    JAVA("java", "java", "Main.java"),
+    PYTHON("python", "python", "main.py"),
+    C("c", "gcc", "main.c"),
+    JAVASCRIPT("javascript", "node", "app.js");
 
     private final String languageName;
+    private final String dockerImageName;
+    private final String fileName;
 
     public String getLanguageName() {
         return languageName;
