@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.service.game;
 
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
+import com.dlqudtjs.codingbattle.common.constant.code.GameSuccessCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
 import com.dlqudtjs.codingbattle.common.exception.room.RoomErrorCode;
@@ -30,11 +31,14 @@ public class GameServiceImpl implements GameService {
         ProblemLevelType problemLevel = gameRoom.getProblemLevel();
         GameSession.builder()
                 .gameRoom(gameRoom)
-                // TODO: 알고리즘 타입은 구현 예정
                 .problemList(problemService.getProblemList(null, problemLevel, 1))
                 .build();
 
-        return null;
+        return ResponseDto.builder()
+                .status(GameSuccessCode.GAME_START_SUCCESS.getStatus())
+                .message(GameSuccessCode.GAME_START_SUCCESS.getMessage())
+                .data(null)
+                .build();
     }
 
     // 게임 시작 요청 검증
