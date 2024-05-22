@@ -77,6 +77,11 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
+    public Boolean isStartedGame(Long roomId) {
+        return roomMap.get(roomId).isStarted();
+    }
+
+    @Override
     public Boolean isFullRoom(Long roomId) {
         return roomMap.get(roomId).isFull();
     }

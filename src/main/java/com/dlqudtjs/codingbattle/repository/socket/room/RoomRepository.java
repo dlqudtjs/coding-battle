@@ -19,6 +19,8 @@ public interface RoomRepository {
 
     Boolean isExistRoom(Long roomId);
 
+    Boolean isStartedGame(Long roomId);
+
     Boolean isFullRoom(Long roomId);
 
     Boolean isExistUserInRoom(String userId, Long roomId);
