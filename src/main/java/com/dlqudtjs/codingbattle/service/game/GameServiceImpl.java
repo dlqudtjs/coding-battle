@@ -45,7 +45,7 @@ public class GameServiceImpl implements GameService {
                 .status(GameSuccessCode.GAME_START_SUCCESS.getStatus())
                 .message(GameSuccessCode.GAME_START_SUCCESS.getMessage())
                 .data(StartGameResponseDto.builder()
-                        .problemList(gameSession.getProblemList())
+                        .problemList(gameSession.getProblemResponseList())
                         .build())
                 .build();
     }
