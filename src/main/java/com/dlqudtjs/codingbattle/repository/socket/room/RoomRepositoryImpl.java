@@ -4,6 +4,7 @@ import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.entity.room.GameRoom;
+import com.dlqudtjs.codingbattle.entity.user.UserSetting;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,8 +41,8 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    public GameRoom joinRoom(String userId, Long roomId) {
-        roomMap.get(roomId).addUser(userId);
+    public GameRoom joinRoom(UserSetting userSetting, Long roomId) {
+        roomMap.get(roomId).addUser(userSetting);
         return roomMap.get(roomId);
     }
 
