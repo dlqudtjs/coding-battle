@@ -1,8 +1,9 @@
 package com.dlqudtjs.codingbattle.entity.game;
 
-import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemResponseDto;
-import com.dlqudtjs.codingbattle.entity.problem.Problem;
+import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemInfoResponseDto;
+import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
 import com.dlqudtjs.codingbattle.entity.room.GameRoom;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,12 +13,25 @@ import lombok.Getter;
 public class GameSession {
 
     private GameRoom gameRoom;
-    private List<Problem> problemList;
+    private List<ProblemInfo> problemInfoList;
 
-    public List<ProblemResponseDto> getProblemResponseList() {
-        return problemList.stream()
-                .map(Problem::toResponseDto)
-                .toList();
+    public List<ProblemInfoResponseDto> getProblemInfo() {
+        List<ProblemInfoResponseDto> infoResponseDtoList = new ArrayList<>();
 
+        for (ProblemInfo problemInfo : problemInfoList) {
+            infoResponseDtoList.add(ProblemInfoResponseDto.builder()
+                    .id(problemInfo.getProblem().getId())
+                    .algorithmClassification(problemInfo.getProblem().getAlgorithmClassification().getName())
+                    .problemLevel(problemInfo.getProblem().getProblemLevel().getName())
+                    .title(problemInfo.getProblem().getTitle())
+                    .problemDescription(problemInfo.getProblem().getProblemDescription())
+                    .inputDescription(problemInfo.getProblem().getInputDescription())
+                    .outputDescription(problemInfo.getProblem().getOutputDescription())
+                    .hint(problemInfo.getProblem().getHint())
+                    .problemIOExamples(problemInfo.getProblemIOExamples())
+                    .build());
+        }
+
+        return infoResponseDtoList;
     }
 }
