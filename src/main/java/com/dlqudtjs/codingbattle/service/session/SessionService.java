@@ -9,4 +9,6 @@ public interface SessionService {
     Long getUserInRoomId(String userId);
 
     void startGame(String userId);
+
+    Boolean isUserInGame(String userId);
 }

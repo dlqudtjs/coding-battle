@@ -24,6 +24,15 @@ public class SessionStatusRepositoryImpl implements SessionStatusRepository {
     }
 
     @Override
+    public Boolean isUserInGame(String userId) {
+        if (!sessionStatusMap.containsKey(userId)) {
+            throw new CustomSocketException(RoomErrorCode.NOT_CONNECT_USER.getMessage());
+        }
+
+        return sessionStatusMap.get(userId).isGameInProgress();
+    }
+
+    @Override
     public void enterRoom(String userId, Long roomId) {
         if (!sessionStatusMap.containsKey(userId)) {
             throw new CustomSocketException(RoomErrorCode.NOT_CONNECT_USER.getMessage());

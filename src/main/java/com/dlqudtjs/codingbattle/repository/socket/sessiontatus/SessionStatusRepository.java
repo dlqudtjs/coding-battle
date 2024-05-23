@@ -12,5 +12,7 @@ public interface SessionStatusRepository {
 
     Long getUserInRoomId(String userId);
 
+    Boolean isUserInGame(String userId);
+
     void startGame(String userId);
 }
