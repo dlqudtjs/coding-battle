@@ -30,4 +30,8 @@ public class SessionStatus {
     public void startGame() {
         this.isGameInProgress = true;
     }
+
+    public Boolean isGameInProgress() {
+        return this.isGameInProgress;
+    }
 }
