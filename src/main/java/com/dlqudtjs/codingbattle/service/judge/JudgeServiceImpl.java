@@ -211,13 +211,14 @@ public class JudgeServiceImpl implements JudgeService {
         }
 
         // 사용자가 방에 들어가 있는지 검증
-        if (roomService.isExistUserInRoom(judgeProblemRequestDto.getRoomId(), judgeProblemRequestDto.getUserId())) {
+        if (!roomService.isExistUserInRoom(judgeProblemRequestDto.getRoomId(), judgeProblemRequestDto.getUserId())) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
         // 문제가 존재하는지 검증
-        if (gameService.getProblemList(judgeProblemRequestDto.getRoomId()).stream()
-                .noneMatch(problem -> problem.getId().equals(judgeProblemRequestDto.getProblemId()))) {
+        if (gameService.getProblemInfoList(judgeProblemRequestDto.getRoomId()).stream()
+                .noneMatch(problemInfo -> problemInfo.getProblem().getId()
+                        .equals(judgeProblemRequestDto.getProblemId()))) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
     }
