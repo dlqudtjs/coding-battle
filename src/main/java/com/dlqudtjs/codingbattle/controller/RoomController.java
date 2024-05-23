@@ -1,6 +1,5 @@
 package com.dlqudtjs.codingbattle.controller;
 
-import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomEnterRequestDto;
@@ -9,8 +8,10 @@ import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomLeaveUserStatusRes
 import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomEnterUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomLeaveUserStatusMessageResponseDto;
+import com.dlqudtjs.codingbattle.entity.user.UserSetting;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
+import com.dlqudtjs.codingbattle.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ public class RoomController {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RoomService gameRoomService;
+    private final UserService userService;
     private final SocketRoomController socketRoomController;
 
     @PostMapping("/v1/gameRoom")
@@ -54,6 +56,7 @@ public class RoomController {
                                                  @RequestHeader("Authorization") String token) {
         String userId = jwtTokenProvider.getUserName(token);
         ResponseDto responseDto = gameRoomService.enterGameRoom(requestDto.getRoomId(), userId);
+        UserSetting userSetting = userService.getUserSetting(userId);
 
         // 방안에 사용자들에게 나간 유저의 정보를 전달
         GameRoomInfoResponseDto gameRoomInfoResponseDto = (GameRoomInfoResponseDto) responseDto.getData();
@@ -71,7 +74,7 @@ public class RoomController {
                 .enterUserStatus(GameRoomUserStatusResponseDto.builder()
                         .userId(requestDto.getUserId())
                         .isReady(false)
-                        .language(ProgrammingLanguage.DEFAULT.getLanguageName())
+                        .language(userSetting.getLanguage().getName())
                         .build())
                 .build();
         socketRoomController.sendToRoom(requestDto.getRoomId(), enterUserStatusResponseDto);
