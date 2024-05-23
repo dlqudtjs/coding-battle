@@ -23,8 +23,10 @@ import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoom
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.room.GameRoom;
 import com.dlqudtjs.codingbattle.entity.room.GameRoomUserStatus;
+import com.dlqudtjs.codingbattle.entity.user.UserSetting;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
 import com.dlqudtjs.codingbattle.service.session.SessionService;
+import com.dlqudtjs.codingbattle.service.user.UserService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import java.sql.Timestamp;
 import java.util.List;
@@ -37,6 +39,7 @@ public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
     private final SessionService sessionService;
+    private final UserService userService;
 
     @Override
     public ResponseDto createGameRoom(GameRoomCreateRequestDto requestDto, String userId) {
@@ -47,16 +50,14 @@ public class RoomServiceImpl implements RoomService {
         GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto =
                 leaveRoom(alreadyEnterRoomId, userId);
 
-        // 방장 설정
+        // 방 생성 및 방장 설정
         GameRoom room = requestDto.toEntity();
-        room.addUser(requestDto.getHostId());
 
-        // 방 생성
+        // 방 번호 생성과 매핑
         GameRoom createdRoom = roomRepository.save(room);
 
         // 유저의 세션 상태 변경
-        roomRepository.joinRoom(userId, createdRoom.getRoomId());
-        sessionService.enterRoom(userId, createdRoom.getRoomId());
+        joinRoom(userId, createdRoom.getRoomId());
 
         GameRoomInfoResponseDto gameRoomInfoResponseDto = CreateGameRoomResponseDto(
                 createdRoom,
@@ -86,8 +87,7 @@ public class RoomServiceImpl implements RoomService {
             leaveUserStatusResponseDto = leaveRoom(alreadyEnterRoomId, userId);
         }
 
-        GameRoom joinedRoom = roomRepository.joinRoom(userId, roomId);
-        sessionService.enterRoom(userId, roomId);
+        GameRoom joinedRoom = joinRoom(userId, roomId);
 
         GameRoomInfoResponseDto gameRoomInfoResponseDto = CreateGameRoomResponseDto(
                 joinedRoom,
@@ -106,7 +106,7 @@ public class RoomServiceImpl implements RoomService {
         validateLeaveGameRoomRequest(roomId, userId);
 
         GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto = leaveRoom(roomId, userId);
-        enterDefaultRoom(userId);
+        joinRoom(userId, (long) GameSetting.DEFAULT_ROOM_ID.getValue());
 
         // 상태 변경
         return ResponseDto.builder()
@@ -237,6 +237,13 @@ public class RoomServiceImpl implements RoomService {
                 .build();
     }
 
+    private GameRoom joinRoom(String userId, Long roomId) {
+        UserSetting userSetting = userService.getUserSetting(userId);
+
+        sessionService.enterRoom(userId, roomId);
+        return roomRepository.joinRoom(userSetting, roomId);
+    }
+
     /*
      * 게임 시작 가능한지 확인하는 메서드
      * 모든 유저가 준비 상태이고, 방에 있는 모든 유저의 언어가 일치하면 true 반환
@@ -283,13 +290,8 @@ public class RoomServiceImpl implements RoomService {
             }
 
             sessionService.leaveRoom(userId);
-            enterDefaultRoom(userId);
+            joinRoom(userId, (long) GameSetting.DEFAULT_ROOM_ID.getValue());
         }
-    }
-
-    private void enterDefaultRoom(String userId) {
-        roomRepository.joinRoom(userId, (long) GameSetting.DEFAULT_ROOM_ID.getValue());
-        sessionService.enterRoom(userId, (long) GameSetting.DEFAULT_ROOM_ID.getValue());
     }
 
     private GameRoomInfoResponseDto CreateGameRoomResponseDto(

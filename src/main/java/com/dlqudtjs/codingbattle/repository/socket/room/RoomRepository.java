@@ -1,13 +1,14 @@
 package com.dlqudtjs.codingbattle.repository.socket.room;
 
 import com.dlqudtjs.codingbattle.entity.room.GameRoom;
+import com.dlqudtjs.codingbattle.entity.user.UserSetting;
 import java.util.List;
 
 public interface RoomRepository {
 
     GameRoom save(GameRoom gameRoom);
 
-    GameRoom joinRoom(String userId, Long roomId);
+    GameRoom joinRoom(UserSetting userSetting, Long roomId);
 
     void leaveRoom(Long roomId, String userId);
 
