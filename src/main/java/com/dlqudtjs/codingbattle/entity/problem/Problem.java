@@ -1,6 +1,5 @@
 package com.dlqudtjs.codingbattle.entity.problem;
 
-import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemResponseDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,9 +10,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -46,21 +47,4 @@ public class Problem {
 
     @Column(name = "hint", nullable = false)
     private String hint;
-
-    public Long getId() {
-        return id;
-    }
-
-    public ProblemResponseDto toResponseDto() {
-        return ProblemResponseDto.builder()
-                .id(id)
-                .algorithmClassification(algorithmClassification.getName())
-                .problemLevel(problemLevel.getName())
-                .title(title)
-                .problemDescription(problemDescription)
-                .inputDescription(inputDescription)
-                .outputDescription(outputDescription)
-                .hint(hint)
-                .build();
-    }
 }
