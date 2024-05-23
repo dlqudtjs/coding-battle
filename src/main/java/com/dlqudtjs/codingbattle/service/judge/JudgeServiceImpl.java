@@ -64,7 +64,7 @@ public class JudgeServiceImpl implements JudgeService {
         validateJudgeProblemRequestDto(judgeProblemRequestDto);
 
         String uuid = UUID.randomUUID().toString();
-        ProgrammingLanguage language = ProgrammingLanguage.getLanguage(judgeProblemRequestDto.getLanguage());
+        ProgrammingLanguage language = ProgrammingLanguage.valueOf(judgeProblemRequestDto.getLanguage().toUpperCase());
         String dockerImageName = language.getDockerImageName();
         String createTestcasePath = createHostTestCasePath(judgeProblemRequestDto.getProblemId());
         String createScriptPath = createHostScriptPath(language);
