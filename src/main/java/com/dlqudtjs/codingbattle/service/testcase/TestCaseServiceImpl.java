@@ -6,9 +6,7 @@ import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.exception.testcase.TestCaseErrorCode;
 import com.dlqudtjs.codingbattle.entity.problem.Problem;
-import com.dlqudtjs.codingbattle.entity.problem.ProblemTestCase;
 import com.dlqudtjs.codingbattle.repository.problem.ProblemRepository;
-import com.dlqudtjs.codingbattle.repository.problem.ProblemTestCaseRepository;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -26,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class TestCaseServiceImpl implements TestCaseService {
 
-    private final ProblemTestCaseRepository problemTestCaseRepository;
     private final ProblemRepository problemRepository;
 
     @Override
@@ -71,13 +68,13 @@ public class TestCaseServiceImpl implements TestCaseService {
             custom4XXException(TEST_CASE_FILE_FORMAT_ERROR);
         }
 
-        ProblemTestCase testCase = ProblemTestCase.builder()
-                .problem(problem)
-                .input(input)
-                .output(output)
-                .build();
+//        ProblemTestCase testCase = ProblemTestCase.builder()
+//                .problem(problem)
+//                .input(input)
+//                .output(output)
+//                .build();
 
-        problemTestCaseRepository.save(testCase);
+        //problemTestCaseRepository.save(testCase);
     }
 
     // zip 파일을 input, output 파일로 분리
