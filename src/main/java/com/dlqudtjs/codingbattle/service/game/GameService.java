@@ -1,13 +1,13 @@
 package com.dlqudtjs.codingbattle.service.game;
 
-import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.GameStartRequestDto;
-import com.dlqudtjs.codingbattle.entity.problem.Problem;
+import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemInfoResponseDto;
+import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
 import java.util.List;
 
 public interface GameService {
 
-    ResponseDto startGame(GameStartRequestDto requestDto);
+    List<ProblemInfoResponseDto> startGame(GameStartRequestDto requestDto);
 
-    List<Problem> getProblemList(Long roomId);
+    List<ProblemInfo> getProblemInfoList(Long roomId);
 }
