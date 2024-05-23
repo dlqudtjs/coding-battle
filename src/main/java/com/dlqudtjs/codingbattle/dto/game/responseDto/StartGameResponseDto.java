@@ -7,5 +7,5 @@ import lombok.Getter;
 @Getter
 @Builder
 public class StartGameResponseDto {
-    private List<ProblemResponseDto> problemList;
+    private List<ProblemInfoResponseDto> problemInfoList;
 }
