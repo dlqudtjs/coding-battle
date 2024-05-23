@@ -1,5 +1,8 @@
 package com.dlqudtjs.codingbattle.service.user;
 
+import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
+
+import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserSetting;
 import com.dlqudtjs.codingbattle.repository.user.UserRepository;
@@ -19,7 +22,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserSetting getUserSetting(String userId) {
         User user = userRepository.findByUserId(userId).orElseThrow(()
-                -> new IllegalArgumentException(""));
+                -> new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus()));
 
         return userSettingRepository.findByUserId(user.getId());
     }
