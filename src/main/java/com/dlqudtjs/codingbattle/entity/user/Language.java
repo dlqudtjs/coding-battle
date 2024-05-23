@@ -24,4 +24,8 @@ public class Language {
 
     @Column(name = "name", nullable = false)
     private String name;
+
+    public String getName() {
+        return name;
+    }
 }
