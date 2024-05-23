@@ -16,7 +16,8 @@ public enum GameSetting {
     MIN_SUBMISSION_COUNT(1),
     MAX_SUBMISSION_COUNT(10),
     MIN_LIMIT_TIME(10),
-    MAX_LIMIT_TIME(120);
+    MAX_LIMIT_TIME(120),
+    GAME_START_MIN_USER_COUNT(2);
 
     private final int value;
 }
