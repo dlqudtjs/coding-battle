@@ -1,6 +1,5 @@
 package com.dlqudtjs.codingbattle.controller;
 
-import com.dlqudtjs.codingbattle.common.constant.code.GameSuccessCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.GameStartRequestDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemInfoResponseDto;
@@ -28,12 +27,9 @@ public class GameController {
         List<ProblemInfoResponseDto> infoResponseDtoList = gameService.startGame(requestDto);
 
         StartGameResponseDto startGameResponseDto = StartGameResponseDto.builder()
-                .problemInfoList(infoResponseDtoList)
+                .gameStartInfo(infoResponseDtoList)
                 .build();
 
-        // 방에 게임 시작 메시지 전송
-        messagingTemplate.convertAndSend("/topic/room/" + requestDto.getRoomId(),
-                GameSuccessCode.GAME_END_SUCCESS.getMessage());
         // 방에 게임 문제 전송
         messagingTemplate.convertAndSend("/topic/room/" + requestDto.getRoomId(),
                 startGameResponseDto);
