@@ -32,4 +32,12 @@ public class ProblemIOExample {
 
     @Column(name = "output")
     private String output;
+
+    public String getInput() {
+        return input;
+    }
+
+    public String getOutput() {
+        return output;
+    }
 }
