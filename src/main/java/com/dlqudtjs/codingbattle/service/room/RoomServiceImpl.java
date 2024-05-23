@@ -246,12 +246,23 @@ public class RoomServiceImpl implements RoomService {
 
     /*
      * 게임 시작 가능한지 확인하는 메서드
-     * 모든 유저가 준비 상태이고, 방에 있는 모든 유저의 언어가 일치하면 true 반환
+     * 모든 유저가 준비 상태 확인,
+     * 방에 있는 모든 유저의 언어가 일치한지 확인,
+     * 게임 시작 최소 인원 확인,
+     * 이미 게임 중인 유저가 있는지 확인
+     *
      */
     public Boolean canStartable(GameRoom gameRoom) {
         return gameRoom != null &&
                 gameRoom.isAllUserReady() &&
-                gameRoom.isUserAndRoomLanguageMatch();
+                gameRoom.isUserAndRoomLanguageMatch() &&
+                gameRoom.getUserCount() >= GameSetting.GAME_START_MIN_USER_COUNT.getValue() &&
+                !isUserInGame(gameRoom);
+    }
+
+    private Boolean isUserInGame(GameRoom gameRoom) {
+        return gameRoom.getUserList().stream()
+                .anyMatch(sessionService::isUserInGame);
     }
 
     /*
