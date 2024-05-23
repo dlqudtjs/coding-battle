@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum GameSuccessCode {
 
-    GAME_START_SUCCESS(200, "게임 시작 성공"),
+    GAME_START_SUCCESS(200, "게임 시작"),
     GAME_END_SUCCESS(200, "채점 시작"),
     ;
 
