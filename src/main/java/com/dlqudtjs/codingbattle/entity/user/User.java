@@ -49,6 +49,10 @@ public class User implements UserDetails {
         return id;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
     @Override
     public String getPassword() {
         return password;
