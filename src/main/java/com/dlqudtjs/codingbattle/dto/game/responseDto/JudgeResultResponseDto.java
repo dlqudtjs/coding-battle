@@ -10,9 +10,9 @@ public class JudgeResultResponseDto {
     private Long roomId;
     private Long problemId;
     private String userId;
-    private Long currentTest;
     private String result;  // PASS, FAIL, ERROR
-    private String errorMessage;
+    private Long currentTest;
+    private Long totalTests;
     private String executionTime;
-    private String totalTests;
+    private String errorMessage;
 }

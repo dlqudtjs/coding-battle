@@ -9,7 +9,7 @@ public class JudgeResultRequestDto {
     private String roomId;
     private String userId;
     private String problemId;
-    private String problemNumber;
+    private String testcaseNumber;
     private String result;
     private String errorMessage;
     private String executionTime;
@@ -22,11 +22,11 @@ public class JudgeResultRequestDto {
                 .roomId(Long.parseLong(roomId))
                 .problemId(Long.parseLong(problemId))
                 .userId(userId)
-                .currentTest(Long.parseLong(currentTest))
                 .result(result)
-                .errorMessage(errorMessage)
+                .currentTest(Long.parseLong(currentTest))
+                .totalTests(Long.parseLong(totalTests))
                 .executionTime(executionTime)
-                .totalTests(totalTests)
+                .errorMessage(errorMessage)
                 .build();
     }
 }
