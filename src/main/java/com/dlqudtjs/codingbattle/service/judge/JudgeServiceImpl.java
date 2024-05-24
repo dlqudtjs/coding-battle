@@ -9,6 +9,7 @@ import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.dto.judge.JudgeProblemRequestDto;
 import com.dlqudtjs.codingbattle.service.game.GameService;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
+import com.dlqudtjs.codingbattle.service.submit.SubmitService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallbackTemplate;
@@ -58,16 +59,18 @@ public class JudgeServiceImpl implements JudgeService {
     private final DockerClient dockerClient;
     private final RoomService roomService;
     private final GameService gameService;
+    private final SubmitService submitService;
 
     @Override
     public ResponseDto judgeProblem(JudgeProblemRequestDto judgeProblemRequestDto) {
         validateJudgeProblemRequestDto(judgeProblemRequestDto);
 
         String uuid = UUID.randomUUID().toString();
-        ProgrammingLanguage language = ProgrammingLanguage.valueOf(judgeProblemRequestDto.getLanguage().toUpperCase());
-        String dockerImageName = language.getDockerImageName();
+        ProgrammingLanguage submitLanguage =
+                ProgrammingLanguage.valueOf(judgeProblemRequestDto.getLanguage().toUpperCase());
+        String dockerImageName = submitLanguage.getDockerImageName();
         String createTestcasePath = createHostTestCasePath(judgeProblemRequestDto.getProblemId());
-        String createScriptPath = createHostScriptPath(language);
+        String createScriptPath = createHostScriptPath(submitLanguage);
 
         try {
             // 사용자가 제출한 코드를 저장할 디렉토리 생성
@@ -77,7 +80,7 @@ public class JudgeServiceImpl implements JudgeService {
             createUserCodeFile(
                     createUserCodePath,
                     judgeProblemRequestDto.getCode(),
-                    language
+                    submitLanguage
             );
 
             Map<String, String> hostAndBindDirectory = Map.of(
