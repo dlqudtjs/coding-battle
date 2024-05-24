@@ -252,7 +252,6 @@ public class RoomServiceImpl implements RoomService {
      * 방에 있는 모든 유저의 언어가 일치한지 확인,
      * 게임 시작 최소 인원 확인,
      * 이미 게임 중인 유저가 있는지 확인
-     *
      */
     public Boolean canStartable(GameRoom gameRoom) {
         return gameRoom != null &&
