@@ -27,4 +27,8 @@ public class MatchHistory {
 
     @Column(name = "end_time")
     private Timestamp endTime;
+
+    public Long getId() {
+        return id;
+    }
 }
