@@ -1,7 +1,7 @@
 package com.dlqudtjs.codingbattle.entity.room;
 
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
-import com.dlqudtjs.codingbattle.entity.user.UserSetting;
+import com.dlqudtjs.codingbattle.entity.user.UserInfo;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.socket.WebSocketSession;
@@ -9,20 +9,24 @@ import org.springframework.web.socket.WebSocketSession;
 @Getter
 @RequiredArgsConstructor
 public class GameRoomUserStatus {
-    String userId;
+    UserInfo userInfo;
     WebSocketSession session;
     Boolean isReady;
     ProgrammingLanguage useLanguage;
 
-    public GameRoomUserStatus(UserSetting userSetting, WebSocketSession session) {
-        this.userId = userSetting.getUser().getUserId();
+    public GameRoomUserStatus(UserInfo userInfo, WebSocketSession session) {
+        this.userInfo = userInfo;
         this.session = session;
         this.isReady = false;
-        this.useLanguage = ProgrammingLanguage.valueOf(userSetting.getLanguage().getName().toUpperCase());
+        this.useLanguage = userInfo.getUserSetting().getProgrammingLanguage();
     }
 
     public void updateStatus(Boolean isReady, String language) {
         this.isReady = isReady;
         this.useLanguage = ProgrammingLanguage.valueOf(language.toUpperCase());
+    }
+
+    public String getUserId() {
+        return userInfo.getUser().getUserId();
     }
 }

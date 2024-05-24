@@ -7,7 +7,7 @@ import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomUserStatusUpdateReq
 import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.entity.user.User;
-import com.dlqudtjs.codingbattle.entity.user.UserSetting;
+import com.dlqudtjs.codingbattle.entity.user.UserInfo;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,10 +36,10 @@ public class GameRoom {
         isStarted = true;
     }
 
-    public void addUser(UserSetting userSetting) {
-        User user = userSetting.getUser();
+    public void addUser(UserInfo userInfo) {
+        User user = userInfo.getUser();
         WebSocketSession session = WebsocketSessionHolder.getSessionFromUserId(user.getUserId());
-        userMap.put(user.getUserId(), new GameRoomUserStatus(userSetting, session));
+        userMap.put(user.getUserId(), new GameRoomUserStatus(userInfo, session));
     }
 
     public void setRoomId(Long roomId) {

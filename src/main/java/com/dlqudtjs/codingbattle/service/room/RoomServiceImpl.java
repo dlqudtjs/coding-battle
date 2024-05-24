@@ -23,6 +23,8 @@ import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoom
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.room.GameRoom;
 import com.dlqudtjs.codingbattle.entity.room.GameRoomUserStatus;
+import com.dlqudtjs.codingbattle.entity.user.User;
+import com.dlqudtjs.codingbattle.entity.user.UserInfo;
 import com.dlqudtjs.codingbattle.entity.user.UserSetting;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
 import com.dlqudtjs.codingbattle.service.session.SessionService;
@@ -238,10 +240,10 @@ public class RoomServiceImpl implements RoomService {
     }
 
     private GameRoom joinRoom(String userId, Long roomId) {
-        UserSetting userSetting = userService.getUserSetting(userId);
+        UserInfo userInfo = userService.getUserInfo(userId);
 
         sessionService.enterRoom(userId, roomId);
-        return roomRepository.joinRoom(userSetting, roomId);
+        return roomRepository.joinRoom(userInfo, roomId);
     }
 
     /*

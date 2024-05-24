@@ -8,7 +8,7 @@ import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomLeaveUserStatusRes
 import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomEnterUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomLeaveUserStatusMessageResponseDto;
-import com.dlqudtjs.codingbattle.entity.user.UserSetting;
+import com.dlqudtjs.codingbattle.entity.user.UserInfo;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import com.dlqudtjs.codingbattle.service.user.UserService;
@@ -56,7 +56,7 @@ public class RoomController {
                                                  @RequestHeader("Authorization") String token) {
         String userId = jwtTokenProvider.getUserName(token);
         ResponseDto responseDto = gameRoomService.enterGameRoom(requestDto.getRoomId(), userId);
-        UserSetting userSetting = userService.getUserSetting(userId);
+        UserInfo userInfo = userService.getUserInfo(userId);
 
         // 방안에 사용자들에게 나간 유저의 정보를 전달
         GameRoomInfoResponseDto gameRoomInfoResponseDto = (GameRoomInfoResponseDto) responseDto.getData();
@@ -74,7 +74,7 @@ public class RoomController {
                 .enterUserStatus(GameRoomUserStatusResponseDto.builder()
                         .userId(requestDto.getUserId())
                         .isReady(false)
-                        .language(userSetting.getLanguage().getName())
+                        .language(userInfo.getUserSetting().getLanguage().getName())
                         .build())
                 .build();
         socketRoomController.sendToRoom(requestDto.getRoomId(), enterUserStatusResponseDto);

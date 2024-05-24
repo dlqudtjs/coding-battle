@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.entity.user;
 
+import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,4 +35,8 @@ public class UserSetting {
     @OneToOne
     @JoinColumn(name = "language_id", nullable = false)
     private Language language;
+
+    public ProgrammingLanguage getProgrammingLanguage() {
+        return ProgrammingLanguage.valueOf(language.getName().toUpperCase());
+    }
 }
