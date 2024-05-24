@@ -90,10 +90,7 @@ public class JudgeServiceImpl implements JudgeService {
             );
 
             // 컨테이너 생성
-            CreateContainerResponse container = dockerClient.createContainerCmd(dockerImageName)
-                    .withHostConfig(createHostConfig(hostAndBindDirectory))
-                    .withTty(true)
-                    .exec();
+            CreateContainerResponse container = createContainer(dockerImageName, hostAndBindDirectory);
             String containerId = container.getId();
 
             // 컨테이너 시작
@@ -139,6 +136,13 @@ public class JudgeServiceImpl implements JudgeService {
                 .message(GameSuccessCode.GAME_END_SUCCESS.getMessage())
                 .status(GameSuccessCode.GAME_END_SUCCESS.getStatus())
                 .build();
+    }
+
+    private CreateContainerResponse createContainer(String dockerImageName, Map<String, String> hostAndBindDirectory) {
+        return dockerClient.createContainerCmd(dockerImageName)
+                .withHostConfig(createHostConfig(hostAndBindDirectory))
+                .withTty(true)
+                .exec();
     }
 
     private String createHostScriptPath(ProgrammingLanguage language) {
