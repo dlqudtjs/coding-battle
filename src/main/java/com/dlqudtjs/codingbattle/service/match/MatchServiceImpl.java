@@ -44,7 +44,7 @@ public class MatchServiceImpl implements MatchService {
         MatchingResultClassification matchingResultClassification =
                 getMatchingResultClassification(MatchingResultType.PENDING);
 
-        for (User user : gameSession.getGameRoom().getUserInfoList()) {
+        for (User user : gameSession.getGameRoom().getUserList()) {
             userMatchingHistoryRepository.save(UserMatchingHistory.builder()
                     .user(user)
                     .matchHistory(matchHistory)

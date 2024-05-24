@@ -74,8 +74,11 @@ public class GameRoom {
         return password != null;
     }
 
-    public List<String> getUserList() {
-        return userMap.keySet().stream().toList();
+    public List<User> getUserList() {
+        return userMap.values().stream()
+                .map(GameRoomUserStatus::getUserInfo)
+                .map(UserInfo::getUser)
+                .toList();
     }
 
     public Boolean isAllUserReady() {

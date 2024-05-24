@@ -23,9 +23,7 @@ import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoom
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.room.GameRoom;
 import com.dlqudtjs.codingbattle.entity.room.GameRoomUserStatus;
-import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserInfo;
-import com.dlqudtjs.codingbattle.entity.user.UserSetting;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
 import com.dlqudtjs.codingbattle.service.session.SessionService;
 import com.dlqudtjs.codingbattle.service.user.UserService;
@@ -130,7 +128,9 @@ public class RoomServiceImpl implements RoomService {
         gameRoom.startGame();
 
         // GameRoom 내 유저 상태 변경
-        gameRoom.getUserList().forEach(sessionService::startGame);
+        gameRoom.getUserList().forEach(userInfo -> {
+            sessionService.startGame(userInfo.getUserId());
+        });
 
         return gameRoom;
     }
@@ -264,7 +264,7 @@ public class RoomServiceImpl implements RoomService {
 
     private Boolean isUserInGame(GameRoom gameRoom) {
         return gameRoom.getUserList().stream()
-                .anyMatch(sessionService::isUserInGame);
+                .anyMatch(userInfo -> sessionService.isUserInGame(userInfo.getUserId()));
     }
 
     /*
@@ -297,14 +297,13 @@ public class RoomServiceImpl implements RoomService {
     // 방에 있는 모든 유저 leaveRoom 하는 메서드
     private void leaveAllUserInRoom(Long roomId, String hostId) {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
-        for (String userId : gameRoom.getUserList()) {
-            if (userId.equals(hostId)) {
-                continue;
-            }
 
-            sessionService.leaveRoom(userId);
-            joinRoom(userId, (long) GameSetting.DEFAULT_ROOM_ID.getValue());
-        }
+        gameRoom.getUserList().stream()
+                .filter(user -> !user.getUserId().equals(hostId))
+                .forEach(user -> {
+                    sessionService.leaveRoom(user.getUserId());
+                    joinRoom(user.getUserId(), (long) GameSetting.DEFAULT_ROOM_ID.getValue());
+                });
     }
 
     private GameRoomInfoResponseDto CreateGameRoomResponseDto(
