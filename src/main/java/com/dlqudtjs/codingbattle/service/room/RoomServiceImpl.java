@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.service.room;
 
+import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
 import static com.dlqudtjs.codingbattle.common.exception.game.GameErrorCode.GAME_START_ERROR;
 
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
@@ -7,6 +8,7 @@ import com.dlqudtjs.codingbattle.common.constant.MessageType;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.constant.code.RoomSuccessCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
+import com.dlqudtjs.codingbattle.common.exception.CommonErrorCode;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
 import com.dlqudtjs.codingbattle.common.exception.room.RoomErrorCode;
@@ -23,6 +25,7 @@ import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoom
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.room.GameRoom;
 import com.dlqudtjs.codingbattle.entity.room.GameRoomUserStatus;
+import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserInfo;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
 import com.dlqudtjs.codingbattle.service.session.SessionService;
@@ -73,7 +76,8 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public ResponseDto enterGameRoom(Long roomId, String userId) {
-        validateEnterGameRoomRequest(roomId, userId);
+        UserInfo userInfo = userService.getUserInfo(userId);
+        validateEnterGameRoomRequest(roomId, userInfo);
 
         Long alreadyEnterRoomId = sessionService.getUserInRoomId(userId);
         // 이미 입장한 방에 다시 입장할 때 예외발생
@@ -258,12 +262,11 @@ public class RoomServiceImpl implements RoomService {
                 gameRoom.isAllUserReady() &&
                 gameRoom.isUserAndRoomLanguageMatch() &&
                 gameRoom.getUserCount() >= GameSetting.GAME_START_MIN_USER_COUNT.getValue() &&
-                !isUserInGame(gameRoom);
+                gameRoom.getUserList().stream().noneMatch(this::isUserInGame);
     }
 
-    private Boolean isUserInGame(GameRoom gameRoom) {
-        return gameRoom.getUserList().stream()
-                .anyMatch(userInfo -> sessionService.isUserInGame(userInfo.getUserId()));
+    private Boolean isUserInGame(User user) {
+        return sessionService.isUserInGame(user.getUserId());
     }
 
     /*
@@ -363,13 +366,18 @@ public class RoomServiceImpl implements RoomService {
         validateUserInRoom(roomId, userId);
     }
 
-    private void validateEnterGameRoomRequest(Long roomId, String userId) {
-        validateUserSession(userId);
+    private void validateEnterGameRoomRequest(Long roomId, UserInfo userInfo) {
+        validateUserSession(userInfo.getUser().getUserId());
         validateRoomExistence(roomId);
 
         // 방이 꽉 찼으면
         if (roomRepository.isFullRoom(roomId)) {
             throw new CustomRoomException(RoomErrorCode.FULL_ROOM.getMessage());
+        }
+
+        // 게임 중인 유저가 방에 들어가려고 하면
+        if (!isUserInGame(userInfo.getUser())) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
     }
 
