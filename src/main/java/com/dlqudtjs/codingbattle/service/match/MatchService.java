@@ -1,8 +1,9 @@
 package com.dlqudtjs.codingbattle.service.match;
 
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
+import com.dlqudtjs.codingbattle.entity.game.MatchHistory;
 
 public interface MatchService {
 
-    Long startMatch(GameSession gameSession);
+    MatchHistory startMatch(GameSession gameSession);
 }
