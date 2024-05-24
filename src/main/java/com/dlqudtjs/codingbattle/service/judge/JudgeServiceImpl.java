@@ -14,6 +14,7 @@ import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallbackTemplate;
 import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.command.ExecCreateCmdResponse;
 import com.github.dockerjava.api.model.Bind;
 import com.github.dockerjava.api.model.Binds;
 import com.github.dockerjava.api.model.Frame;
@@ -97,16 +98,8 @@ public class JudgeServiceImpl implements JudgeService {
             dockerClient.startContainerCmd(containerId).exec();
 
             // 컨테이너 내 스크립트 실행
-            String execId = dockerClient.execCreateCmd(containerId)
-                    // run.sh (roomId, userId, problemId, secretKey)
-                    .withCmd("sh", "-c", "mkdir " + dockerOutDirectory +
-                            "&& bash /script/run.sh " +
-                            judgeProblemRequestDto.getRoomId() + " " +
-                            judgeProblemRequestDto.getUserId() + " " +
-                            judgeProblemRequestDto.getProblemId() + " " +
-                            secretKey)
-                    .exec()
-                    .getId();
+            ExecCreateCmdResponse execCreateCmd = execCreateCmd(containerId, judgeProblemRequestDto);
+            String execId = execCreateCmd.getId();
 
             // ResultCallback.Adapter 사용하여 결과 처리
             dockerClient.execStartCmd(execId)
@@ -142,6 +135,18 @@ public class JudgeServiceImpl implements JudgeService {
         return dockerClient.createContainerCmd(dockerImageName)
                 .withHostConfig(createHostConfig(hostAndBindDirectory))
                 .withTty(true)
+                .exec();
+    }
+
+    private ExecCreateCmdResponse execCreateCmd(String containerId, JudgeProblemRequestDto judgeProblemRequestDto) {
+        return dockerClient.execCreateCmd(containerId)
+                // run.sh (roomId, userId, problemId, secretKey)
+                .withCmd("sh", "-c", "mkdir " + dockerOutDirectory +
+                        "&& bash /script/run.sh " +
+                        judgeProblemRequestDto.getRoomId() + " " +
+                        judgeProblemRequestDto.getUserId() + " " +
+                        judgeProblemRequestDto.getProblemId() + " " +
+                        secretKey)
                 .exec();
     }
 
