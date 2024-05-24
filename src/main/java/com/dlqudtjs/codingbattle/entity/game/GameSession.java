@@ -3,6 +3,7 @@ package com.dlqudtjs.codingbattle.entity.game;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemInfoResponseDto;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
 import com.dlqudtjs.codingbattle.entity.room.GameRoom;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
@@ -14,6 +15,7 @@ public class GameSession {
 
     private GameRoom gameRoom;
     private List<ProblemInfo> problemInfoList;
+    private Timestamp startTime;
 
     public List<ProblemInfoResponseDto> getProblemInfo() {
         List<ProblemInfoResponseDto> infoResponseDtoList = new ArrayList<>();
