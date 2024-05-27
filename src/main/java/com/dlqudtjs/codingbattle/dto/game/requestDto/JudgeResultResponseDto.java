@@ -1,10 +1,10 @@
 package com.dlqudtjs.codingbattle.dto.game.requestDto;
 
-import com.dlqudtjs.codingbattle.dto.game.responseDto.JudgeResultResponseDto;
+import com.dlqudtjs.codingbattle.dto.game.responseDto.ParsedJudgeResultResponseDto;
 import lombok.Getter;
 
 @Getter
-public class JudgeResultRequestDto {
+public class JudgeResultResponseDto {
 
     private String roomId;
     private String userId;
@@ -18,8 +18,8 @@ public class JudgeResultRequestDto {
     private String containerId;
     private String secretKey;
 
-    public JudgeResultResponseDto toJudgeResultResponseDto() {
-        return JudgeResultResponseDto.builder()
+    public ParsedJudgeResultResponseDto toParsedJudgeResultResponseDto() {
+        return ParsedJudgeResultResponseDto.builder()
                 .roomId(Long.parseLong(roomId))
                 .problemId(Long.parseLong(problemId))
                 .userId(userId)
