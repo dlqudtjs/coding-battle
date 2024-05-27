@@ -39,7 +39,6 @@ public class User implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(() -> role.getName().name());
