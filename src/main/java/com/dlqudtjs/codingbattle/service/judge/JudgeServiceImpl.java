@@ -125,6 +125,8 @@ public class JudgeServiceImpl implements JudgeService {
             e.printStackTrace();
         }
 
+        submitService.savedSubmit(judgeProblemRequestDto);
+
         return ResponseDto.builder()
                 .message(GameSuccessCode.GAME_END_SUCCESS.getMessage())
                 .status(GameSuccessCode.GAME_END_SUCCESS.getStatus())
