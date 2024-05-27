@@ -15,4 +15,5 @@ public class JudgeResultResponseDto {
     private Long totalTests;
     private String executionTime;
     private String errorMessage;
+    private String containerId;
 }

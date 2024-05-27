@@ -15,6 +15,7 @@ public class JudgeResultRequestDto {
     private String executionTime;
     private String currentTest;
     private String totalTests;
+    private String containerId;
     private String secretKey;
 
     public JudgeResultResponseDto toJudgeResultResponseDto() {
@@ -27,6 +28,7 @@ public class JudgeResultRequestDto {
                 .totalTests(Long.parseLong(totalTests))
                 .executionTime(executionTime)
                 .errorMessage(errorMessage)
+                .containerId(containerId)
                 .build();
     }
 }
