@@ -42,11 +42,11 @@ public class Submit {
     @Column(name = "code", nullable = false)
     private String code;
 
-    @Column(name = "memory", nullable = false)
-    private Integer memory;
+    @Column(name = "memory")
+    private Long memory;
 
-    @Column(name = "used_time", nullable = false)
-    private Integer usedTime;
+    @Column(name = "used_time")
+    private Long executionTime;
 
     @Column(name = "language", nullable = false)
     private String language;
