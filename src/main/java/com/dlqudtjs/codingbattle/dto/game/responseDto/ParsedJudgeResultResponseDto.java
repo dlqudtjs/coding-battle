@@ -14,7 +14,7 @@ public class ParsedJudgeResultResponseDto {
     private String result;  // PASS, FAIL, ERROR
     private Long currentTest;
     private Long totalTests;
-    private String executionTime;
+    private Long executionTime;
     private String errorMessage;
     private String containerId;
 }

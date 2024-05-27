@@ -26,7 +26,7 @@ public class JudgeResultResponseDto {
                 .result(result)
                 .currentTest(Long.parseLong(currentTest))
                 .totalTests(Long.parseLong(totalTests))
-                .executionTime(executionTime)
+                .executionTime(Long.parseLong(executionTime))
                 .errorMessage(errorMessage)
                 .containerId(containerId)
                 .build();
