@@ -1,10 +1,8 @@
 package com.dlqudtjs.codingbattle.entity.game;
 
 import com.dlqudtjs.codingbattle.entity.user.User;
-import lombok.Builder;
 import lombok.experimental.Delegate;
 
-@Builder
 public class Winner extends User {
 
     @Delegate
