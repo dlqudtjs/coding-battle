@@ -239,12 +239,5 @@ public class JudgeServiceImpl implements JudgeService {
                         .equals(judgeProblemRequestDto.getProblemId()))) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
-
-        // roomId에 존재하는 matchId 검증
-        if (!gameService.isValidMatchIdForRoom(
-                judgeProblemRequestDto.getRoomId(),
-                judgeProblemRequestDto.getMatchId())) {
-            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
-        }
     }
 }
