@@ -5,10 +5,11 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class JudgeResultResponseDto {
+public class ParsedJudgeResultResponseDto {
 
     private Long roomId;
     private Long problemId;
+    private Long matchId;
     private String userId;
     private String result;  // PASS, FAIL, ERROR
     private Long currentTest;
