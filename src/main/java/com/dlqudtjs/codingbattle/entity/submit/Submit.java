@@ -45,7 +45,7 @@ public class Submit {
     @Column(name = "memory")
     private Long memory;
 
-    @Column(name = "used_time")
+    @Column(name = "execution_time")
     private Long executionTime;
 
     @Column(name = "language", nullable = false)
