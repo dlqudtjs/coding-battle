@@ -53,4 +53,8 @@ public class Submit {
 
     @Column(name = "submit_time", nullable = false)
     private Date submitTime;
+
+    public Long getId() {
+        return id;
+    }
 }
