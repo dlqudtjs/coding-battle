@@ -1,9 +1,6 @@
 package com.dlqudtjs.codingbattle.service.game;
 
-import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
-
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
-import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.GameStartRequestDto;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.MatchHistory;
@@ -49,6 +46,16 @@ public class GameServiceImpl implements GameService {
         gameSession.setMatchId(matchHistory.getId());
 
         return gameSession;
+    }
+
+    @Override
+    public Boolean isValidMatchIdForRoom(Long roomId, Long matchId) {
+        if (gameSessionMap.containsKey(roomId)) {
+            GameSession gameSession = gameSessionMap.get(roomId);
+            return gameSession.getMatchId().equals(matchId);
+        }
+
+        return false;
     }
 
     @Override
