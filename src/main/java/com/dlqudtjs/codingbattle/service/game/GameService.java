@@ -9,8 +9,7 @@ public interface GameService {
 
     GameSession startGame(GameStartRequestDto requestDto);
 
-    Boolean isValidMatchIdForRoom(Long roomId, Long matchId);
+    GameSession getGameSession(Long roomId);
 
     List<ProblemInfo> getProblemInfoList(Long roomId);
-
 }
