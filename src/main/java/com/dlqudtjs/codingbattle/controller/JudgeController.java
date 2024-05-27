@@ -55,4 +55,9 @@ public class JudgeController {
 
         return ResponseEntity.ok().build();
     }
+
+    private Boolean isFinished(JudgeResultResponseDto result) {
+        return !result.getResult().equals(JudgeResultCode.PASS.name()) ||
+                result.getCurrentTest().equals(result.getTotalTests());
+    }
 }
