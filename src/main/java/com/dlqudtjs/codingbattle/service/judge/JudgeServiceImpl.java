@@ -131,6 +131,12 @@ public class JudgeServiceImpl implements JudgeService {
                 .build();
     }
 
+    @Override
+    public void closeDockerContainer(String containerId) {
+        dockerClient.stopContainerCmd(containerId).exec();
+        dockerClient.removeContainerCmd(containerId).exec();
+    }
+
     private CreateContainerResponse createContainer(String dockerImageName, Map<String, String> hostAndBindDirectory) {
         return dockerClient.createContainerCmd(dockerImageName)
                 .withHostConfig(createHostConfig(hostAndBindDirectory))

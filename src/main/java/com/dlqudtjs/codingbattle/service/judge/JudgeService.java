@@ -6,4 +6,6 @@ import com.dlqudtjs.codingbattle.dto.judge.JudgeProblemRequestDto;
 public interface JudgeService {
 
     ResponseDto judgeProblem(JudgeProblemRequestDto judgeProblemRequestDto);
+
+    void closeDockerContainer(String containerId);
 }
