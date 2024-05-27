@@ -4,6 +4,7 @@ import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.GameStartRequestDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemInfoResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.StartGameResponseDto;
+import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.service.game.GameService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -24,9 +25,11 @@ public class GameController {
 
     @PostMapping("/v1/game/start")
     public ResponseEntity<ResponseDto> startGame(@Valid @RequestBody GameStartRequestDto requestDto) {
-        List<ProblemInfoResponseDto> infoResponseDtoList = gameService.startGame(requestDto);
+        GameSession gameSession = gameService.startGame(requestDto);
+        List<ProblemInfoResponseDto> infoResponseDtoList = gameSession.getProblemInfo();
 
         StartGameResponseDto startGameResponseDto = StartGameResponseDto.builder()
+                .matchId(gameSession.getMatchId())
                 .gameStartInfo(infoResponseDtoList)
                 .build();
 
