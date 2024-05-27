@@ -13,6 +13,7 @@ import lombok.Getter;
 @Builder
 public class GameSession {
 
+    private Long matchId;
     private GameRoom gameRoom;
     private List<ProblemInfo> problemInfoList;
     private Timestamp startTime;
@@ -35,5 +36,9 @@ public class GameSession {
         }
 
         return infoResponseDtoList;
+    }
+
+    public void setMatchId(Long matchId) {
+        this.matchId = matchId;
     }
 }
