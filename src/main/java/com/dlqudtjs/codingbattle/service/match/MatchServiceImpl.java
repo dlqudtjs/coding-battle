@@ -1,6 +1,9 @@
 package com.dlqudtjs.codingbattle.service.match;
 
+import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
+
 import com.dlqudtjs.codingbattle.common.constant.MatchingResultType;
+import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.MatchHistory;
 import com.dlqudtjs.codingbattle.entity.game.MatchingResultClassification;
@@ -25,6 +28,12 @@ public class MatchServiceImpl implements MatchService {
     @Transactional
     public MatchHistory startMatch(GameSession gameSession) {
         return saveMatch(gameSession);
+    }
+
+    @Override
+    public MatchHistory getMatchHistory(Long matchId) {
+        return matchHistoryRepository.findById(matchId).orElseThrow(() -> new Custom4XXException(
+                INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus()));
     }
 
     private MatchHistory saveMatch(GameSession gameSession) {
