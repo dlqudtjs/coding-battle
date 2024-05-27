@@ -9,6 +9,7 @@ public class JudgeResultResponseDto {
     private String roomId;
     private String userId;
     private String problemId;
+    private String submitId;
     private String testcaseNumber;
     private String result;
     private String errorMessage;
@@ -23,6 +24,7 @@ public class JudgeResultResponseDto {
                 .roomId(Long.parseLong(roomId))
                 .problemId(Long.parseLong(problemId))
                 .userId(userId)
+                .submitId(Long.parseLong(submitId))
                 .result(result)
                 .currentTest(Long.parseLong(currentTest))
                 .totalTests(Long.parseLong(totalTests))

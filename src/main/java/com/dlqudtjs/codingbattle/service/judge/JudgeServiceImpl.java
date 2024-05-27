@@ -7,6 +7,7 @@ import com.dlqudtjs.codingbattle.common.constant.code.GameSuccessCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.dto.judge.JudgeProblemRequestDto;
+import com.dlqudtjs.codingbattle.entity.submit.Submit;
 import com.dlqudtjs.codingbattle.service.game.GameService;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import com.dlqudtjs.codingbattle.service.submit.SubmitService;
@@ -65,6 +66,8 @@ public class JudgeServiceImpl implements JudgeService {
     @Override
     public ResponseDto judgeProblem(JudgeProblemRequestDto judgeProblemRequestDto) {
         validateJudgeProblemRequestDto(judgeProblemRequestDto);
+        // 제출 저장
+        Submit submit = submitService.savedSubmit(judgeProblemRequestDto);
 
         String uuid = UUID.randomUUID().toString();
         ProgrammingLanguage submitLanguage =
@@ -98,7 +101,7 @@ public class JudgeServiceImpl implements JudgeService {
             dockerClient.startContainerCmd(containerId).exec();
 
             // 컨테이너 내 스크립트 실행
-            ExecCreateCmdResponse execCreateCmd = execCreateCmd(containerId, judgeProblemRequestDto);
+            ExecCreateCmdResponse execCreateCmd = execCreateCmd(containerId, judgeProblemRequestDto, submit);
             String execId = execCreateCmd.getId();
 
             // ResultCallback.Adapter 사용하여 결과 처리
@@ -125,8 +128,6 @@ public class JudgeServiceImpl implements JudgeService {
             e.printStackTrace();
         }
 
-        submitService.savedSubmit(judgeProblemRequestDto);
-
         return ResponseDto.builder()
                 .message(GameSuccessCode.GAME_END_SUCCESS.getMessage())
                 .status(GameSuccessCode.GAME_END_SUCCESS.getStatus())
@@ -146,7 +147,9 @@ public class JudgeServiceImpl implements JudgeService {
                 .exec();
     }
 
-    private ExecCreateCmdResponse execCreateCmd(String containerId, JudgeProblemRequestDto judgeProblemRequestDto) {
+    private ExecCreateCmdResponse execCreateCmd(String containerId,
+                                                JudgeProblemRequestDto judgeProblemRequestDto,
+                                                Submit submit) {
         return dockerClient.execCreateCmd(containerId)
                 // run.sh (roomId, userId, problemId, secretKey)
                 .withCmd("sh", "-c", "mkdir " + dockerOutDirectory +
@@ -154,6 +157,7 @@ public class JudgeServiceImpl implements JudgeService {
                         judgeProblemRequestDto.getRoomId() + " " +
                         judgeProblemRequestDto.getUserId() + " " +
                         judgeProblemRequestDto.getProblemId() + " " +
+                        submit.getId() + " " +
                         secretKey)
                 .exec();
     }

@@ -10,6 +10,7 @@ public class ParsedJudgeResultResponseDto {
     private Long roomId;
     private Long problemId;
     private Long matchId;
+    private Long submitId;
     private String userId;
     private String result;  // PASS, FAIL, ERROR
     private Long currentTest;
