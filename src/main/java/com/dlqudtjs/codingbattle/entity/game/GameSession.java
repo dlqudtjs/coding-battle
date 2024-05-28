@@ -34,6 +34,8 @@ public class GameSession {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
+        initGameUserStatusMap();
+
         return null;
     }
 
@@ -47,7 +49,7 @@ public class GameSession {
         this.matchId = matchId;
     }
 
-    public void initGameUserStatusMap() {
+    private void initGameUserStatusMap() {
         gameUserStatusMap = new ConcurrentHashMap<>();
 
         gameRoom.getUserList().forEach(user -> {
@@ -56,7 +58,6 @@ public class GameSession {
                     .isSubmitDone(false)
                     .build());
         });
-
     }
 
     public Boolean toggleSubmitDone(String userId) {
