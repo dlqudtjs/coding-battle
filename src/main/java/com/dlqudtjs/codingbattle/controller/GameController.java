@@ -8,7 +8,7 @@ import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemInfoResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.StartGameResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameEndMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
-import com.dlqudtjs.codingbattle.entity.room.GameRoom;
+import com.dlqudtjs.codingbattle.entity.game.Winner;
 import com.dlqudtjs.codingbattle.service.game.GameService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -46,26 +46,19 @@ public class GameController {
 
     @PostMapping("/v1/game/end")
     public ResponseEntity<ResponseDto> endGame(@Valid @RequestBody GameEndRequestDto requestDto) {
-        gameService.endGame(requestDto);
+        Winner winner = gameService.endGame(requestDto);
 
         GameEndResponseDto gameEndResponseDto = GameEndResponseDto.builder()
-                .userId("김동건")
-                .code("public class Main { public static void main(String[] args) { System.out.println(\"Hello, World!\"); } }")
+                .userId(winner.getUserId())
+                .code(winner.getCode())
                 .build();
 
-        ResponseDto responseDto = ResponseDto.builder()
-                .status(200)
-                .data(gameEndResponseDto)
-                .build();
-
-        // 방에 게임 문제 전송
+        // 방에 Winner 전송
         messagingTemplate.convertAndSend("/topic/room/" + requestDto.getRoomId(),
                 GameEndMessageResponseDto.builder()
                         .gameEnd(gameEndResponseDto)
                         .build());
 
-        GameRoom gameRoom = gameService.initGameRoom(requestDto.getRoomId());
-
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }
