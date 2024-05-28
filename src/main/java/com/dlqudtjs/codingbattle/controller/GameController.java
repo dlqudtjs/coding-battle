@@ -6,8 +6,10 @@ import com.dlqudtjs.codingbattle.dto.game.responseDto.GameEndResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemInfoResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.StartGameResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameEndMessageResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomUserStatusListMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.Winner;
+import com.dlqudtjs.codingbattle.entity.room.GameRoom;
 import com.dlqudtjs.codingbattle.service.game.GameService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -58,6 +60,17 @@ public class GameController {
                 GameEndMessageResponseDto.builder()
                         .gameEnd(gameEndResponseDto)
                         .build());
+
+        GameRoom gameRoom = gameService.resetRoom(roomId);
+
+        GameRoomUserStatusListMessageResponseDto gameRoomUserStatusListMessageResponseDto =
+                GameRoomUserStatusListMessageResponseDto.builder()
+                        .userStatusList(gameRoom.toGameRoomUserStatusResponseDto())
+                        .build();
+
+        // 방에 초기화된 유저 정보 전송
+        messagingTemplate.convertAndSend("/topic/room/" + roomId,
+                gameRoomUserStatusListMessageResponseDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
