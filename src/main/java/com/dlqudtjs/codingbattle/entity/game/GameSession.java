@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.entity.game;
 
-import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.*;
+import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.PERFECT_WIN;
+import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.WIN;
 import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.MatchingResultType;
@@ -9,6 +10,7 @@ import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemInfoResponseDto;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
 import com.dlqudtjs.codingbattle.entity.room.GameRoom;
 import com.dlqudtjs.codingbattle.entity.submit.Submit;
+import com.dlqudtjs.codingbattle.entity.user.User;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +62,10 @@ public class GameSession {
 
         // 시간 초과 및 `다 풀었어요!`버튼을 다 눌렀지만 맞춘 사람이 없는 경우
         return null;
+    }
+
+    public List<User> getGameUserList() {
+        return gameRoom.getUserList();
     }
 
     private Boolean canEndGame() {
