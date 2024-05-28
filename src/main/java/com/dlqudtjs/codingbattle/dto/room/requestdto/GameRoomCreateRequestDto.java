@@ -51,7 +51,7 @@ public class GameRoomCreateRequestDto {
     @NotNull
     @Min(10)
     @Max(120)
-    private Integer limitTime;
+    private Long limitTime;
 
     public GameRoom toEntity() {
         return GameRoom.builder()

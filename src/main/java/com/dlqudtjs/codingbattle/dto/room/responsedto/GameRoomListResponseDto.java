@@ -17,5 +17,5 @@ public class GameRoomListResponseDto {
     private Integer maxUserCount;
     private ProblemLevelType problemLevel;
     private Integer maxSubmitCount;
-    private Integer limitTime;
+    private Long limitTime;
 }

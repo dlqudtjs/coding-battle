@@ -29,7 +29,7 @@ public class GameRoom {
     private ProblemLevelType problemLevel;
     private Integer maxUserCount;
     private Integer maxSubmitCount;
-    private Integer limitTime;
+    private Long limitTime;
     private ConcurrentHashMap<String, RoomUserStatus> roomUserStatusMap;
 
     public void startGame() {

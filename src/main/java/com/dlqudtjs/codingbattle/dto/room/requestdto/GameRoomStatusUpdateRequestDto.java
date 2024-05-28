@@ -16,7 +16,7 @@ public class GameRoomStatusUpdateRequestDto {
     private Integer problemLevel;
     private Integer maxUserCount;
     private Integer maxSubmitCount;
-    private Integer limitTime;
+    private Long limitTime;
 
     public void validate() {
         if (hostId == null || title == null || password == null || language == null ||
@@ -52,6 +52,10 @@ public class GameRoomStatusUpdateRequestDto {
     }
 
     private boolean checkRange(int value, int min, int max) {
+        return min > value || value > max;
+    }
+
+    private boolean checkRange(Long value, int min, int max) {
         return min > value || value > max;
     }
 }
