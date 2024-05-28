@@ -26,22 +26,16 @@ public class GameSession {
         initGameUserStatusMap();
     }
 
-    public List<ProblemInfoResponseDto> getProblemInfo() {
-        List<ProblemInfoResponseDto> infoResponseDtoList = new ArrayList<>();
-
-        for (ProblemInfo problemInfo : problemInfoList) {
-            infoResponseDtoList.add(ProblemInfoResponseDto.builder()
-                    .id(problemInfo.getProblem().getId())
-                    .algorithmClassification(problemInfo.getProblem().getAlgorithmClassification().getName())
-                    .problemLevel(problemInfo.getProblem().getProblemLevel().getName())
-                    .title(problemInfo.getProblem().getTitle())
-                    .problemDescription(problemInfo.getProblem().getProblemDescription())
-                    .inputDescription(problemInfo.getProblem().getInputDescription())
-                    .outputDescription(problemInfo.getProblem().getOutputDescription())
-                    .hint(problemInfo.getProblem().getHint())
-                    .problemIOExamples(problemInfo.getProblemIOExamples())
-                    .build());
-        }
+    /*
+     방에 혼자 남았는지
+     시간이 초과됐는지
+     모든 유저가 `다 풀었어요!` 버튼을 눌렀는지
+    */
+    public Boolean canEndGame() {
+        return isAlone() ||
+                isTimeOver() ||
+                isAllUserSubmitDone();
+    }
 
 
     public void setMatchId(Long matchId) {
@@ -67,12 +61,12 @@ public class GameSession {
 
 
     // 방에 혼자 남았는지 확인
-    public Boolean isAlone() {
+    private Boolean isAlone() {
         return gameUserStatusMap.size() == 1;
     }
 
     // 시간 초과 확인
-    public Boolean isTimeOver() {
+    private Boolean isTimeOver() {
         // 밀리초 변환
         long limitTime = gameRoom.getLimitTime() * 60 * 1000;
         return System.currentTimeMillis() - startTime.getTime() > limitTime;
