@@ -26,17 +26,12 @@ public class GameSession {
         initGameUserStatusMap();
     }
 
-    /*
-     방에 혼자 남았는지
-     시간이 초과됐는지
-     모든 유저가 `다 풀었어요!` 버튼을 눌렀는지
-    */
+
     public Boolean canEndGame() {
         return isAlone() ||
                 isTimeOver() ||
                 isAllUserSubmitDone();
     }
-
 
     public void setMatchId(Long matchId) {
         this.matchId = matchId;
