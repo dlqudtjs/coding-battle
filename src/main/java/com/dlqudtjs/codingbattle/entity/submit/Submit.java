@@ -57,4 +57,12 @@ public class Submit {
     public Long getId() {
         return id;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public Long getExecutionTime() {
+        return executionTime;
+    }
 }
