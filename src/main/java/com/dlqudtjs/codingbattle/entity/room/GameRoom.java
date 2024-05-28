@@ -102,7 +102,8 @@ public class GameRoom {
             GameRoomUserStatusUpdateRequestDto requestDto) {
 
         RoomUserStatus userStatus = getUserStatus(requestDto.getUserId());
-        userStatus.updateStatus(requestDto.getIsReady(), requestDto.getLanguage());
+        userStatus.updateStatus(requestDto.getIsReady(),
+                ProgrammingLanguage.valueOf(requestDto.getLanguage().toUpperCase()));
 
         return userStatus;
     }
@@ -141,7 +142,14 @@ public class GameRoom {
                 .allMatch(user -> user.getUseLanguage().equals(language));
     }
 
+    public void initRoomUserStatus() {
+        roomUserStatusMap.values().forEach(
+                status -> status.updateStatus(false, status.getUseLanguage())
+        );
+    }
+
     private RoomUserStatus getUserStatus(String userId) {
         return roomUserStatusMap.get(userId);
     }
+
 }

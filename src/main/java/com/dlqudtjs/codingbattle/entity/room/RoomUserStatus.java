@@ -19,9 +19,9 @@ public class RoomUserStatus {
         this.useLanguage = userInfo.getUserSetting().getProgrammingLanguage();
     }
 
-    public void updateStatus(Boolean isReady, String language) {
+    public void updateStatus(Boolean isReady, ProgrammingLanguage language) {
         this.isReady = isReady;
-        this.useLanguage = ProgrammingLanguage.valueOf(language.toUpperCase());
+        this.useLanguage = language;
     }
 
     public String getUserId() {
