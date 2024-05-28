@@ -6,11 +6,10 @@ import com.dlqudtjs.codingbattle.entity.room.GameRoom;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Builder;
+import java.util.Map;
 import lombok.Getter;
 
 @Getter
-@Builder
 public class GameSession {
 
     private Long matchId;
@@ -48,5 +47,27 @@ public class GameSession {
 
     public void setMatchId(Long matchId) {
         this.matchId = matchId;
+    }
+
+    public void initGameUserStatusMap() {
+        gameUserStatusMap.clear();
+
+        gameRoom.getUserList().forEach(user -> {
+            gameUserStatusMap.put(user.getUserId(), GameUserStatus.builder()
+                    .user(user)
+                    .isSubmitDone(false)
+                    .build());
+        });
+
+    }
+
+    public Boolean toggleSubmitDone(String userId) {
+        GameUserStatus gameUserStatus = gameUserStatusMap.get(userId);
+        return gameUserStatus.toggleSubmitDone();
+    }
+
+    public Boolean isAllUserSubmitDone() {
+        return gameUserStatusMap.values().stream()
+                .allMatch(GameUserStatus::getIsSubmitDone);
     }
 }
