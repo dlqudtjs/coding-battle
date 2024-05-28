@@ -8,13 +8,13 @@ import org.springframework.web.socket.WebSocketSession;
 
 @Getter
 @RequiredArgsConstructor
-public class GameRoomUserStatus {
+public class RoomUserStatus {
     UserInfo userInfo;
     WebSocketSession session;
     Boolean isReady;
     ProgrammingLanguage useLanguage;
 
-    public GameRoomUserStatus(UserInfo userInfo, WebSocketSession session) {
+    public RoomUserStatus(UserInfo userInfo, WebSocketSession session) {
         this.userInfo = userInfo;
         this.session = session;
         this.isReady = false;

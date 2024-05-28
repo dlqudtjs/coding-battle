@@ -30,7 +30,7 @@ public class GameRoom {
     private Integer maxUserCount;
     private Integer maxSubmitCount;
     private Integer limitTime;
-    private ConcurrentHashMap<String, GameRoomUserStatus> userMap;
+    private ConcurrentHashMap<String, RoomUserStatus> userMap;
 
     public void startGame() {
         isStarted = true;
@@ -39,7 +39,7 @@ public class GameRoom {
     public void addUser(UserInfo userInfo) {
         User user = userInfo.getUser();
         WebSocketSession session = WebsocketSessionHolder.getSessionFromUserId(user.getUserId());
-        userMap.put(user.getUserId(), new GameRoomUserStatus(userInfo, session));
+        userMap.put(user.getUserId(), new RoomUserStatus(userInfo, session));
     }
 
     public void setRoomId(Long roomId) {
@@ -76,14 +76,14 @@ public class GameRoom {
 
     public List<User> getUserList() {
         return userMap.values().stream()
-                .map(GameRoomUserStatus::getUserInfo)
+                .map(RoomUserStatus::getUserInfo)
                 .map(UserInfo::getUser)
                 .toList();
     }
 
     public Boolean isAllUserReady() {
         return userMap.values().stream()
-                .allMatch(GameRoomUserStatus::getIsReady);
+                .allMatch(RoomUserStatus::getIsReady);
     }
 
     public GameRoom updateGameRoomStatus(GameRoomStatusUpdateRequestDto requestDto) {
@@ -98,10 +98,10 @@ public class GameRoom {
         return this;
     }
 
-    public GameRoomUserStatus updateGameRoomUserStatus(
+    public RoomUserStatus updateGameRoomUserStatus(
             GameRoomUserStatusUpdateRequestDto requestDto) {
 
-        GameRoomUserStatus userStatus = getUserStatus(requestDto.getUserId());
+        RoomUserStatus userStatus = getUserStatus(requestDto.getUserId());
         userStatus.updateStatus(requestDto.getIsReady(), requestDto.getLanguage());
 
         return userStatus;
@@ -141,7 +141,7 @@ public class GameRoom {
                 .allMatch(user -> user.getUseLanguage().equals(language));
     }
 
-    private GameRoomUserStatus getUserStatus(String userId) {
+    private RoomUserStatus getUserStatus(String userId) {
         return userMap.get(userId);
     }
 }
