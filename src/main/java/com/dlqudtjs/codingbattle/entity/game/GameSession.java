@@ -21,6 +21,7 @@ public class GameSession {
     private Map<String, GameUserStatus> gameUserStatusMap;
     private final List<ProblemInfo> problemInfoList;
     private final Timestamp startTime;
+    private Submit firstCorrectSubmit;
 
     public GameSession(GameRoom gameRoom, List<ProblemInfo> problemInfoList) {
         this.gameRoom = gameRoom;
@@ -47,6 +48,14 @@ public class GameSession {
 
     public void setMatchId(Long matchId) {
         this.matchId = matchId;
+    }
+
+    public void setFirstCorrectSubmit(Submit submit) {
+        if (firstCorrectSubmit != null) {
+            return;
+        }
+
+        this.firstCorrectSubmit = submit;
     }
 
     private void initGameUserStatusMap() {
