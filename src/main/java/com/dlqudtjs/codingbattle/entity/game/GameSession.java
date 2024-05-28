@@ -41,6 +41,7 @@ public class GameSession {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
+        gameRoom.initRoomUserStatus();
         return getWinner();
     }
 
