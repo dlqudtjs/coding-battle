@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.Getter;
 
 @Getter
@@ -50,7 +51,7 @@ public class GameSession {
     }
 
     public void initGameUserStatusMap() {
-        gameUserStatusMap.clear();
+        gameUserStatusMap = new ConcurrentHashMap<>();
 
         gameRoom.getUserList().forEach(user -> {
             gameUserStatusMap.put(user.getUserId(), GameUserStatus.builder()
