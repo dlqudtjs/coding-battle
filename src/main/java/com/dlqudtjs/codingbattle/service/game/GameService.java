@@ -10,6 +10,8 @@ public interface GameService {
 
     GameSession startGame(Long roomId, String requestUserId);
 
+    void leaveGame(Long roomId, String requestUserId);
+
     Winner endGame(Long roomId, String requestUserId);
 
     GameRoom resetRoom(Long roomId);
