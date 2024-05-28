@@ -70,8 +70,9 @@ public class GameServiceImpl implements GameService {
     @Override
     public GameRoom resetRoom(Long roomId) {
         // TODO: 게임 초기화 유저 정보를 토기화해서 주기 + 게임 세션 삭제
+        gameSessionMap.remove(roomId);
 
-        return null;
+        return roomService.getGameRoom(roomId);
     }
 
     @Override

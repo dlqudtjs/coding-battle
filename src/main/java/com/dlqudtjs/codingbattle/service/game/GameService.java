@@ -1,6 +1,5 @@
 package com.dlqudtjs.codingbattle.service.game;
 
-import com.dlqudtjs.codingbattle.dto.game.requestDto.GameEndRequestDto;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.GameStartRequestDto;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.Winner;
@@ -14,7 +13,7 @@ public interface GameService {
 
     Winner endGame(Long roomId);
 
-    GameRoom initGameRoom(Long roomId);
+    GameRoom resetRoom(Long roomId);
 
     Boolean toggleSubmitDone(Long roomId, String userId);
 
