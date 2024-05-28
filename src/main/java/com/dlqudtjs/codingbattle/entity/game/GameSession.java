@@ -39,11 +39,7 @@ public class GameSession {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
-        Winner winner = getWinner();
-
-        initGameUserStatusMap();
-
-        return null;
+        return getWinner();
     }
 
     private Winner getWinner() {
