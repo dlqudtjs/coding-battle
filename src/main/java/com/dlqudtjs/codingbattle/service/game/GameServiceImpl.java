@@ -11,7 +11,6 @@ import com.dlqudtjs.codingbattle.entity.game.MatchHistory;
 import com.dlqudtjs.codingbattle.entity.game.Winner;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
 import com.dlqudtjs.codingbattle.entity.room.GameRoom;
-import com.dlqudtjs.codingbattle.entity.user.UserInfo;
 import com.dlqudtjs.codingbattle.service.match.MatchService;
 import com.dlqudtjs.codingbattle.service.problem.ProblemService;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
@@ -55,12 +54,9 @@ public class GameServiceImpl implements GameService {
     public Winner endGame(GameEndRequestDto requestDto) {
         GameSession gameSession = gameSessionMap.get(requestDto.getRoomId());
 
-        canEndGame(gameSession);
-
-        getWinner(requestDto.getRoomId());
-
-        UserInfo userInfo = userService.getUserInfo("a");
-        Winner winner = new Winner(userInfo.getUser(), "");
+        if (gameSession.canEndGame()) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
+        }
 
         return null;
     }
@@ -90,21 +86,5 @@ public class GameServiceImpl implements GameService {
     @Override
     public List<ProblemInfo> getProblemInfoList(Long roomId) {
         return gameSessionMap.get(roomId).getProblemInfoList();
-    }
-
-    private Winner getWinner(Long roomId) {
-        // TODO: 승자 결정
-        return null;
-    }
-
-    private Boolean canEndGame(GameSession gameSession) {
-        // TODO: 게임 종료 조건이 됐는지 확인
-        // 방에 혼자 남았는지
-        // 시간이 초과됐는지
-        // 모든 유저가 다 풀었어요! 버튼을 눌렀는지
-
-        gameSession.getGameRoom();
-
-        return true;
     }
 }
