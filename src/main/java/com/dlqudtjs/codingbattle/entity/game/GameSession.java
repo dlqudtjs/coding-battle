@@ -40,6 +40,19 @@ public class GameSession {
         return null;
     }
 
+    private Winner getWinner() {
+        // 혼자 남았을 때
+        if (isAlone()) {
+            GameUserStatus gameUserStatus = gameUserStatusMap.values().stream().findFirst().orElseThrow(
+                    () -> new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus())
+            );
+
+            return new Winner(gameUserStatus.getUser(), PERFECT_WIN, null);
+        }
+
+        return null;
+    }
+
     private Boolean canEndGame() {
         return isAlone() ||
                 isTimeOver() ||
