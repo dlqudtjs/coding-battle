@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.service.match;
 
+import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.*;
 import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.MatchingResultType;
@@ -8,6 +9,7 @@ import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.MatchHistory;
 import com.dlqudtjs.codingbattle.entity.game.MatchingResultClassification;
 import com.dlqudtjs.codingbattle.entity.game.UserMatchingHistory;
+import com.dlqudtjs.codingbattle.entity.game.Winner;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.repository.game.MatchHistoryRepository;
 import com.dlqudtjs.codingbattle.repository.game.MatchingResultClassificationRepository;
@@ -36,6 +38,26 @@ public class MatchServiceImpl implements MatchService {
                 INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus()));
     }
 
+    @Override
+    @Transactional
+    public void saveUserMatchHistory(GameSession gameSession, Winner winner) {
+        gameSession.getGameUserList().forEach(user -> {
+            MatchingResultType matchingResultType;
+
+            if (winner.equals(user)) {
+                matchingResultType = winner.getMatchingResultType();
+            } else {
+                matchingResultType = LOSE;
+            }
+
+            userMatchingHistoryRepository.save(UserMatchingHistory.builder()
+                    .user(user)
+                    .matchHistory(this.getMatchHistory(gameSession.getMatchId()))
+                    .matchingResultClassification(getMatchingResultClassification(matchingResultType))
+                    .build());
+        });
+    }
+
     private MatchHistory saveMatch(GameSession gameSession) {
         MatchHistory matchHistory = saveMatchHistory(gameSession);
         saveUserMatchingHistory(gameSession, matchHistory);
@@ -51,7 +73,7 @@ public class MatchServiceImpl implements MatchService {
 
     private void saveUserMatchingHistory(GameSession gameSession, MatchHistory matchHistory) {
         MatchingResultClassification matchingResultClassification =
-                getMatchingResultClassification(MatchingResultType.PENDING);
+                getMatchingResultClassification(PENDING);
 
         for (User user : gameSession.getGameRoom().getUserList()) {
             userMatchingHistoryRepository.save(UserMatchingHistory.builder()
