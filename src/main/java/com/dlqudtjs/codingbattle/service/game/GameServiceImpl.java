@@ -50,8 +50,12 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Winner endGame(Long roomId) {
+    public Winner endGame(Long roomId, String requestUserId) {
         GameSession gameSession = gameSessionMap.get(roomId);
+
+        if (!gameSession.isHost(requestUserId)) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
+        }
 
         Winner winner = gameSession.endGame();
 

@@ -11,7 +11,7 @@ public interface GameService {
 
     GameSession startGame(GameStartRequestDto requestDto, String requestUserId);
 
-    Winner endGame(Long roomId);
+    Winner endGame(Long roomId, String requestUserId);
 
     GameRoom resetRoom(Long roomId);
 

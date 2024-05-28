@@ -103,6 +103,10 @@ public class GameSession {
         });
     }
 
+    public boolean isHost(String userId) {
+        return gameRoom.isHost(userId);
+    }
+
     public Boolean toggleSubmitDone(String userId) {
         GameUserStatus gameUserStatus = gameUserStatusMap.get(userId);
         return gameUserStatus.toggleSubmitDone();
