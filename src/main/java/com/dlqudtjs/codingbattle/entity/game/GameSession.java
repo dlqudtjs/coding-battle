@@ -26,6 +26,10 @@ public class GameSession {
         initGameUserStatusMap();
     }
 
+    public Winner endGame() {
+        if (!canEndGame()) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
+        }
 
     public Boolean canEndGame() {
         return isAlone() ||

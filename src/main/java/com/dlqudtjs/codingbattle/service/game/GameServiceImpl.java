@@ -54,11 +54,7 @@ public class GameServiceImpl implements GameService {
     public Winner endGame(GameEndRequestDto requestDto) {
         GameSession gameSession = gameSessionMap.get(requestDto.getRoomId());
 
-        if (gameSession.canEndGame()) {
-            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
-        }
-
-        return null;
+        return gameSession.endGame();
     }
 
     @Override
