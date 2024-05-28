@@ -44,14 +44,14 @@ public class JudgeController {
             return ResponseEntity.badRequest().build();
         }
 
+        log.info("userId : " + JudgeResultResponseDto.getUserId() + " / " +
+                "result : " + JudgeResultResponseDto.getResult());
+        
         System.out.println("results : " + JudgeResultResponseDto.getResult());
 
         JudgeResultMessageResponseDto responseDto = JudgeResultMessageResponseDto.builder()
                 .judgeResult(JudgeResultResponseDto.toParsedJudgeResultResponseDto())
                 .build();
-
-        log.info("JudgeUserResults : " + responseDto.getJudgeResult() +
-                ", JudgeResult : " + JudgeResultResponseDto.getResult());
 
         // 결과 전송
         messagingTemplate.convertAndSend("/topic/room/" + JudgeResultResponseDto.getRoomId(), responseDto);
