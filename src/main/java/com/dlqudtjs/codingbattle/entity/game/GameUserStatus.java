@@ -8,7 +8,6 @@ public class GameUserStatus {
     private User user;
     private Boolean isSubmitDone;
 
-
     public Boolean getIsSubmitDone() {
         return isSubmitDone;
     }
