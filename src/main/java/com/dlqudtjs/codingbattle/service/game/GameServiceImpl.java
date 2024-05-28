@@ -54,7 +54,12 @@ public class GameServiceImpl implements GameService {
     public Winner endGame(GameEndRequestDto requestDto) {
         GameSession gameSession = gameSessionMap.get(requestDto.getRoomId());
 
-        return gameSession.endGame();
+        Winner winner = gameSession.endGame();
+
+        // 매치 기록 저장
+        matchService.saveUserMatchHistory(gameSession, winner);
+
+        return winner;
     }
 
     @Override
