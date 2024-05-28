@@ -52,4 +52,12 @@ public class WebsocketSessionHolder {
     public static boolean isNotConnected(String userId) {
         return !socketMap.containsKey(userId);
     }
+
+    public static boolean isMatched(String sessionId, String userId) {
+        if (!socketMap.containsKey(userId)) {
+            return false;
+        }
+        
+        return socketMap.get(userId).equals(sessionId);
+    }
 }
