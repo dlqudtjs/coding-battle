@@ -18,6 +18,8 @@ public interface RoomService {
 
     ResponseDto leaveGameRoom(Long roomId, String userId);
 
+    GameRoom getGameRoom(Long roomId);
+
     void logout(String userId);
 
     ResponseDto getGameRoomList();

@@ -120,6 +120,15 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    public GameRoom getGameRoom(Long roomId) {
+        if (!roomRepository.isExistRoom(roomId)) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
+        }
+
+        return roomRepository.getGameRoom(roomId);
+    }
+
+    @Override
     public GameRoom startGame(Long roomId) {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
 
