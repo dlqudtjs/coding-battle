@@ -4,7 +4,6 @@ import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID
 
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
-import com.dlqudtjs.codingbattle.dto.game.requestDto.GameEndRequestDto;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.GameStartRequestDto;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.MatchHistory;
@@ -51,8 +50,8 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Winner endGame(GameEndRequestDto requestDto) {
-        GameSession gameSession = gameSessionMap.get(requestDto.getRoomId());
+    public Winner endGame(Long roomId) {
+        GameSession gameSession = gameSessionMap.get(roomId);
 
         Winner winner = gameSession.endGame();
 

@@ -54,7 +54,7 @@ public class GameController {
                 .build();
 
         // 방에 Winner 전송
-        messagingTemplate.convertAndSend("/topic/room/" + requestDto.getRoomId(),
+        messagingTemplate.convertAndSend("/topic/room/" + roomId,
                 GameEndMessageResponseDto.builder()
                         .gameEnd(gameEndResponseDto)
                         .build());

@@ -12,7 +12,7 @@ public interface GameService {
 
     GameSession startGame(GameStartRequestDto requestDto);
 
-    Winner endGame(GameEndRequestDto requestDto);
+    Winner endGame(Long roomId);
 
     GameRoom initGameRoom(Long roomId);
 
