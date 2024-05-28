@@ -72,14 +72,13 @@ public class JudgeServiceImpl implements JudgeService {
         String uuid = UUID.randomUUID().toString();
         ProgrammingLanguage submitLanguage =
                 ProgrammingLanguage.valueOf(judgeProblemRequestDto.getLanguage().toUpperCase());
+        
         String dockerImageName = submitLanguage.getDockerImageName();
-        String createTestcasePath = createHostTestCasePath(judgeProblemRequestDto.getProblemId());
+        String createUserCodePath = createHostUserCodePath(uuid);
         String createScriptPath = createHostScriptPath(submitLanguage);
+        String createTestcasePath = createHostTestCasePath(judgeProblemRequestDto.getProblemId());
 
         try {
-            // 사용자가 제출한 코드를 저장할 디렉토리 생성
-            String createUserCodePath = createHostUserCodePath(uuid);
-
             // 사용자가 제출한 코드를 파일로 생성
             createUserCodeFile(
                     createUserCodePath,
