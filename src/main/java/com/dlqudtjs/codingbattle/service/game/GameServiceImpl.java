@@ -16,7 +16,6 @@ import com.dlqudtjs.codingbattle.service.match.MatchService;
 import com.dlqudtjs.codingbattle.service.problem.ProblemService;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import com.dlqudtjs.codingbattle.service.user.UserService;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,7 +53,9 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Winner endGame(GameEndRequestDto requestDto) {
-        canEndGame(requestDto.getRoomId());
+        GameSession gameSession = gameSessionMap.get(requestDto.getRoomId());
+
+        canEndGame(gameSession);
 
         getWinner(requestDto.getRoomId());
 
@@ -62,6 +63,12 @@ public class GameServiceImpl implements GameService {
         Winner winner = new Winner(userInfo.getUser(), "");
 
         return null;
+    }
+
+    @Override
+    public Boolean toggleSubmitDone(Long roomId, String userId) {
+        GameSession gameSession = gameSessionMap.get(roomId);
+        return gameSession.toggleSubmitDone(userId);
     }
 
     @Override
@@ -90,11 +97,13 @@ public class GameServiceImpl implements GameService {
         return null;
     }
 
-    private Boolean canEndGame(Long roomId) {
+    private Boolean canEndGame(GameSession gameSession) {
         // TODO: 게임 종료 조건이 됐는지 확인
         // 방에 혼자 남았는지
         // 시간이 초과됐는지
         // 모든 유저가 다 풀었어요! 버튼을 눌렀는지
+
+        gameSession.getGameRoom();
 
         return true;
     }

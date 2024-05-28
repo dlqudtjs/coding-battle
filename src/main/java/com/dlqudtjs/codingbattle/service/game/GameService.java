@@ -16,6 +16,8 @@ public interface GameService {
 
     GameRoom initGameRoom(Long roomId);
 
+    Boolean toggleSubmitDone(Long roomId, String userId);
+
     GameSession getGameSession(Long roomId);
 
     List<ProblemInfo> getProblemInfoList(Long roomId);
