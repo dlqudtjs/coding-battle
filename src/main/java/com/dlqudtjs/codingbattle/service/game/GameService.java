@@ -1,6 +1,5 @@
 package com.dlqudtjs.codingbattle.service.game;
 
-import com.dlqudtjs.codingbattle.dto.game.requestDto.GameStartRequestDto;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.Winner;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
@@ -9,7 +8,7 @@ import java.util.List;
 
 public interface GameService {
 
-    GameSession startGame(GameStartRequestDto requestDto, String requestUserId);
+    GameSession startGame(Long roomId, String requestUserId);
 
     Winner endGame(Long roomId, String requestUserId);
 

@@ -4,7 +4,6 @@ import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID
 
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
-import com.dlqudtjs.codingbattle.dto.game.requestDto.GameStartRequestDto;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.MatchHistory;
 import com.dlqudtjs.codingbattle.entity.game.Winner;
@@ -13,7 +12,6 @@ import com.dlqudtjs.codingbattle.entity.room.GameRoom;
 import com.dlqudtjs.codingbattle.service.match.MatchService;
 import com.dlqudtjs.codingbattle.service.problem.ProblemService;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
-import com.dlqudtjs.codingbattle.service.user.UserService;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,14 +23,13 @@ import org.springframework.stereotype.Service;
 public class GameServiceImpl implements GameService {
     static Map<Long, GameSession> gameSessionMap = new ConcurrentHashMap<>();
     private final RoomService roomService;
-    private final UserService userService;
     private final ProblemService problemService;
     private final MatchService matchService;
 
     @Override
-    public GameSession startGame(GameStartRequestDto requestDto, String requestUserId) {
+    public GameSession startGame(Long roomId, String requestUserId) {
         // 게임 시작
-        GameRoom gameRoom = roomService.startGame(requestDto.getRoomId(), requestUserId);
+        GameRoom gameRoom = roomService.startGame(roomId, requestUserId);
 
         // 난이도에 따른 문제 리스트 가져오기
         ProblemLevelType problemLevel = gameRoom.getProblemLevel();
@@ -40,7 +37,7 @@ public class GameServiceImpl implements GameService {
 
         GameSession gameSession = new GameSession(gameRoom, problemInfoList);
 
-        gameSessionMap.put(requestDto.getRoomId(), gameSession);
+        gameSessionMap.put(roomId, gameSession);
 
         // 매치 기록 저장
         MatchHistory matchHistory = matchService.startMatch(gameSession);
