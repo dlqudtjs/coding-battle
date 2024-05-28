@@ -16,4 +16,8 @@ public class GameUserStatus {
         isSubmitDone = !isSubmitDone;
         return isSubmitDone;
     }
+
+    public User getUser() {
+        return user;
+    }
 }
