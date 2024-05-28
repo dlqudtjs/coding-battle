@@ -63,7 +63,7 @@ public class GameSession {
         this.matchId = matchId;
     }
 
-    public void setFirstCorrectSubmit(Submit submit) {
+    public void reflectSubmit(Submit submit) {
         if (firstCorrectSubmit != null) {
             return;
         }

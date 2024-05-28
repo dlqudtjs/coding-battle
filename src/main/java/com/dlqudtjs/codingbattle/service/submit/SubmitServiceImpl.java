@@ -38,7 +38,7 @@ public class SubmitServiceImpl implements SubmitService {
                 judgeResultResponseDto.getExecutionTime());
 
         // 첫번째 정답 제출 저장
-        gameService.getGameSession(judgeResultResponseDto.getRoomId()).setFirstCorrectSubmit(submit);
+        gameService.getGameSession(judgeResultResponseDto.getRoomId()).reflectSubmit(submit);
     }
 
     @Override
