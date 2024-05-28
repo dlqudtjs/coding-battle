@@ -31,12 +31,14 @@ public class SubmitServiceImpl implements SubmitService {
 
     @Override
     public void saveSubmitResult(ParsedJudgeResultResponseDto judgeResultResponseDto) {
-        if (!submitRepository.existsById(judgeResultResponseDto.getSubmitId())) {
-            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
-        }
+        Submit submit = submitRepository.findById(judgeResultResponseDto.getSubmitId()).orElseThrow(
+                () -> new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus()));
 
         submitRepository.updateSubmitResult(judgeResultResponseDto.getSubmitId(),
                 judgeResultResponseDto.getExecutionTime());
+
+        // 첫번째 정답 제출 저장
+        gameService.getGameSession(judgeResultResponseDto.getRoomId()).setFirstCorrectSubmit(submit);
     }
 
     @Override
