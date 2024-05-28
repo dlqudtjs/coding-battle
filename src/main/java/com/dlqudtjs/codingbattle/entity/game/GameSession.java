@@ -43,8 +43,6 @@ public class GameSession {
                     .build());
         }
 
-        return infoResponseDtoList;
-    }
 
     public void setMatchId(Long matchId) {
         this.matchId = matchId;
@@ -71,6 +69,13 @@ public class GameSession {
     // 방에 혼자 남았는지 확인
     public Boolean isAlone() {
         return gameUserStatusMap.size() == 1;
+    }
+
+    // 시간 초과 확인
+    public Boolean isTimeOver() {
+        // 밀리초 변환
+        long limitTime = gameRoom.getLimitTime() * 60 * 1000;
+        return System.currentTimeMillis() - startTime.getTime() > limitTime;
     }
 
     // 모든 유저가 `다 풀었어요!` 버튼을 눌렀는지 확인
