@@ -14,9 +14,17 @@ import lombok.Getter;
 public class GameSession {
 
     private Long matchId;
-    private GameRoom gameRoom;
-    private List<ProblemInfo> problemInfoList;
-    private Timestamp startTime;
+    private final GameRoom gameRoom;
+    private Map<String, GameUserStatus> gameUserStatusMap;
+    private final List<ProblemInfo> problemInfoList;
+    private final Timestamp startTime;
+
+    public GameSession(GameRoom gameRoom, List<ProblemInfo> problemInfoList) {
+        this.gameRoom = gameRoom;
+        this.problemInfoList = problemInfoList;
+        this.startTime = new Timestamp(System.currentTimeMillis());
+        initGameUserStatusMap();
+    }
 
     public List<ProblemInfoResponseDto> getProblemInfo() {
         List<ProblemInfoResponseDto> infoResponseDtoList = new ArrayList<>();

@@ -41,11 +41,7 @@ public class GameServiceImpl implements GameService {
         ProblemLevelType problemLevel = gameRoom.getProblemLevel();
         List<ProblemInfo> problemInfoList = problemService.getProblemInfoList(null, problemLevel, 1);
 
-        GameSession gameSession = GameSession.builder()
-                .gameRoom(gameRoom)
-                .problemInfoList(problemInfoList)
-                .startTime(new Timestamp(System.currentTimeMillis()))
-                .build();
+        GameSession gameSession = new GameSession(gameRoom, problemInfoList);
 
         gameSessionMap.put(requestDto.getRoomId(), gameSession);
 
