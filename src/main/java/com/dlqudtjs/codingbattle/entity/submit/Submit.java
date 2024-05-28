@@ -65,4 +65,8 @@ public class Submit {
     public Long getExecutionTime() {
         return executionTime;
     }
+
+    public String getCode() {
+        return code;
+    }
 }
