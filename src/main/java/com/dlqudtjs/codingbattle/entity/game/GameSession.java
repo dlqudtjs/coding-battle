@@ -68,7 +68,7 @@ public class GameSession {
     }
 
     // 모든 유저가 `다 풀었어요!` 버튼을 눌렀는지 확인
-    public Boolean isAllUserSubmitDone() {
+    private Boolean isAllUserSubmitDone() {
         return gameUserStatusMap.values().stream()
                 .allMatch(GameUserStatus::getIsSubmitDone);
     }
