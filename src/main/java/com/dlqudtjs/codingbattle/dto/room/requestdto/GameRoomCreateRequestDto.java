@@ -64,7 +64,7 @@ public class GameRoomCreateRequestDto {
                 .maxUserCount(maxUserCount)
                 .maxSubmitCount(maxSubmitCount)
                 .limitTime(limitTime)
-                .userMap(new ConcurrentHashMap<>())
+                .roomUserStatusMap(new ConcurrentHashMap<>())
                 .build();
     }
 

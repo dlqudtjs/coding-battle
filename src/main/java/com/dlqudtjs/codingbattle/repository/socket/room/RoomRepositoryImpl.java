@@ -27,7 +27,7 @@ public class RoomRepositoryImpl implements RoomRepository {
                             .maxUserCount(GameSetting.DEFAULT_ROOM_MAX_USER_COUNT.getValue())
                             .maxSubmitCount(0)
                             .limitTime(0)
-                            .userMap(new ConcurrentHashMap<>())
+                            .roomUserStatusMap(new ConcurrentHashMap<>())
                             .build()
             )
     );

@@ -30,7 +30,7 @@ public class GameRoom {
     private Integer maxUserCount;
     private Integer maxSubmitCount;
     private Integer limitTime;
-    private ConcurrentHashMap<String, RoomUserStatus> userMap;
+    private ConcurrentHashMap<String, RoomUserStatus> roomUserStatusMap;
 
     public void startGame() {
         isStarted = true;
@@ -39,7 +39,7 @@ public class GameRoom {
     public void addUser(UserInfo userInfo) {
         User user = userInfo.getUser();
         WebSocketSession session = WebsocketSessionHolder.getSessionFromUserId(user.getUserId());
-        userMap.put(user.getUserId(), new RoomUserStatus(userInfo, session));
+        roomUserStatusMap.put(user.getUserId(), new RoomUserStatus(userInfo, session));
     }
 
     public void setRoomId(Long roomId) {
@@ -47,11 +47,11 @@ public class GameRoom {
     }
 
     public void removeUser(String userId) {
-        userMap.remove(userId);
+        roomUserStatusMap.remove(userId);
     }
 
     public Boolean isFull() {
-        return userMap.size() >= maxUserCount;
+        return roomUserStatusMap.size() >= maxUserCount;
     }
 
     public Boolean isHost(String userId) {
@@ -59,7 +59,7 @@ public class GameRoom {
     }
 
     public Boolean isExistUser(String userId) {
-        return userMap.containsKey(userId);
+        return roomUserStatusMap.containsKey(userId);
     }
 
     public Boolean isStarted() {
@@ -67,7 +67,7 @@ public class GameRoom {
     }
 
     public Integer getUserCount() {
-        return userMap.size();
+        return roomUserStatusMap.size();
     }
 
     public Boolean isLocked() {
@@ -75,14 +75,14 @@ public class GameRoom {
     }
 
     public List<User> getUserList() {
-        return userMap.values().stream()
+        return roomUserStatusMap.values().stream()
                 .map(RoomUserStatus::getUserInfo)
                 .map(UserInfo::getUser)
                 .toList();
     }
 
     public Boolean isAllUserReady() {
-        return userMap.values().stream()
+        return roomUserStatusMap.values().stream()
                 .allMatch(RoomUserStatus::getIsReady);
     }
 
@@ -123,7 +123,7 @@ public class GameRoom {
     }
 
     public List<GameRoomUserStatusResponseDto> toGameRoomUserStatusResponseDto() {
-        return userMap.values().stream()
+        return roomUserStatusMap.values().stream()
                 .map(status -> GameRoomUserStatusResponseDto.builder()
                         .userId(status.getUserId())
                         .isReady(status.getIsReady())
@@ -137,11 +137,11 @@ public class GameRoom {
             return true;
         }
 
-        return userMap.values().stream()
+        return roomUserStatusMap.values().stream()
                 .allMatch(user -> user.getUseLanguage().equals(language));
     }
 
     private RoomUserStatus getUserStatus(String userId) {
-        return userMap.get(userId);
+        return roomUserStatusMap.get(userId);
     }
 }
