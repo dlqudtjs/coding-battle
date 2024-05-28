@@ -1,5 +1,8 @@
 package com.dlqudtjs.codingbattle.entity.game;
 
+import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
+
+import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemInfoResponseDto;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
 import com.dlqudtjs.codingbattle.entity.room.GameRoom;
@@ -31,7 +34,10 @@ public class GameSession {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
-    public Boolean canEndGame() {
+        return null;
+    }
+
+    private Boolean canEndGame() {
         return isAlone() ||
                 isTimeOver() ||
                 isAllUserSubmitDone();
