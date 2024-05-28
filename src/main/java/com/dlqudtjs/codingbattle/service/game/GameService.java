@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface GameService {
 
-    GameSession startGame(GameStartRequestDto requestDto);
+    GameSession startGame(GameStartRequestDto requestDto, String requestUserId);
 
     Winner endGame(Long roomId);
 

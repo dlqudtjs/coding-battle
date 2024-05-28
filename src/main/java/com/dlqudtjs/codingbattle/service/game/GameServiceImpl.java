@@ -30,9 +30,9 @@ public class GameServiceImpl implements GameService {
     private final MatchService matchService;
 
     @Override
-    public GameSession startGame(GameStartRequestDto requestDto) {
+    public GameSession startGame(GameStartRequestDto requestDto, String requestUserId) {
         // 게임 시작
-        GameRoom gameRoom = roomService.startGame(requestDto.getRoomId());
+        GameRoom gameRoom = roomService.startGame(requestDto.getRoomId(), requestUserId);
 
         // 난이도에 따른 문제 리스트 가져오기
         ProblemLevelType problemLevel = gameRoom.getProblemLevel();

@@ -129,8 +129,12 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public GameRoom startGame(Long roomId) {
+    public GameRoom startGame(Long roomId, String requestUserId) {
         GameRoom gameRoom = roomRepository.getGameRoom(roomId);
+
+        if (!gameRoom.isHost(requestUserId)) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
+        }
 
         if (canStartable(gameRoom)) {
             throw new Custom4XXException(GAME_START_ERROR.getMessage(), GAME_START_ERROR.getStatus());
