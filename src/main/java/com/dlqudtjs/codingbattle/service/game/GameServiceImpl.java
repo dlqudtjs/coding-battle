@@ -69,7 +69,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public GameRoom initGameRoom(Long roomId) {
+    public GameRoom resetRoom(Long roomId) {
         // TODO: 게임 초기화 유저 정보를 토기화해서 주기 + 게임 세션 삭제
 
         return null;
