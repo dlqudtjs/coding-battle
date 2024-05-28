@@ -67,8 +67,35 @@ public class GameSession {
         return gameUserStatus.toggleSubmitDone();
     }
 
+
+    // 방에 혼자 남았는지 확인
+    public Boolean isAlone() {
+        return gameUserStatusMap.size() == 1;
+    }
+
+    // 모든 유저가 `다 풀었어요!` 버튼을 눌렀는지 확인
     public Boolean isAllUserSubmitDone() {
         return gameUserStatusMap.values().stream()
                 .allMatch(GameUserStatus::getIsSubmitDone);
+    }
+
+    public List<ProblemInfoResponseDto> getProblemInfo() {
+        List<ProblemInfoResponseDto> infoResponseDtoList = new ArrayList<>();
+
+        for (ProblemInfo problemInfo : problemInfoList) {
+            infoResponseDtoList.add(ProblemInfoResponseDto.builder()
+                    .id(problemInfo.getProblem().getId())
+                    .algorithmClassification(problemInfo.getProblem().getAlgorithmClassification().getName())
+                    .problemLevel(problemInfo.getProblem().getProblemLevel().getName())
+                    .title(problemInfo.getProblem().getTitle())
+                    .problemDescription(problemInfo.getProblem().getProblemDescription())
+                    .inputDescription(problemInfo.getProblem().getInputDescription())
+                    .outputDescription(problemInfo.getProblem().getOutputDescription())
+                    .hint(problemInfo.getProblem().getHint())
+                    .problemIOExamples(problemInfo.getProblemIOExamples())
+                    .build());
+        }
+
+        return infoResponseDtoList;
     }
 }
