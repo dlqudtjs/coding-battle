@@ -22,6 +22,7 @@ public class GameSession {
     private final List<ProblemInfo> problemInfoList;
     private final Timestamp startTime;
     private Submit firstCorrectSubmit;
+    private Boolean perfectWin;
 
     public GameSession(GameRoom gameRoom, List<ProblemInfo> problemInfoList) {
         this.gameRoom = gameRoom;
@@ -64,11 +65,16 @@ public class GameSession {
     }
 
     public void reflectSubmit(Submit submit) {
-        if (firstCorrectSubmit != null) {
+        if (firstCorrectSubmit == null) {
+            this.firstCorrectSubmit = submit;
+            perfectWin = true;
             return;
         }
 
-        this.firstCorrectSubmit = submit;
+        // 처음 제출한 코드의 실행 시간보다 늦게 제출한 코드의 실행 시간이 더 빠른 경우
+        if (firstCorrectSubmit.getExecutionTime() < submit.getExecutionTime()) {
+            perfectWin = false;
+        }
     }
 
     private void initGameUserStatusMap() {
