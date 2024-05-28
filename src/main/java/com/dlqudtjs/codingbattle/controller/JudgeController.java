@@ -1,10 +1,14 @@
 package com.dlqudtjs.codingbattle.controller;
 
+import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
+
 import com.dlqudtjs.codingbattle.common.constant.JudgeResultCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
+import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.JudgeResultResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.JudgeResultMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.judge.JudgeProblemRequestDto;
+import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.judge.JudgeService;
 import com.dlqudtjs.codingbattle.service.submit.SubmitService;
 import jakarta.validation.Valid;
@@ -16,6 +20,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,11 +31,17 @@ public class JudgeController {
     private String secretKey;
 
     private final JudgeService judgeService;
+    private final JwtTokenProvider jwtTokenProvider;
     private final SubmitService submitService;
     private final SimpMessagingTemplate messagingTemplate;
 
     @PostMapping("/v1/judge")
-    public ResponseEntity<ResponseDto> judge(@Valid @RequestBody JudgeProblemRequestDto judgeProblemRequestDto) {
+    public ResponseEntity<ResponseDto> judge(@Valid @RequestBody JudgeProblemRequestDto judgeProblemRequestDto,
+                                             @RequestHeader("Authorization") String token) {
+        if (!jwtTokenProvider.getUserName(token).equals(judgeProblemRequestDto.getUserId())) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
+        }
+
         ResponseDto responseDto = judgeService.judgeProblem(judgeProblemRequestDto);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
@@ -46,7 +57,7 @@ public class JudgeController {
 
         log.info("userId : " + JudgeResultResponseDto.getUserId() + " / " +
                 "result : " + JudgeResultResponseDto.getResult());
-        
+
         System.out.println("results : " + JudgeResultResponseDto.getResult());
 
         JudgeResultMessageResponseDto responseDto = JudgeResultMessageResponseDto.builder()
