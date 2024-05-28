@@ -3,11 +3,9 @@ package com.dlqudtjs.codingbattle.entity.room;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.entity.user.UserInfo;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.socket.WebSocketSession;
 
 @Getter
-@RequiredArgsConstructor
 public class RoomUserStatus {
     UserInfo userInfo;
     WebSocketSession session;
