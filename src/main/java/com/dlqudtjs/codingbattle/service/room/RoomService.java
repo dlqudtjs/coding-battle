@@ -15,7 +15,7 @@ public interface RoomService {
 
     ResponseDto createRoom(GameRoomCreateRequestDto requestDto, User user);
 
-    ResponseDto enterGameRoom(Long roomId, User user);
+    ResponseDto enterRoom(Long roomId, User user);
 
     ResponseDto leaveGameRoom(Long roomId, User user);
 

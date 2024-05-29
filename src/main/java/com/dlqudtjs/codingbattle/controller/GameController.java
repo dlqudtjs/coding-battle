@@ -65,8 +65,8 @@ public class GameController {
     @PostMapping("/v1/game/{roomId}/end")
     public ResponseEntity<ResponseDto> endGame(@PathVariable("roomId") Long roomId,
                                                @RequestHeader("Authorization") String token) {
-        String requestUserId = jwtTokenProvider.getUserName(token);
-        Winner winner = gameService.endGame(roomId, requestUserId);
+        User user = userService.getUser(jwtTokenProvider.getUserName(token));
+        Winner winner = gameService.endGame(roomId, user);
 
         GameEndResponseDto gameEndResponseDto = GameEndResponseDto.builder()
                 .userId(winner.getUserId())

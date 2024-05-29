@@ -69,7 +69,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Winner endGame(Long roomId, String requestUserId) {
+    public Winner endGame(Long roomId, User user) {
         GameSession gameSession = gameSessionMap.get(roomId);
 
         Winner winner = gameSession.endGame();
@@ -81,9 +81,9 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Boolean toggleSubmitDone(Long roomId, String userId) {
+    public Boolean toggleSubmitDone(Long roomId, User user) {
         GameSession gameSession = gameSessionMap.get(roomId);
-        return gameSession.toggleSubmitDone(userId);
+        return gameSession.toggleSubmitDone(user);
     }
 
     @Override

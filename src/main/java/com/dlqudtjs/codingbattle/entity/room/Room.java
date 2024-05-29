@@ -47,7 +47,7 @@ public class Room {
 
     public void enter(UserInfo userInfo) {
         User user = userInfo.getUser();
-        WebSocketSession session = WebsocketSessionHolder.getSessionFromUserId(user.getUserId());
+        WebSocketSession session = WebsocketSessionHolder.getSessionFromUser(user);
         roomUserStatusMap.put(user, new RoomUserStatus(userInfo, session));
     }
 

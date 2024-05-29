@@ -13,11 +13,11 @@ public interface GameService {
 
     User leaveGame(Long roomId, User user);
 
-    Winner endGame(Long roomId, String requestUserId);
+    Winner endGame(Long roomId, User user);
 
     Room resetRoom(Long roomId);
 
-    Boolean toggleSubmitDone(Long roomId, String userId);
+    Boolean toggleSubmitDone(Long roomId, User user);
 
     GameSession getGameSession(Long roomId);
 

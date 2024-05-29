@@ -81,7 +81,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public ResponseDto enterGameRoom(Long roomId, User user) {
+    public ResponseDto enterRoom(Long roomId, User user) {
         UserSetting userSetting = userService.getUserSetting(user);
         validateEnterGameRoomRequest(roomId, user);
 
@@ -318,7 +318,7 @@ public class RoomServiceImpl implements RoomService {
         Room room = roomRepository.getGameRoom(roomId);
 
         room.getUserList().stream()
-                .filter(user -> !user.equals(host))
+                .filter(user -> !host.equals(user))
                 .forEach(user -> {
                     sessionService.leaveRoom(user);
                     joinRoom(user, (long) GameSetting.DEFAULT_ROOM_ID.getValue());
@@ -421,7 +421,7 @@ public class RoomServiceImpl implements RoomService {
 
     // 유저 세션이 존재하지 않으면
     private void validateUserSession(User user) {
-        if (WebsocketSessionHolder.isNotConnected(user.getUserId())) {
+        if (WebsocketSessionHolder.isNotConnected(user)) {
             throw new CustomRoomException(RoomErrorCode.NOT_CONNECT_USER.getMessage());
         }
     }

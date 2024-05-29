@@ -58,7 +58,7 @@ public class RoomController {
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
         UserSetting userSetting = userService.getUserSetting(user);
-        ResponseDto responseDto = roomService.enterGameRoom(requestDto.getRoomId(), user);
+        ResponseDto responseDto = roomService.enterRoom(requestDto.getRoomId(), user);
 
         // 방안에 사용자들에게 나간 유저의 정보를 전달
         GameRoomInfoResponseDto gameRoomInfoResponseDto = (GameRoomInfoResponseDto) responseDto.getData();

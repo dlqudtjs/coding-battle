@@ -38,8 +38,8 @@ public class WebsocketSessionHolder {
         socketMap.remove(user);
     }
 
-    public static WebSocketSession getSessionFromUserId(String userId) {
-        return sessions.get(socketMap.get(userId));
+    public static WebSocketSession getSessionFromUser(User user) {
+        return sessions.get(socketMap.get(user));
     }
 
     public static User getUserFromSessionId(String sessionId) {
@@ -50,15 +50,15 @@ public class WebsocketSessionHolder {
                 .orElse(null);
     }
 
-    public static boolean isNotConnected(String userId) {
-        return !socketMap.containsKey(userId);
+    public static boolean isNotConnected(User user) {
+        return !socketMap.containsKey(user);
     }
 
-    public static boolean isMatched(String sessionId, String userId) {
-        if (!socketMap.containsKey(userId)) {
+    public static boolean isMatched(String sessionId, User user) {
+        if (!socketMap.containsKey(user)) {
             return false;
         }
 
-        return socketMap.get(userId).equals(sessionId);
+        return socketMap.get(user).equals(sessionId);
     }
 }

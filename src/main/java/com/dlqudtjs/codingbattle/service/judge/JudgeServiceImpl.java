@@ -234,7 +234,7 @@ public class JudgeServiceImpl implements JudgeService {
         }
 
         // 사용자가 연결되어 있는지 검증
-        if (WebsocketSessionHolder.isNotConnected(judgeProblemRequestDto.getUserId())) {
+        if (WebsocketSessionHolder.isNotConnected(user)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 

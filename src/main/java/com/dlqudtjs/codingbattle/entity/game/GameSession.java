@@ -22,7 +22,7 @@ import lombok.Getter;
 @Getter
 public class GameSession {
     private Long matchId;
-    private Map<String, GameUserStatus> gameUserStatusMap;
+    private Map<User, GameUserStatus> gameUserStatusMap;
     private final Long startTime;
     private Submit firstCorrectSubmit;
     private Boolean perfectWin;
@@ -113,15 +113,15 @@ public class GameSession {
         gameUserStatusMap = new ConcurrentHashMap<>();
 
         room.getUserList().forEach(user -> {
-            gameUserStatusMap.put(user.getUserId(), GameUserStatus.builder()
+            gameUserStatusMap.put(user, GameUserStatus.builder()
                     .user(user)
                     .isSubmitDone(false)
                     .build());
         });
     }
 
-    public Boolean toggleSubmitDone(String userId) {
-        GameUserStatus gameUserStatus = gameUserStatusMap.get(userId);
+    public Boolean toggleSubmitDone(User user) {
+        GameUserStatus gameUserStatus = gameUserStatusMap.get(user);
         return gameUserStatus.toggleSubmitDone();
     }
 
