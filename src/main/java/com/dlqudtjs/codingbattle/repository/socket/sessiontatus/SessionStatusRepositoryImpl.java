@@ -1,8 +1,9 @@
 package com.dlqudtjs.codingbattle.repository.socket.sessiontatus;
 
-import com.dlqudtjs.codingbattle.entity.socket.SessionStatus;
 import com.dlqudtjs.codingbattle.common.exception.room.RoomErrorCode;
 import com.dlqudtjs.codingbattle.common.exception.socket.CustomSocketException;
+import com.dlqudtjs.codingbattle.entity.socket.SessionStatus;
+import com.dlqudtjs.codingbattle.entity.user.User;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,60 +12,60 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SessionStatusRepositoryImpl implements SessionStatusRepository {
 
-    private final ConcurrentHashMap<String, SessionStatus> sessionStatusMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<User, SessionStatus> sessionStatusMap = new ConcurrentHashMap<>();
 
     @Override
-    public void initSessionStatus(String userId) {
-        sessionStatusMap.put(userId, new SessionStatus());
+    public void initSessionStatus(User user) {
+        sessionStatusMap.put(user, new SessionStatus());
     }
 
     @Override
-    public void removeSessionStatus(String userId) {
-        sessionStatusMap.remove(userId);
+    public void removeSessionStatus(User user) {
+        sessionStatusMap.remove(user);
     }
 
     @Override
-    public Boolean isUserInGame(String userId) {
-        if (!sessionStatusMap.containsKey(userId)) {
+    public Boolean isUserInGame(User user) {
+        if (!sessionStatusMap.containsKey(user)) {
             throw new CustomSocketException(RoomErrorCode.NOT_CONNECT_USER.getMessage());
         }
 
-        return sessionStatusMap.get(userId).isGameInProgress();
+        return sessionStatusMap.get(user).isGameInProgress();
     }
 
     @Override
-    public void enterRoom(String userId, Long roomId) {
-        if (!sessionStatusMap.containsKey(userId)) {
+    public void enterRoom(User user, Long roomId) {
+        if (!sessionStatusMap.containsKey(user)) {
             throw new CustomSocketException(RoomErrorCode.NOT_CONNECT_USER.getMessage());
         }
 
-        sessionStatusMap.get(userId).enterRoom(roomId);
+        sessionStatusMap.get(user).enterRoom(roomId);
     }
 
     @Override
-    public void leaveRoom(String userId) {
-        if (!sessionStatusMap.containsKey(userId)) {
+    public void leaveRoom(User user) {
+        if (!sessionStatusMap.containsKey(user)) {
             throw new CustomSocketException(RoomErrorCode.NOT_CONNECT_USER.getMessage());
         }
 
-        sessionStatusMap.get(userId).leaveRoom();
+        sessionStatusMap.get(user).leaveRoom();
     }
 
     @Override
-    public Long getUserInRoomId(String userId) {
-        if (!sessionStatusMap.containsKey(userId)) {
+    public Long getUserInRoomId(User user) {
+        if (!sessionStatusMap.containsKey(user)) {
             throw new CustomSocketException(RoomErrorCode.NOT_CONNECT_USER.getMessage());
         }
 
-        return sessionStatusMap.get(userId).getEnterRoomId();
+        return sessionStatusMap.get(user).getEnterRoomId();
     }
 
     @Override
-    public void startGame(String userId) {
-        if (!sessionStatusMap.containsKey(userId)) {
+    public void startGame(User user) {
+        if (!sessionStatusMap.containsKey(user)) {
             throw new CustomSocketException(RoomErrorCode.NOT_CONNECT_USER.getMessage());
         }
 
-        sessionStatusMap.get(userId).startGame();
+        sessionStatusMap.get(user).startGame();
     }
 }

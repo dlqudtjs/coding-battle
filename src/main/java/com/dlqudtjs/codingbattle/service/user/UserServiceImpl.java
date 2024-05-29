@@ -20,6 +20,17 @@ public class UserServiceImpl implements UserService {
     private final UserSettingRepository userSettingRepository;
 
     @Override
+    public User getUser(String userId) {
+        return userRepository.findByUserId(userId).orElseThrow(()
+                -> new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus()));
+    }
+
+    @Override
+    public UserSetting getUserSetting(User user) {
+        return userSettingRepository.findByUserId(user.getId());
+    }
+
+    @Override
     @Transactional
     public UserInfo getUserInfo(String userId) {
         User user = userRepository.findByUserId(userId).orElseThrow(()

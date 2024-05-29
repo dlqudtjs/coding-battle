@@ -8,9 +8,11 @@ import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.dto.judge.JudgeProblemRequestDto;
 import com.dlqudtjs.codingbattle.entity.submit.Submit;
+import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.service.game.GameService;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import com.dlqudtjs.codingbattle.service.submit.SubmitService;
+import com.dlqudtjs.codingbattle.service.user.UserService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallbackTemplate;
@@ -61,6 +63,7 @@ public class JudgeServiceImpl implements JudgeService {
     private final DockerClient dockerClient;
     private final RoomService roomService;
     private final GameService gameService;
+    private final UserService userService;
     private final SubmitService submitService;
 
     @Override
@@ -72,7 +75,7 @@ public class JudgeServiceImpl implements JudgeService {
         String uuid = UUID.randomUUID().toString();
         ProgrammingLanguage submitLanguage =
                 ProgrammingLanguage.valueOf(judgeProblemRequestDto.getLanguage().toUpperCase());
-        
+
         String dockerImageName = submitLanguage.getDockerImageName();
         String createUserCodePath = createHostUserCodePath(uuid);
         String createScriptPath = createHostScriptPath(submitLanguage);
@@ -213,8 +216,10 @@ public class JudgeServiceImpl implements JudgeService {
     }
 
     private void validateJudgeProblemRequestDto(JudgeProblemRequestDto judgeProblemRequestDto) {
+        User user = userService.getUser(judgeProblemRequestDto.getUserId());
+
         // 언어 검증
-        if (ProgrammingLanguage.isNotContains(judgeProblemRequestDto.getLanguage())) {
+        if (!ProgrammingLanguage.isContains(judgeProblemRequestDto.getLanguage())) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
@@ -234,7 +239,7 @@ public class JudgeServiceImpl implements JudgeService {
         }
 
         // 사용자가 방에 들어가 있는지 검증
-        if (!roomService.isExistUserInRoom(judgeProblemRequestDto.getRoomId(), judgeProblemRequestDto.getUserId())) {
+        if (!roomService.isExistUserInRoom(judgeProblemRequestDto.getRoomId(), user)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 

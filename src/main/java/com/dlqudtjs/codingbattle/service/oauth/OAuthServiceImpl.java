@@ -160,7 +160,7 @@ public class OAuthServiceImpl implements OAuthService {
             throw new PasswordCheckException(OauthErrorCode.PASSWORD_CHECK.getMessage());
         }
 
-        if (ProgrammingLanguage.isNotContains(signUpRequestDto.getLanguage())) {
+        if (!ProgrammingLanguage.isContains(signUpRequestDto.getLanguage())) {
             throw new CustomAuthenticationException(OauthErrorCode.LANGUAGE_NOT_FOUND.getMessage());
         }
     }

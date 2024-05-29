@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.websocket.configuration;
 
+import com.dlqudtjs.codingbattle.entity.user.User;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
@@ -8,15 +9,15 @@ import org.springframework.web.socket.WebSocketSession;
 @Slf4j
 public class WebsocketSessionHolder {
     private static final ConcurrentHashMap<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<String, String> socketMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<User, String> socketMap = new ConcurrentHashMap<>();
 
-    public static void addSession(String userId, String sessionId) {
-        if (socketMap.containsKey(userId)) {
-            removeSessionFromSessionId(socketMap.get(userId));
-            socketMap.remove(userId);
+    public static void addSession(User user, String sessionId) {
+        if (socketMap.containsKey(user)) {
+            removeSessionFromSessionId(socketMap.get(user));
+            socketMap.remove(user);
         }
 
-        socketMap.put(userId, sessionId);
+        socketMap.put(user, sessionId);
     }
 
     public static void addSession(String sessionId, WebSocketSession session) {
@@ -33,15 +34,15 @@ public class WebsocketSessionHolder {
         sessions.remove(sessionId);
     }
 
-    public static void removeSessionFromUserId(String userId) {
-        socketMap.remove(userId);
+    public static void removeSessionFromUserId(User user) {
+        socketMap.remove(user);
     }
 
     public static WebSocketSession getSessionFromUserId(String userId) {
         return sessions.get(socketMap.get(userId));
     }
 
-    public static String getUserIdFromSessionId(String sessionId) {
+    public static User getUserFromSessionId(String sessionId) {
         return socketMap.entrySet().stream()
                 .filter(entry -> entry.getValue().equals(sessionId))
                 .map(ConcurrentHashMap.Entry::getKey)
@@ -57,7 +58,7 @@ public class WebsocketSessionHolder {
         if (!socketMap.containsKey(userId)) {
             return false;
         }
-        
+
         return socketMap.get(userId).equals(sessionId);
     }
 }

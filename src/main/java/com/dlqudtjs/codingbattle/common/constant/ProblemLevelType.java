@@ -29,4 +29,14 @@ public enum ProblemLevelType {
 
         return null;
     }
+
+    public static boolean isContains(int value) {
+        for (ProblemLevelType pl : ProblemLevelType.values()) {
+            if (pl.getValue() == value) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

@@ -5,12 +5,7 @@ import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
-import com.dlqudtjs.codingbattle.entity.room.GameRoom;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,48 +28,29 @@ public class GameRoomCreateRequestDto {
     @NotBlank
     private String language;
 
-    @NotNull
-    @Min(1)
-    @Max(10)
     private Integer problemLevel;
 
-    @NotNull
-    @Min(2)
-    @Max(4)
     private Integer maxUserCount;
 
-    @NotNull
-    @Min(1)
-    @Max(10)
     private Integer maxSubmitCount;
 
-    @NotNull
-    @Min(10)
-    @Max(120)
     private Long limitTime;
 
-    public GameRoom toEntity() {
-        return GameRoom.builder()
-                .hostId(hostId)
-                .title(title)
-                .password(password)
-                .language(validateLanguage(language))
-                .isStarted(false)
-                .problemLevel(ProblemLevelType.getProblemLevel(problemLevel))
-                .maxUserCount(maxUserCount)
-                .maxSubmitCount(maxSubmitCount)
-                .limitTime(limitTime)
-                .roomUserStatusMap(new ConcurrentHashMap<>())
-                .build();
+    public ProgrammingLanguage getLanguage() {
+        return ProgrammingLanguage.getLanguage(language);
     }
 
-    private ProgrammingLanguage validateLanguage(String language) {
-        for (ProgrammingLanguage pl : ProgrammingLanguage.values()) {
-            if (pl.getLanguageName().equals(language)) {
-                return pl;
-            }
+    public ProblemLevelType getProblemLevel() {
+        return ProblemLevelType.getProblemLevel(problemLevel);
+    }
+
+    public void validate() {
+        if (!ProgrammingLanguage.isContains(language)) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
-        throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
+        if (ProblemLevelType.isContains(problemLevel)) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
+        }
     }
 }

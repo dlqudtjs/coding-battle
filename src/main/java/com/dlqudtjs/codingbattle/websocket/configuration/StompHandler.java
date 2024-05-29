@@ -2,9 +2,11 @@ package com.dlqudtjs.codingbattle.websocket.configuration;
 
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.Header;
+import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.repository.socket.sessiontatus.SessionStatusRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
+import com.dlqudtjs.codingbattle.service.user.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Component;
 public class StompHandler implements ChannelInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserService userService;
     private final SessionStatusRepository sessionStatusRepository;
     private final RoomService roomService;
 
@@ -39,29 +42,29 @@ public class StompHandler implements ChannelInterceptor {
             // token이 유효한지 확인
             jwtTokenProvider.validateToken(token);
 
-            String userId = jwtTokenProvider.getUserName(token);
+            User user = userService.getUser(jwtTokenProvider.getUserName(token));
 
             // 유저 세션 상태 추가
-            sessionStatusRepository.initSessionStatus(userId);
+            sessionStatusRepository.initSessionStatus(user);
             // userId와 sessionId를 매핑
-            WebsocketSessionHolder.addSession(userId, headerAccessor.getSessionId());
+            WebsocketSessionHolder.addSession(user, headerAccessor.getSessionId());
             // 입장한 유저는 0번방을 입장 및 방에 입장한 상태로 변경
-            roomService.enterGameRoom((long) GameSetting.DEFAULT_ROOM_ID.getValue(), userId);
+            roomService.enterGameRoom((long) GameSetting.DEFAULT_ROOM_ID.getValue(), user);
         }
 
         if (headerAccessor.getCommand() == StompCommand.DISCONNECT) {
-            String userId = WebsocketSessionHolder.getUserIdFromSessionId(headerAccessor.getSessionId());
+            User user = WebsocketSessionHolder.getUserFromSessionId(headerAccessor.getSessionId());
 
-            if (userId == null) {
+            if (user == null) {
                 return message;
             }
 
             // 유저 세션 삭제 & 방에서 나가기
-            roomService.logout(userId);
+            roomService.logout(user);
             // 유저의 세션 상태 삭제
-            sessionStatusRepository.removeSessionStatus(userId);
+            sessionStatusRepository.removeSessionStatus(user);
             // userId와 sessionId 매핑 삭제
-            WebsocketSessionHolder.removeSessionFromUserId(userId);
+            WebsocketSessionHolder.removeSessionFromUserId(user);
         }
 
         return message;

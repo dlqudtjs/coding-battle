@@ -44,6 +44,11 @@ public class User implements UserDetails {
         return Collections.singletonList(() -> role.getName().name());
     }
 
+    @Override
+    public int hashCode() {
+        return userId.hashCode();
+    }
+
     public Long getId() {
         return id;
     }
@@ -85,5 +90,19 @@ public class User implements UserDetails {
     public User encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(this.password);
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        User user = (User) o;
+
+        return userId.equals(user.userId);
     }
 }

@@ -8,9 +8,11 @@ import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameEndM
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomUserStatusListMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.Winner;
-import com.dlqudtjs.codingbattle.entity.room.GameRoom;
+import com.dlqudtjs.codingbattle.entity.room.Room;
+import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.game.GameService;
+import com.dlqudtjs.codingbattle.service.user.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,13 +29,15 @@ public class GameController {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserService userService;
     private final GameService gameService;
 
     @PostMapping("/v1/game/{roomId}/start")
     public ResponseEntity<ResponseDto> startGame(@PathVariable("roomId") Long roomId,
                                                  @RequestHeader("Authorization") String token) {
-        String requestUserId = jwtTokenProvider.getUserName(token);
-        GameSession gameSession = gameService.startGame(roomId, requestUserId);
+        User user = userService.getUser(jwtTokenProvider.getUserName(token));
+
+        GameSession gameSession = gameService.startGame(roomId, user);
         List<ProblemInfoResponseDto> infoResponseDtoList = gameSession.getProblemInfo();
 
         StartGameResponseDto startGameResponseDto = StartGameResponseDto.builder()
@@ -44,6 +48,16 @@ public class GameController {
         // 방에 게임 문제 전송
         messagingTemplate.convertAndSend("/topic/room/" + roomId,
                 startGameResponseDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @PostMapping("/v1/game/{roomId}/leave")
+    public ResponseEntity<ResponseDto> leaveGame(@PathVariable("roomId") Long roomId,
+                                                 @RequestHeader("Authorization") String token) {
+        User user = userService.getUser(jwtTokenProvider.getUserName(token));
+
+        gameService.leaveGame(roomId, user);
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
@@ -65,11 +79,11 @@ public class GameController {
                         .gameEnd(gameEndResponseDto)
                         .build());
 
-        GameRoom gameRoom = gameService.resetRoom(roomId);
+        Room room = gameService.resetRoom(roomId);
 
         GameRoomUserStatusListMessageResponseDto gameRoomUserStatusListMessageResponseDto =
                 GameRoomUserStatusListMessageResponseDto.builder()
-                        .userStatusList(gameRoom.toGameRoomUserStatusResponseDto())
+                        .userStatusList(room.toGameRoomUserStatusResponseDto())
                         .build();
 
         // 방에 초기화된 유저 정보 전송

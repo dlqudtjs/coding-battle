@@ -14,6 +14,7 @@ import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.repository.game.MatchHistoryRepository;
 import com.dlqudtjs.codingbattle.repository.game.MatchingResultClassificationRepository;
 import com.dlqudtjs.codingbattle.repository.game.UserMatchingHistoryRepository;
+import java.sql.Timestamp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,7 +68,7 @@ public class MatchServiceImpl implements MatchService {
 
     private MatchHistory saveMatchHistory(GameSession gameSession) {
         return matchHistoryRepository.save(MatchHistory.builder()
-                .startTime(gameSession.getStartTime())
+                .startTime(new Timestamp(gameSession.getStartTime()))
                 .build());
     }
 
@@ -75,7 +76,7 @@ public class MatchServiceImpl implements MatchService {
         MatchingResultClassification matchingResultClassification =
                 getMatchingResultClassification(PENDING);
 
-        for (User user : gameSession.getGameRoom().getUserList()) {
+        for (User user : gameSession.getGameUserList()) {
             userMatchingHistoryRepository.save(UserMatchingHistory.builder()
                     .user(user)
                     .matchHistory(matchHistory)

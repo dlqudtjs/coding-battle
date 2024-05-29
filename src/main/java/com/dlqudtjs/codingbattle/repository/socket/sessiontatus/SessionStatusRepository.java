@@ -1,18 +1,20 @@
 package com.dlqudtjs.codingbattle.repository.socket.sessiontatus;
 
+import com.dlqudtjs.codingbattle.entity.user.User;
+
 public interface SessionStatusRepository {
 
-    void initSessionStatus(String userId);
+    void initSessionStatus(User user);
 
-    void removeSessionStatus(String userId);
+    void removeSessionStatus(User user);
 
-    void enterRoom(String userId, Long roomId);
+    void enterRoom(User user, Long roomId);
 
-    void leaveRoom(String userId);
+    void leaveRoom(User user);
 
-    Long getUserInRoomId(String userId);
+    Long getUserInRoomId(User user);
 
-    Boolean isUserInGame(String userId);
+    Boolean isUserInGame(User user);
 
-    void startGame(String userId);
+    void startGame(User user);
 }

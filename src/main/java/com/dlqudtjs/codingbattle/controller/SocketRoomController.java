@@ -5,7 +5,7 @@ import static com.dlqudtjs.codingbattle.common.exception.socket.SocketErrorCode.
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
 import com.dlqudtjs.codingbattle.common.exception.socket.CustomSocketException;
-import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomStatusUpdateRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.GameRoomStatusUpdateMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.SendToRoomMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseDto;
@@ -56,14 +56,14 @@ public class SocketRoomController {
     public void updateRoom(@DestinationVariable("roomId") Long roomId, String message,
                            SimpMessageHeaderAccessor headerAccessor) {
         // json -> dto
-        GameRoomStatusUpdateRequestDto gameRoomStatusUpdateRequestDto =
-                (GameRoomStatusUpdateRequestDto) parseMessage(message, new GameRoomStatusUpdateRequestDto());
+        GameRoomStatusUpdateMessageRequestDto gameRoomStatusUpdateMessageRequestDto =
+                (GameRoomStatusUpdateMessageRequestDto)
+                        parseMessage(message, new GameRoomStatusUpdateMessageRequestDto());
 
+        gameRoomStatusUpdateMessageRequestDto.validate();
         try {
-            gameRoomStatusUpdateRequestDto.validate();
-
             GameRoomStatusUpdateMessageResponseDto responseDto = roomService.updateGameRoomStatus(
-                    roomId, headerAccessor.getSessionId(), gameRoomStatusUpdateRequestDto);
+                    roomId, headerAccessor.getSessionId(), gameRoomStatusUpdateMessageRequestDto);
 
             // 방에 메시지 전송
             messagingTemplate.convertAndSend("/topic/room/" + roomId, responseDto);

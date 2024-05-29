@@ -1,22 +1,25 @@
 package com.dlqudtjs.codingbattle.repository.socket.room;
 
-import com.dlqudtjs.codingbattle.entity.room.GameRoom;
+import com.dlqudtjs.codingbattle.entity.room.Room;
+import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserInfo;
 import java.util.List;
 
 public interface RoomRepository {
 
-    GameRoom save(GameRoom gameRoom);
+    Room save(Room room, Long roomId);
 
-    GameRoom joinRoom(UserInfo userInfo, Long roomId);
+    Long getNewRoomId();
 
-    void leaveRoom(Long roomId, String userId);
+    Room join(UserInfo userInfo, Long roomId);
 
-    GameRoom getGameRoom(Long roomId);
+    void leave(Long roomId, User user);
 
-    List<GameRoom> getGameRoomList();
+    Room getGameRoom(Long roomId);
 
-    GameRoom updateGameRoomStatus(Long roomId, GameRoom gameRoom);
+    List<Room> getGameRoomList();
+
+    Room updateGameRoomStatus(Long roomId, Room room);
 
     Boolean isExistRoom(Long roomId);
 
@@ -24,5 +27,5 @@ public interface RoomRepository {
 
     Boolean isFullRoom(Long roomId);
 
-    Boolean isExistUserInRoom(String userId, Long roomId);
+    Boolean isExistUserInRoom(User user, Long roomId);
 }

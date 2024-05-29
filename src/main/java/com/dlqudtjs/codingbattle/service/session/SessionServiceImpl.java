@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.service.session;
 
+import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.repository.socket.sessiontatus.SessionStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,27 +16,27 @@ public class SessionServiceImpl implements SessionService {
     private final SessionStatusRepository sessionStatusRepository;
 
     @Override
-    public void enterRoom(String userId, Long roomId) {
-        sessionStatusRepository.enterRoom(userId, roomId);
+    public void enterRoom(User user, Long roomId) {
+        sessionStatusRepository.enterRoom(user, roomId);
     }
 
     @Override
-    public void leaveRoom(String userId) {
-        sessionStatusRepository.leaveRoom(userId);
+    public void leaveRoom(User user) {
+        sessionStatusRepository.leaveRoom(user);
     }
 
     @Override
-    public Long getUserInRoomId(String userId) {
-        return sessionStatusRepository.getUserInRoomId(userId);
+    public Long getUserInRoomId(User user) {
+        return sessionStatusRepository.getUserInRoomId(user);
     }
 
     @Override
-    public void startGame(String userId) {
-        sessionStatusRepository.startGame(userId);
+    public void startGame(User user) {
+        sessionStatusRepository.startGame(user);
     }
 
     @Override
-    public Boolean isUserInGame(String userId) {
-        return sessionStatusRepository.isUserInGame(userId);
+    public Boolean isUserInGame(User user) {
+        return sessionStatusRepository.isUserInGame(user);
     }
 }

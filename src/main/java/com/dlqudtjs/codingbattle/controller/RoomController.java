@@ -8,7 +8,8 @@ import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomLeaveUserStatusRes
 import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomEnterUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomLeaveUserStatusMessageResponseDto;
-import com.dlqudtjs.codingbattle.entity.user.UserInfo;
+import com.dlqudtjs.codingbattle.entity.user.User;
+import com.dlqudtjs.codingbattle.entity.user.UserSetting;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import com.dlqudtjs.codingbattle.service.user.UserService;
@@ -27,15 +28,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class RoomController {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final RoomService gameRoomService;
+    private final RoomService roomService;
     private final UserService userService;
     private final SocketRoomController socketRoomController;
 
     @PostMapping("/v1/gameRoom")
     public ResponseEntity<ResponseDto> createRoom(@Valid @RequestBody GameRoomCreateRequestDto requestDto,
                                                   @RequestHeader("Authorization") String token) {
-        String userId = jwtTokenProvider.getUserName(token);
-        ResponseDto responseDto = gameRoomService.createGameRoom(requestDto, userId);
+        requestDto.validate();
+        User user = userService.getUser(jwtTokenProvider.getUserName(token));
+        ResponseDto responseDto = roomService.createRoom(requestDto, user);
 
         // 방안에 사용자들에게 나간 유저의 정보를 전달
         GameRoomInfoResponseDto gameRoomInfoResponseDto = (GameRoomInfoResponseDto) responseDto.getData();
@@ -54,9 +56,9 @@ public class RoomController {
     @PostMapping("/v1/gameRoom/enter")
     public ResponseEntity<ResponseDto> enterRoom(@RequestBody GameRoomEnterRequestDto requestDto,
                                                  @RequestHeader("Authorization") String token) {
-        String userId = jwtTokenProvider.getUserName(token);
-        ResponseDto responseDto = gameRoomService.enterGameRoom(requestDto.getRoomId(), userId);
-        UserInfo userInfo = userService.getUserInfo(userId);
+        User user = userService.getUser(jwtTokenProvider.getUserName(token));
+        UserSetting userSetting = userService.getUserSetting(user);
+        ResponseDto responseDto = roomService.enterGameRoom(requestDto.getRoomId(), user);
 
         // 방안에 사용자들에게 나간 유저의 정보를 전달
         GameRoomInfoResponseDto gameRoomInfoResponseDto = (GameRoomInfoResponseDto) responseDto.getData();
@@ -74,7 +76,7 @@ public class RoomController {
                 .enterUserStatus(GameRoomUserStatusResponseDto.builder()
                         .userId(requestDto.getUserId())
                         .isReady(false)
-                        .language(userInfo.getUserSetting().getLanguage().getName())
+                        .language(userSetting.getLanguage().getName())
                         .build())
                 .build();
         socketRoomController.sendToRoom(requestDto.getRoomId(), enterUserStatusResponseDto);
@@ -85,8 +87,8 @@ public class RoomController {
     @PostMapping("/v1/gameRoom/leave/{roomId}")
     public ResponseEntity<ResponseDto> leaveRoom(@PathVariable("roomId") Long roomId,
                                                  @RequestHeader("Authorization") String token) {
-        String userId = jwtTokenProvider.getUserName(token);
-        ResponseDto responseDto = gameRoomService.leaveGameRoom(roomId, userId);
+        User user = userService.getUser(jwtTokenProvider.getUserName(token));
+        ResponseDto responseDto = roomService.leaveGameRoom(roomId, user);
 
         GameRoomLeaveUserStatusResponseDto gameRoomLeaveUserStatusResponseDto =
                 (GameRoomLeaveUserStatusResponseDto) responseDto.getData();
@@ -103,7 +105,7 @@ public class RoomController {
 
     @GetMapping("/v1/gameRoomList")
     public ResponseEntity<ResponseDto> getGameRoomList() {
-        ResponseDto responseDto = gameRoomService.getGameRoomList();
+        ResponseDto responseDto = roomService.getGameRoomList();
 
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }

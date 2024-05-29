@@ -3,18 +3,19 @@ package com.dlqudtjs.codingbattle.service.game;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.Winner;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
-import com.dlqudtjs.codingbattle.entity.room.GameRoom;
+import com.dlqudtjs.codingbattle.entity.room.Room;
+import com.dlqudtjs.codingbattle.entity.user.User;
 import java.util.List;
 
 public interface GameService {
 
-    GameSession startGame(Long roomId, String requestUserId);
+    GameSession startGame(Long roomId, User user);
 
-    void leaveGame(Long roomId, String requestUserId);
+    User leaveGame(Long roomId, User user);
 
     Winner endGame(Long roomId, String requestUserId);
 
-    GameRoom resetRoom(Long roomId);
+    Room resetRoom(Long roomId);
 
     Boolean toggleSubmitDone(Long roomId, String userId);
 

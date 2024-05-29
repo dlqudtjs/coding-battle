@@ -2,16 +2,19 @@ package com.dlqudtjs.codingbattle.service.game;
 
 import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
 
+import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.MatchHistory;
 import com.dlqudtjs.codingbattle.entity.game.Winner;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
-import com.dlqudtjs.codingbattle.entity.room.GameRoom;
+import com.dlqudtjs.codingbattle.entity.room.Room;
+import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.service.match.MatchService;
 import com.dlqudtjs.codingbattle.service.problem.ProblemService;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
+import com.dlqudtjs.codingbattle.service.session.SessionService;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,21 +24,22 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
-    static Map<Long, GameSession> gameSessionMap = new ConcurrentHashMap<>();
+    private final static Map<Long, GameSession> gameSessionMap = new ConcurrentHashMap<>();
     private final RoomService roomService;
     private final ProblemService problemService;
     private final MatchService matchService;
+    private final SessionService sessionService;
 
     @Override
-    public GameSession startGame(Long roomId, String requestUserId) {
+    public GameSession startGame(Long roomId, User user) {
         // 게임 시작
-        GameRoom gameRoom = roomService.startGame(roomId, requestUserId);
+        Room room = roomService.startGame(roomId, user);
 
         // 난이도에 따른 문제 리스트 가져오기
-        ProblemLevelType problemLevel = gameRoom.getProblemLevel();
+        ProblemLevelType problemLevel = room.getGameRunningConfig().getProblemLevel();
         List<ProblemInfo> problemInfoList = problemService.getProblemInfoList(null, problemLevel, 1);
 
-        GameSession gameSession = new GameSession(gameRoom, problemInfoList);
+        GameSession gameSession = new GameSession(room, problemInfoList, sessionService, roomService);
 
         gameSessionMap.put(roomId, gameSession);
 
@@ -47,12 +51,26 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Winner endGame(Long roomId, String requestUserId) {
-        GameSession gameSession = gameSessionMap.get(roomId);
-
-        if (!gameSession.isHost(requestUserId)) {
+    public User leaveGame(Long roomId, User user) {
+        // 나가려는 방이 존재하지 않을 때
+        if (!gameSessionMap.containsKey(roomId)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
+
+        GameSession gameSession = gameSessionMap.get(roomId);
+
+        // GameSession, GameRoom 퇴장
+        gameSession.leaveGame(user);
+
+        // 소켓 세션 상태 변경 (Default Room으로 이동)
+        sessionService.enterRoom(user, (long) GameSetting.DEFAULT_ROOM_ID.getValue());
+
+        return user;
+    }
+
+    @Override
+    public Winner endGame(Long roomId, String requestUserId) {
+        GameSession gameSession = gameSessionMap.get(roomId);
 
         Winner winner = gameSession.endGame();
 
@@ -69,7 +87,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public GameRoom resetRoom(Long roomId) {
+    public Room resetRoom(Long roomId) {
         // TODO: 게임 초기화 유저 정보를 토기화해서 주기 + 게임 세션 삭제
         gameSessionMap.remove(roomId);
 

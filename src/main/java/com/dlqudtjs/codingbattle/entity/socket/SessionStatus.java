@@ -24,6 +24,10 @@ public class SessionStatus {
 
     public void leaveRoom() {
         this.enterRoomId = (long) GameSetting.NO_ROOM_ID.getValue();
+
+        if (this.isGameInProgress) {
+            this.isGameInProgress = false;
+        }
     }
 
     public void startGame() {

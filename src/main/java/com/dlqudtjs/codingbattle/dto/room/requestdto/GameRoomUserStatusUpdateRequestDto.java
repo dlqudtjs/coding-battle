@@ -12,12 +12,16 @@ public class GameRoomUserStatusUpdateRequestDto {
     private Boolean isReady;
     private String language;
 
+    public ProgrammingLanguage getLanguage() {
+        return ProgrammingLanguage.getLanguage(language);
+    }
+
     public void validate() {
         if (userId == null || isReady == null || language == null) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
-        if (ProgrammingLanguage.isNotContains(language)) {
+        if (!ProgrammingLanguage.isContains(language)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
     }

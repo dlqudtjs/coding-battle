@@ -8,10 +8,11 @@ import com.dlqudtjs.codingbattle.common.constant.MatchingResultType;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemInfoResponseDto;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
-import com.dlqudtjs.codingbattle.entity.room.GameRoom;
+import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.submit.Submit;
 import com.dlqudtjs.codingbattle.entity.user.User;
-import java.sql.Timestamp;
+import com.dlqudtjs.codingbattle.service.room.RoomService;
+import com.dlqudtjs.codingbattle.service.session.SessionService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,20 +21,26 @@ import lombok.Getter;
 
 @Getter
 public class GameSession {
-
     private Long matchId;
-    private final GameRoom gameRoom;
     private Map<String, GameUserStatus> gameUserStatusMap;
-    private final List<ProblemInfo> problemInfoList;
-    private final Timestamp startTime;
+    private final Long startTime;
     private Submit firstCorrectSubmit;
     private Boolean perfectWin;
+    private final List<ProblemInfo> problemInfoList;
+    private final GameRunningConfig gameRunningConfig;
+    private final SessionService sessionService;
+    private final RoomService roomService;
 
-    public GameSession(GameRoom gameRoom, List<ProblemInfo> problemInfoList) {
-        this.gameRoom = gameRoom;
+
+    public GameSession(Room room, List<ProblemInfo> problemInfoList,
+                       SessionService sessionService, RoomService roomService) {
+        initGameUserStatusMap(room);
+
+        this.startTime = System.currentTimeMillis();
+        this.gameRunningConfig = room.getGameRunningConfig();
         this.problemInfoList = problemInfoList;
-        this.startTime = new Timestamp(System.currentTimeMillis());
-        initGameUserStatusMap();
+        this.sessionService = sessionService;
+        this.roomService = roomService;
     }
 
     public Winner endGame() {
@@ -41,8 +48,16 @@ public class GameSession {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
-        gameRoom.initRoomUserStatus();
+//        gameRoom.initRoomUserStatus();
         return getWinner();
+    }
+
+    public void leaveGame(User user) {
+        if (!gameUserStatusMap.containsKey(user.getUserId())) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
+        }
+
+        gameUserStatusMap.remove(user.getUserId());
     }
 
     private Winner getWinner() {
@@ -66,7 +81,9 @@ public class GameSession {
     }
 
     public List<User> getGameUserList() {
-        return gameRoom.getUserList();
+        return gameUserStatusMap.values().stream()
+                .map(GameUserStatus::getUser)
+                .toList();
     }
 
     private Boolean canEndGame() {
@@ -92,19 +109,15 @@ public class GameSession {
         }
     }
 
-    private void initGameUserStatusMap() {
+    private void initGameUserStatusMap(Room room) {
         gameUserStatusMap = new ConcurrentHashMap<>();
 
-        gameRoom.getUserList().forEach(user -> {
+        room.getUserList().forEach(user -> {
             gameUserStatusMap.put(user.getUserId(), GameUserStatus.builder()
                     .user(user)
                     .isSubmitDone(false)
                     .build());
         });
-    }
-
-    public boolean isHost(String userId) {
-        return gameRoom.isHost(userId);
     }
 
     public Boolean toggleSubmitDone(String userId) {
@@ -121,8 +134,8 @@ public class GameSession {
     // 시간 초과 확인
     private Boolean isTimeOver() {
         // 밀리초 변환
-        long limitTime = gameRoom.getLimitTime() * 60 * 1000;
-        return System.currentTimeMillis() - startTime.getTime() > limitTime;
+        long limitTime = gameRunningConfig.getLimitTime() * 60 * 1000;
+        return System.currentTimeMillis() - startTime > limitTime;
     }
 
     // 모든 유저가 `다 풀었어요!` 버튼을 눌렀는지 확인
@@ -134,7 +147,7 @@ public class GameSession {
     public List<ProblemInfoResponseDto> getProblemInfo() {
         List<ProblemInfoResponseDto> infoResponseDtoList = new ArrayList<>();
 
-        for (ProblemInfo problemInfo : problemInfoList) {
+        for (ProblemInfo problemInfo : gameRunningConfig.getProblemInfoList()) {
             infoResponseDtoList.add(ProblemInfoResponseDto.builder()
                     .id(problemInfo.getProblem().getId())
                     .algorithmClassification(problemInfo.getProblem().getAlgorithmClassification().getName())
