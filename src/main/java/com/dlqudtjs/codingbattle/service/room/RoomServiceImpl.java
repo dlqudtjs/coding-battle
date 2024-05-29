@@ -376,6 +376,11 @@ public class RoomServiceImpl implements RoomService {
         validateRoomExistence(roomId);
         validateUserSession(userId);
         validateUserInRoom(roomId, userId);
+        
+        // 게임이 시작 된 방에서는 roomLeave를 할 수 없음 (gameLeave 가능)
+        if (roomRepository.isStartedGame(roomId)) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
+        }
     }
 
     private void validateEnterGameRoomRequest(Long roomId, UserInfo userInfo) {
