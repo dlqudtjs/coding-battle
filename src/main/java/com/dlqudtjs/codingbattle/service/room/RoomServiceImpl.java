@@ -45,7 +45,7 @@ public class RoomServiceImpl implements RoomService {
     private final UserService userService;
 
     @Override
-    public ResponseDto createRoom(GameRoomCreateRequestDto requestDto, User host) {
+    public ResponseDto create(GameRoomCreateRequestDto requestDto, User host) {
         validateCreateGameRoomRequest(requestDto, host);
 
         // 방 생성시 기존 방 나가기 (default 방 포함)
@@ -81,7 +81,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public ResponseDto enterRoom(Long roomId, User user) {
+    public ResponseDto enter(Long roomId, User user) {
         UserSetting userSetting = userService.getUserSetting(user);
         validateEnterGameRoomRequest(roomId, user);
 
@@ -112,7 +112,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public ResponseDto leaveGameRoom(Long roomId, User user) {
+    public ResponseDto leave(Long roomId, User user) {
         validateLeaveGameRoomRequest(roomId, user);
 
         GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto = leaveRoom(roomId, user);
@@ -127,7 +127,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room getGameRoom(Long roomId) {
+    public Room getRoom(Long roomId) {
         if (!roomRepository.isExistRoom(roomId)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
@@ -136,7 +136,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room startGame(Long roomId, User user) {
+    public Room start(Long roomId, User user) {
         Room room = roomRepository.getGameRoom(roomId);
 
         if (!room.isHost(user)) {
@@ -181,7 +181,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public ResponseDto getGameRoomList() {
+    public ResponseDto getRoomList() {
         List<Room> roomList = roomRepository.getGameRoomList();
 
         List<GameRoomListResponseDto> responseDtoList = roomList.stream()

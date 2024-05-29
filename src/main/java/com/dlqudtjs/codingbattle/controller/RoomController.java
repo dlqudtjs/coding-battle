@@ -37,7 +37,7 @@ public class RoomController {
                                                   @RequestHeader("Authorization") String token) {
         requestDto.validate();
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
-        ResponseDto responseDto = roomService.createRoom(requestDto, user);
+        ResponseDto responseDto = roomService.create(requestDto, user);
 
         // 방안에 사용자들에게 나간 유저의 정보를 전달
         GameRoomInfoResponseDto gameRoomInfoResponseDto = (GameRoomInfoResponseDto) responseDto.getData();
@@ -58,7 +58,7 @@ public class RoomController {
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
         UserSetting userSetting = userService.getUserSetting(user);
-        ResponseDto responseDto = roomService.enterRoom(requestDto.getRoomId(), user);
+        ResponseDto responseDto = roomService.enter(requestDto.getRoomId(), user);
 
         // 방안에 사용자들에게 나간 유저의 정보를 전달
         GameRoomInfoResponseDto gameRoomInfoResponseDto = (GameRoomInfoResponseDto) responseDto.getData();
@@ -88,7 +88,7 @@ public class RoomController {
     public ResponseEntity<ResponseDto> leaveRoom(@PathVariable("roomId") Long roomId,
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
-        ResponseDto responseDto = roomService.leaveGameRoom(roomId, user);
+        ResponseDto responseDto = roomService.leave(roomId, user);
 
         GameRoomLeaveUserStatusResponseDto gameRoomLeaveUserStatusResponseDto =
                 (GameRoomLeaveUserStatusResponseDto) responseDto.getData();
@@ -105,7 +105,7 @@ public class RoomController {
 
     @GetMapping("/v1/gameRoomList")
     public ResponseEntity<ResponseDto> getGameRoomList() {
-        ResponseDto responseDto = roomService.getGameRoomList();
+        ResponseDto responseDto = roomService.getRoomList();
 
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }

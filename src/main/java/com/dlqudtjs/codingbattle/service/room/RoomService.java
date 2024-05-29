@@ -13,19 +13,19 @@ import com.dlqudtjs.codingbattle.entity.user.User;
 
 public interface RoomService {
 
-    ResponseDto createRoom(GameRoomCreateRequestDto requestDto, User user);
+    ResponseDto create(GameRoomCreateRequestDto requestDto, User user);
 
-    ResponseDto enterRoom(Long roomId, User user);
+    ResponseDto enter(Long roomId, User user);
 
-    ResponseDto leaveGameRoom(Long roomId, User user);
+    ResponseDto leave(Long roomId, User user);
 
-    Room getGameRoom(Long roomId);
+    Room getRoom(Long roomId);
 
     void logout(User user);
 
-    ResponseDto getGameRoomList();
+    ResponseDto getRoomList();
 
-    Room startGame(Long roomId, User user);
+    Room start(Long roomId, User user);
 
     Boolean isExistUserInRoom(Long roomId, User user);
 

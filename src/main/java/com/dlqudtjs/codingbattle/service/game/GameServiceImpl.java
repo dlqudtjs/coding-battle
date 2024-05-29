@@ -33,7 +33,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public GameSession startGame(Long roomId, User user) {
         // 게임 시작
-        Room room = roomService.startGame(roomId, user);
+        Room room = roomService.start(roomId, user);
 
         // 난이도에 따른 문제 리스트 가져오기
         ProblemLevelType problemLevel = room.getGameRunningConfig().getProblemLevel();
@@ -91,7 +91,7 @@ public class GameServiceImpl implements GameService {
         // TODO: 게임 초기화 유저 정보를 토기화해서 주기 + 게임 세션 삭제
         gameSessionMap.remove(roomId);
 
-        return roomService.getGameRoom(roomId);
+        return roomService.getRoom(roomId);
     }
 
     @Override
