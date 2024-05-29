@@ -1,7 +1,7 @@
 package com.dlqudtjs.codingbattle.websocket.configuration;
 
-import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.Header;
+import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.repository.socket.sessiontatus.SessionStatusRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
@@ -49,7 +49,7 @@ public class StompHandler implements ChannelInterceptor {
             // userId와 sessionId를 매핑
             WebsocketSessionHolder.addSession(user, headerAccessor.getSessionId());
             // 입장한 유저는 0번방을 입장 및 방에 입장한 상태로 변경
-            roomService.enter((long) GameSetting.DEFAULT_ROOM_ID.getValue(), user);
+            roomService.enter(RoomConfig.DEFAULT_ROOM_ID.getValue(), user);
         }
 
         if (headerAccessor.getCommand() == StompCommand.DISCONNECT) {

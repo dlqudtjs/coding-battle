@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.repository.socket.room;
 
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
+import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
 import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserInfo;
@@ -13,10 +14,10 @@ import org.springframework.stereotype.Repository;
 public class RoomRepositoryImpl implements RoomRepository {
 
     private final ConcurrentHashMap<Long, Room> roomMap = new ConcurrentHashMap<>(
-            Map.of((long) GameSetting.DEFAULT_ROOM_ID.getValue(),
+            Map.of(RoomConfig.DEFAULT_ROOM_ID.getValue(),
                     new Room(
                             null,
-                            (long) GameSetting.DEFAULT_ROOM_ID.getValue(),
+                            RoomConfig.DEFAULT_ROOM_ID.getValue(),
                             null,
                             "default",
                             "default",

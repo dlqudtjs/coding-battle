@@ -2,8 +2,8 @@ package com.dlqudtjs.codingbattle.service.game;
 
 import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
 
-import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
+import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.MatchHistory;
@@ -63,7 +63,7 @@ public class GameServiceImpl implements GameService {
         gameSession.leaveGame(user);
 
         // 소켓 세션 상태 변경 (Default Room으로 이동)
-        sessionService.enterRoom(user, (long) GameSetting.DEFAULT_ROOM_ID.getValue());
+        sessionService.enterRoom(user, RoomConfig.DEFAULT_ROOM_ID.getValue());
 
         return user;
     }

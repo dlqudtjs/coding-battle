@@ -1,6 +1,6 @@
 package com.dlqudtjs.codingbattle.entity.socket;
 
-import com.dlqudtjs.codingbattle.common.constant.GameSetting;
+import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
 
 /*
  * 세션 상태를 나타내는 클래스
@@ -14,7 +14,7 @@ public class SessionStatus {
 
 
     public SessionStatus() {
-        this.enterRoomId = (long) GameSetting.NO_ROOM_ID.getValue();
+        this.enterRoomId = RoomConfig.NO_ROOM_ID.getValue();
         this.isGameInProgress = false;
     }
 
@@ -23,7 +23,7 @@ public class SessionStatus {
     }
 
     public void leaveRoom() {
-        this.enterRoomId = (long) GameSetting.NO_ROOM_ID.getValue();
+        this.enterRoomId = RoomConfig.NO_ROOM_ID.getValue();
 
         if (this.isGameInProgress) {
             this.isGameInProgress = false;

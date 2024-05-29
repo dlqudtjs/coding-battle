@@ -5,6 +5,7 @@ import static com.dlqudtjs.codingbattle.common.exception.game.GameErrorCode.GAME
 
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.MessageType;
+import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
 import com.dlqudtjs.codingbattle.common.constant.code.RoomSuccessCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
@@ -93,7 +94,7 @@ public class RoomServiceImpl implements RoomService {
 
         // 기존 방 나가기 (default 방 포함)
         GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto = null;
-        if (!alreadyEnterRoomId.equals((long) GameSetting.NO_ROOM_ID.getValue())) {
+        if (!alreadyEnterRoomId.equals(RoomConfig.NO_ROOM_ID.getValue())) {
             leaveUserStatusResponseDto = leaveRoom(alreadyEnterRoomId, user);
         }
 
@@ -116,7 +117,7 @@ public class RoomServiceImpl implements RoomService {
         validateLeaveGameRoomRequest(roomId, user);
 
         GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto = leaveRoom(roomId, user);
-        joinRoom(user, (long) GameSetting.DEFAULT_ROOM_ID.getValue());
+        joinRoom(user, RoomConfig.DEFAULT_ROOM_ID.getValue());
 
         // 상태 변경
         return ResponseDto.builder()
@@ -177,7 +178,7 @@ public class RoomServiceImpl implements RoomService {
         leaveRoom(roomId, user);
 
         // default 방도 나가기
-        roomRepository.leave((long) GameSetting.DEFAULT_ROOM_ID.getValue(), user);
+        roomRepository.leave(RoomConfig.DEFAULT_ROOM_ID.getValue(), user);
     }
 
     @Override
@@ -321,7 +322,7 @@ public class RoomServiceImpl implements RoomService {
                 .filter(user -> !host.equals(user))
                 .forEach(user -> {
                     sessionService.leaveRoom(user);
-                    joinRoom(user, (long) GameSetting.DEFAULT_ROOM_ID.getValue());
+                    joinRoom(user, RoomConfig.DEFAULT_ROOM_ID.getValue());
                 });
     }
 

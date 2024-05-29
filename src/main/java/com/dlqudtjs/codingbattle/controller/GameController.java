@@ -55,9 +55,7 @@ public class GameController {
     @PostMapping("/v1/game/{roomId}/leave")
     public ResponseEntity<ResponseDto> leaveGame(@PathVariable("roomId") Long roomId,
                                                  @RequestHeader("Authorization") String token) {
-        User user = userService.getUser(jwtTokenProvider.getUserName(token));
-
-        gameService.leaveGame(roomId, user);
+        User user = gameService.leaveGame(roomId, userService.getUser(jwtTokenProvider.getUserName(token)));
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
