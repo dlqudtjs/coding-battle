@@ -12,7 +12,7 @@ public interface SessionStatusRepository {
 
     void leaveRoom(User user);
 
-    Long getUserInRoomId(User user);
+    Long getRoomIdFromUser(User user);
 
     Boolean isUserInGame(User user);
 

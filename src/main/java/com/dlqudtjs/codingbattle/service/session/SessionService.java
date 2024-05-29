@@ -8,7 +8,7 @@ public interface SessionService {
 
     void leaveRoom(User user);
 
-    Long getUserInRoomId(User user);
+    Long getRoomIdFromUser(User user);
 
     void startGame(User user);
 

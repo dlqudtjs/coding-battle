@@ -49,7 +49,7 @@ public class RoomServiceImpl implements RoomService {
         validateCreateGameRoomRequest(requestDto, host);
 
         // 방 생성시 기존 방 나가기 (default 방 포함)
-        Long alreadyEnterRoomId = sessionService.getUserInRoomId(host);
+        Long alreadyEnterRoomId = sessionService.getRoomIdFromUser(host);
         GameRoomLeaveUserStatusResponseDto leaveUserStatusResponseDto =
                 leaveRoom(alreadyEnterRoomId, host);
 
@@ -85,7 +85,7 @@ public class RoomServiceImpl implements RoomService {
         UserSetting userSetting = userService.getUserSetting(user);
         validateEnterGameRoomRequest(roomId, user);
 
-        Long alreadyEnterRoomId = sessionService.getUserInRoomId(user);
+        Long alreadyEnterRoomId = sessionService.getRoomIdFromUser(user);
         // 이미 입장한 방에 다시 입장할 때 예외발생
         if (alreadyEnterRoomId.equals(roomId)) {
             throw new CustomRoomException(RoomErrorCode.SAME_USER_IN_ROOM.getMessage());
@@ -173,7 +173,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public void logout(User user) {
-        Long roomId = sessionService.getUserInRoomId(user);
+        Long roomId = sessionService.getRoomIdFromUser(user);
         leaveRoom(roomId, user);
 
         // default 방도 나가기

@@ -52,7 +52,7 @@ public class SessionStatusRepositoryImpl implements SessionStatusRepository {
     }
 
     @Override
-    public Long getUserInRoomId(User user) {
+    public Long getRoomIdFromUser(User user) {
         if (!sessionStatusMap.containsKey(user)) {
             throw new CustomSocketException(RoomErrorCode.NOT_CONNECT_USER.getMessage());
         }

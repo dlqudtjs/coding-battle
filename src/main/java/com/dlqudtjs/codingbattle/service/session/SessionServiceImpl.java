@@ -26,8 +26,8 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public Long getUserInRoomId(User user) {
-        return sessionStatusRepository.getUserInRoomId(user);
+    public Long getRoomIdFromUser(User user) {
+        return sessionStatusRepository.getRoomIdFromUser(user);
     }
 
     @Override
