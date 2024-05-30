@@ -1,7 +1,7 @@
 package com.dlqudtjs.codingbattle.service.session;
 
 import com.dlqudtjs.codingbattle.entity.user.User;
-import com.dlqudtjs.codingbattle.repository.socket.sessiontatus.SessionStatusRepository;
+import com.dlqudtjs.codingbattle.repository.socket.SessionStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

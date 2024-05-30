@@ -1,6 +1,8 @@
 package com.dlqudtjs.codingbattle.entity.room;
 
+import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
+import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.GameRoomStatusUpdateMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomStatusResponseDto;
@@ -8,6 +10,7 @@ import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomUserStatusResponse
 import com.dlqudtjs.codingbattle.entity.game.GameRunningConfig;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserInfo;
+import com.dlqudtjs.codingbattle.service.session.SessionService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,15 +26,18 @@ public class Room {
     private Integer maxUserCount;
     private Boolean isStarted;
     private final GameRunningConfig gameRunningConfig;
+    private final SessionService sessionService;
     private final ConcurrentHashMap<User, RoomUserStatus> roomUserStatusMap;
 
     public Room(GameRunningConfig gameRunningConfig,
+                SessionService sessionService,
                 Long roomId,
                 User host,
                 String title,
                 String password,
                 Integer maxUserCount) {
         this.gameRunningConfig = gameRunningConfig;
+        this.sessionService = sessionService;
         this.roomId = roomId;
         this.host = host;
         this.title = title;
@@ -45,10 +51,14 @@ public class Room {
         isStarted = true;
     }
 
-    public void enter(UserInfo userInfo) {
+    public Room enter(UserInfo userInfo) {
         User user = userInfo.getUser();
         WebSocketSession session = WebsocketSessionHolder.getSessionFromUser(user);
+
         roomUserStatusMap.put(user, new RoomUserStatus(userInfo, session));
+        sessionService.enterRoom(user, roomId);
+
+        return this;
     }
 
     public void setRoomId(Long roomId) {
@@ -57,6 +67,8 @@ public class Room {
 
     public User leave(User user) {
         roomUserStatusMap.remove(user);
+        sessionService.leaveRoom(user);
+
         return user;
     }
 
@@ -100,7 +112,7 @@ public class Room {
                 .allMatch(RoomUserStatus::getIsReady);
     }
 
-    public Room updateGameRoomStatus(GameRoomStatusUpdateMessageRequestDto requestDto) {
+    public Room updateRoomStatus(GameRoomStatusUpdateMessageRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.password = requestDto.getPassword();
         this.maxUserCount = requestDto.getMaxUserCount();
@@ -160,7 +172,7 @@ public class Room {
                 .toList();
     }
 
-    public GameRoomStatusResponseDto toGameRoomStatusResponseDto() {
+    public GameRoomStatusResponseDto toRoomStatusResponseDto() {
         return GameRoomStatusResponseDto.builder()
                 .roomId(roomId)
                 .hostId(host.getUserId())
@@ -173,5 +185,15 @@ public class Room {
                 .maxSubmitCount(gameRunningConfig.getMaxSubmitCount())
                 .limitTime(gameRunningConfig.getLimitTime())
                 .build();
+    }
+
+    public static Room defaultRoom() {
+        return new Room(GameRunningConfig.defaultGameRunningConfig(),
+                null,
+                RoomConfig.DEFAULT_ROOM_ID.getValue(),
+                User.deafultUser(),
+                "default",
+                null,
+                GameSetting.DEFAULT_ROOM_MAX_USER_COUNT.getValue());
     }
 }

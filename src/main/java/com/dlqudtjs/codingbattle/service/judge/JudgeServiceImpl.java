@@ -239,7 +239,7 @@ public class JudgeServiceImpl implements JudgeService {
         }
 
         // 사용자가 방에 들어가 있는지 검증
-        if (!roomService.isExistUserInRoom(judgeProblemRequestDto.getRoomId(), user)) {
+        if (!roomService.isExistUserInRoom(user, judgeProblemRequestDto.getRoomId())) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 

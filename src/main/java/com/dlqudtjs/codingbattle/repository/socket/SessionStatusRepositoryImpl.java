@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.repository.socket.sessiontatus;
+package com.dlqudtjs.codingbattle.repository.socket;
 
 import com.dlqudtjs.codingbattle.common.exception.room.RoomErrorCode;
 import com.dlqudtjs.codingbattle.common.exception.socket.CustomSocketException;

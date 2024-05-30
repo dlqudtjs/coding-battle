@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.entity.user;
 
+import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -104,5 +105,14 @@ public class User implements UserDetails {
         User user = (User) o;
 
         return userId.equals(user.userId);
+    }
+
+    public static User deafultUser() {
+        return User.builder()
+                .id(0L)
+                .role(UserRole.builder().name(UserRoleType.ROLE_ADMIN).build())
+                .userId("ADMIN")
+                .password("ADMIN")
+                .build();
     }
 }

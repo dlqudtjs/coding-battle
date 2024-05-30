@@ -49,7 +49,7 @@ public class GameRoomCreateRequestDto {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
-        if (!ProblemLevelType.isNotContains(problemLevel)) {
+        if (ProblemLevelType.isNotContains(problemLevel)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
     }

@@ -6,8 +6,10 @@ import static com.dlqudtjs.codingbattle.common.constant.GameSetting.MIN_LIMIT_TI
 import static com.dlqudtjs.codingbattle.common.constant.GameSetting.MIN_SUBMISSION_COUNT;
 import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
 
+import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
+import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
 import java.util.List;
@@ -52,6 +54,15 @@ public class GameRunningConfig {
         this.language = language;
         this.maxSubmitCount = maxSubmitCount;
         this.limitTime = limitTime;
+    }
+
+    public static GameRunningConfig defaultGameRunningConfig() {
+        return new GameRunningConfig(
+                RoomConfig.DEFAULT_ROOM_ID.getValue(),
+                ProblemLevelType.BRONZE1,
+                ProgrammingLanguage.DEFAULT,
+                GameSetting.MIN_SUBMISSION_COUNT.getValue(),
+                (long) GameSetting.MIN_LIMIT_TIME.getValue());
     }
 
     private void validateMaxSubmitCount(Integer maxSubmitCount) throws Custom4XXException {

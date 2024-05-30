@@ -1,19 +1,23 @@
 package com.dlqudtjs.codingbattle.controller;
 
+import com.dlqudtjs.codingbattle.common.constant.code.RoomSuccessCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomCreateRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomEnterRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomInfoResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomLeaveUserStatusResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomListResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomLeaveUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomEnterUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomLeaveUserStatusMessageResponseDto;
+import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserSetting;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import com.dlqudtjs.codingbattle.service.user.UserService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,11 +58,11 @@ public class RoomController {
     }
 
     @PostMapping("/v1/gameRoom/enter")
-    public ResponseEntity<ResponseDto> enterRoom(@RequestBody GameRoomEnterRequestDto requestDto,
+    public ResponseEntity<ResponseDto> enterRoom(@RequestBody RoomEnterRequestDto requestDto,
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
         UserSetting userSetting = userService.getUserSetting(user);
-        ResponseDto responseDto = roomService.enter(requestDto.getRoomId(), user);
+        ResponseDto responseDto = roomService.enter(requestDto);
 
         // 방안에 사용자들에게 나간 유저의 정보를 전달
         GameRoomInfoResponseDto gameRoomInfoResponseDto = (GameRoomInfoResponseDto) responseDto.getData();
@@ -90,13 +94,13 @@ public class RoomController {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
         ResponseDto responseDto = roomService.leave(roomId, user);
 
-        GameRoomLeaveUserStatusResponseDto gameRoomLeaveUserStatusResponseDto =
-                (GameRoomLeaveUserStatusResponseDto) responseDto.getData();
+        RoomLeaveUserStatusResponseDto roomLeaveUserStatusResponseDto =
+                (RoomLeaveUserStatusResponseDto) responseDto.getData();
 
         socketRoomController.sendToRoom(
                 roomId,
                 GameRoomLeaveUserStatusMessageResponseDto.builder()
-                        .leaveUserStatus(gameRoomLeaveUserStatusResponseDto)
+                        .leaveUserStatus(roomLeaveUserStatusResponseDto)
                         .build()
         );
 
@@ -105,7 +109,29 @@ public class RoomController {
 
     @GetMapping("/v1/gameRoomList")
     public ResponseEntity<ResponseDto> getGameRoomList() {
-        ResponseDto responseDto = roomService.getRoomList();
+        List<Room> roomList = roomService.getRoomList();
+
+        List<GameRoomListResponseDto> responseDtoList = roomList.stream()
+                .map(room -> GameRoomListResponseDto.builder()
+                        .roomId(room.getRoomId())
+                        .hostId(room.getHost().getUserId())
+                        .title(room.getTitle())
+                        .language(room.getGameRunningConfig().getLanguage().getLanguageName())
+                        .isLocked(room.isLocked())
+                        .isStarted(room.getIsStarted())
+                        .problemLevel(room.getGameRunningConfig().getProblemLevel())
+                        .maxUserCount(room.getMaxUserCount())
+                        .maxSubmitCount(room.getGameRunningConfig().getMaxSubmitCount())
+                        .limitTime(room.getGameRunningConfig().getLimitTime())
+                        .countUsersInRoom(room.getUserCount())
+                        .build())
+                .toList();
+
+        ResponseDto responseDto = ResponseDto.builder()
+                .message(RoomSuccessCode.GET_GAME_ROOM_LIST_SUCCESS.getMessage())
+                .status(RoomSuccessCode.GET_GAME_ROOM_LIST_SUCCESS.getStatus())
+                .data(responseDtoList)
+                .build();
 
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }

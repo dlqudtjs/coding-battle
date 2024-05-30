@@ -26,7 +26,6 @@ public class GameSession {
     private final Long startTime;
     private Submit firstCorrectSubmit;
     private Boolean perfectWin;
-    private final List<ProblemInfo> problemInfoList;
     private final GameRunningConfig gameRunningConfig;
     private final SessionService sessionService;
     private final RoomService roomService;
@@ -38,9 +37,9 @@ public class GameSession {
 
         this.startTime = System.currentTimeMillis();
         this.gameRunningConfig = room.getGameRunningConfig();
-        this.problemInfoList = problemInfoList;
         this.sessionService = sessionService;
         this.roomService = roomService;
+        gameRunningConfig.setProblemInfoList(problemInfoList);
     }
 
     public Winner endGame() {
@@ -53,11 +52,11 @@ public class GameSession {
     }
 
     public void leaveGame(User user) {
-        if (!gameUserStatusMap.containsKey(user.getUserId())) {
+        if (!gameUserStatusMap.containsKey(user)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
-        gameUserStatusMap.remove(user.getUserId());
+        gameUserStatusMap.remove(user);
     }
 
     private Winner getWinner() {
