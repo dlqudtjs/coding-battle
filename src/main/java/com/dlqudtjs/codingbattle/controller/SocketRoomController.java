@@ -1,9 +1,9 @@
 package com.dlqudtjs.codingbattle.controller;
 
-import static com.dlqudtjs.codingbattle.common.exception.socket.SocketErrorCode.JSON_PARSE_ERROR;
+import static com.dlqudtjs.codingbattle.common.constant.code.SocketConfigCode.JSON_PARSE_ERROR;
 
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
-import com.dlqudtjs.codingbattle.common.exception.socket.CustomSocketException;
+import com.dlqudtjs.codingbattle.common.exception.CustomSocketException;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.RoomStatusUpdateMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.SendToRoomMessageRequestDto;

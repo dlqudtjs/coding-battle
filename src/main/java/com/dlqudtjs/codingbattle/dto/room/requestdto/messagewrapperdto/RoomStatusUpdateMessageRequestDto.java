@@ -1,6 +1,6 @@
 package com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto;
 
-import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
+import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;

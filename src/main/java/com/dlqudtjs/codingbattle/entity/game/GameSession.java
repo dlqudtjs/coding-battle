@@ -2,7 +2,7 @@ package com.dlqudtjs.codingbattle.entity.game;
 
 import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.PERFECT_WIN;
 import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.WIN;
-import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
+import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.MatchingResultType;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;

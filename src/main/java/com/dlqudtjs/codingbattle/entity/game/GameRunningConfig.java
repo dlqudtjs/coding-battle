@@ -4,7 +4,7 @@ import static com.dlqudtjs.codingbattle.common.constant.GameSetting.MAX_LIMIT_TI
 import static com.dlqudtjs.codingbattle.common.constant.GameSetting.MAX_SUBMISSION_COUNT;
 import static com.dlqudtjs.codingbattle.common.constant.GameSetting.MIN_LIMIT_TIME;
 import static com.dlqudtjs.codingbattle.common.constant.GameSetting.MIN_SUBMISSION_COUNT;
-import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
+import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;

@@ -1,10 +1,8 @@
 package com.dlqudtjs.codingbattle.service.testcase;
 
-import static com.dlqudtjs.codingbattle.common.exception.testcase.TestCaseErrorCode.TEST_CASE_FILE_FORMAT_ERROR;
-
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
-import com.dlqudtjs.codingbattle.common.exception.testcase.TestCaseErrorCode;
+import com.dlqudtjs.codingbattle.common.constant.code.TestCaseConfigCode;
 import com.dlqudtjs.codingbattle.entity.problem.Problem;
 import com.dlqudtjs.codingbattle.repository.problem.ProblemRepository;
 import java.io.IOException;
@@ -31,7 +29,7 @@ public class TestCaseServiceImpl implements TestCaseService {
     public ResponseDto addTestCase(Long problemId, MultipartFile testCaseFile) {
         // zip 파일이 아닌 경우 예외 발생
         if (!isZipFile(testCaseFile)) {
-            custom4XXException(TEST_CASE_FILE_FORMAT_ERROR);
+            custom4XXException();
         }
 
         Map<String, String> inputFiles = new HashMap<>();
@@ -40,7 +38,7 @@ public class TestCaseServiceImpl implements TestCaseService {
 
         // input, output 파일의 개수가 일치하지 않으면 예외 발생
         if (inputFiles.size() != outputFiles.size()) {
-            custom4XXException(TEST_CASE_FILE_FORMAT_ERROR);
+            custom4XXException();
         }
 
         // db에 저장하는 로직
@@ -49,7 +47,7 @@ public class TestCaseServiceImpl implements TestCaseService {
             String outputContent = outputFiles.get(fileName);
 
             if (inputContent == null || outputContent == null) {
-                custom4XXException(TEST_CASE_FILE_FORMAT_ERROR);
+                custom4XXException();
             }
 
             saveTestCaseToRepository(problemId, inputContent, outputContent);
@@ -65,7 +63,7 @@ public class TestCaseServiceImpl implements TestCaseService {
         Problem problem = problemRepository.findById(problemId).orElse(null);
 
         if (problem == null) {
-            custom4XXException(TEST_CASE_FILE_FORMAT_ERROR);
+            custom4XXException();
         }
 
 //        ProblemTestCase testCase = ProblemTestCase.builder()
@@ -105,7 +103,7 @@ public class TestCaseServiceImpl implements TestCaseService {
                 nextEntry = zipInputStream.getNextEntry();
             }
         } catch (IOException e) {
-            custom4XXException(TEST_CASE_FILE_FORMAT_ERROR);
+            custom4XXException();
         }
     }
 
@@ -113,10 +111,10 @@ public class TestCaseServiceImpl implements TestCaseService {
         return Objects.requireNonNull(file.getOriginalFilename()).endsWith(".zip");
     }
 
-    private void custom4XXException(TestCaseErrorCode errorCode) {
+    private void custom4XXException() {
         throw new Custom4XXException(
-                errorCode.getMessage(),
-                errorCode.getStatus()
+                TestCaseConfigCode.TEST_CASE_FILE_FORMAT_ERROR.getMessage(),
+                TestCaseConfigCode.TEST_CASE_FILE_FORMAT_ERROR.getStatus()
         );
     }
 }

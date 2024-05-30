@@ -2,14 +2,14 @@ package com.dlqudtjs.codingbattle.service.room;
 
 import static com.dlqudtjs.codingbattle.common.constant.code.GameConfigCode.GAME_START_ERROR;
 import static com.dlqudtjs.codingbattle.common.constant.code.RoomConfigCode.INVALID_REQUEST;
-import static com.dlqudtjs.codingbattle.common.constant.code.RoomConfigCode.NOT_CONNECT_USER;
-import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
+import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
+import static com.dlqudtjs.codingbattle.common.constant.code.SocketConfigCode.NOT_CONNECT_USER;
 
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.MessageType;
 import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
-import com.dlqudtjs.codingbattle.common.exception.socket.CustomSocketException;
+import com.dlqudtjs.codingbattle.common.exception.CustomSocketException;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;

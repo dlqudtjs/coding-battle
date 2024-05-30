@@ -1,6 +1,6 @@
 package com.dlqudtjs.codingbattle.service.game;
 
-import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
+import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
 import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
@@ -108,7 +108,7 @@ public class GameServiceImpl implements GameService {
         if (!gameSessionMap.containsKey(roomId)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
-        
+
         return gameSessionMap.get(roomId).getGameRunningConfig().getProblemInfoList();
     }
 }

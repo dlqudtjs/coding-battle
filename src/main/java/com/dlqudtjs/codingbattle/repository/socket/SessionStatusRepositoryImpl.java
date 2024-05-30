@@ -1,7 +1,7 @@
 package com.dlqudtjs.codingbattle.repository.socket;
 
-import com.dlqudtjs.codingbattle.common.constant.code.RoomConfigCode;
-import com.dlqudtjs.codingbattle.common.exception.socket.CustomSocketException;
+import com.dlqudtjs.codingbattle.common.exception.CustomSocketException;
+import com.dlqudtjs.codingbattle.common.constant.code.SocketConfigCode;
 import com.dlqudtjs.codingbattle.entity.socket.SessionStatus;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,7 +27,7 @@ public class SessionStatusRepositoryImpl implements SessionStatusRepository {
     @Override
     public Boolean isUserInGame(User user) {
         if (!sessionStatusMap.containsKey(user)) {
-            throw new CustomSocketException(RoomConfigCode.NOT_CONNECT_USER.getMessage());
+            throw new CustomSocketException(SocketConfigCode.NOT_CONNECT_USER.getMessage());
         }
 
         return sessionStatusMap.get(user).isGameInProgress();
@@ -36,7 +36,7 @@ public class SessionStatusRepositoryImpl implements SessionStatusRepository {
     @Override
     public void enterRoom(User user, Long roomId) {
         if (!sessionStatusMap.containsKey(user)) {
-            throw new CustomSocketException(RoomConfigCode.NOT_CONNECT_USER.getMessage());
+            throw new CustomSocketException(SocketConfigCode.NOT_CONNECT_USER.getMessage());
         }
 
         sessionStatusMap.get(user).enterRoom(roomId);
@@ -45,7 +45,7 @@ public class SessionStatusRepositoryImpl implements SessionStatusRepository {
     @Override
     public void leaveRoom(User user) {
         if (!sessionStatusMap.containsKey(user)) {
-            throw new CustomSocketException(RoomConfigCode.NOT_CONNECT_USER.getMessage());
+            throw new CustomSocketException(SocketConfigCode.NOT_CONNECT_USER.getMessage());
         }
 
         sessionStatusMap.get(user).leaveRoom();
@@ -54,7 +54,7 @@ public class SessionStatusRepositoryImpl implements SessionStatusRepository {
     @Override
     public Long getRoomIdFromUser(User user) {
         if (!sessionStatusMap.containsKey(user)) {
-            throw new CustomSocketException(RoomConfigCode.NOT_CONNECT_USER.getMessage());
+            throw new CustomSocketException(SocketConfigCode.NOT_CONNECT_USER.getMessage());
         }
 
         return sessionStatusMap.get(user).getEnterRoomId();
@@ -63,7 +63,7 @@ public class SessionStatusRepositoryImpl implements SessionStatusRepository {
     @Override
     public void startGame(User user) {
         if (!sessionStatusMap.containsKey(user)) {
-            throw new CustomSocketException(RoomConfigCode.NOT_CONNECT_USER.getMessage());
+            throw new CustomSocketException(SocketConfigCode.NOT_CONNECT_USER.getMessage());
         }
 
         sessionStatusMap.get(user).startGame();

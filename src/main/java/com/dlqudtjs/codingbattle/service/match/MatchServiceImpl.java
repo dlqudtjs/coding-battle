@@ -1,7 +1,7 @@
 package com.dlqudtjs.codingbattle.service.match;
 
 import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.*;
-import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
+import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.MatchingResultType;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;

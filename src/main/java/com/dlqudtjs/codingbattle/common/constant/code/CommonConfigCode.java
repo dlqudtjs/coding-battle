@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.common.exception;
+package com.dlqudtjs.codingbattle.common.constant.code;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum CommonErrorCode {
+public enum CommonConfigCode {
 
     INVALID_INPUT_VALUE("유효하지 않은 값입니다.", HttpStatus.BAD_REQUEST),
     ;
