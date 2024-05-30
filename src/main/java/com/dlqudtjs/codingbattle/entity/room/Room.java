@@ -172,12 +172,6 @@ public class Room {
                 .allMatch(user -> user.getUseLanguage().equals(language));
     }
 
-    public void initRoomUserStatus() {
-        roomUserStatusMap.values().forEach(
-                status -> status.updateStatus(false, status.getUseLanguage())
-        );
-    }
-
     private RoomUserStatus getUserStatus(User user) {
         return roomUserStatusMap.get(user);
     }
