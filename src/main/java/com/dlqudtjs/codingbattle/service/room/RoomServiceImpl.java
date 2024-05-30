@@ -248,16 +248,6 @@ public class RoomServiceImpl implements RoomService {
         });
     }
 
-    private RoomInfoResponseDto CreateRoomResponseDto(
-            Room room,
-            RoomLeaveUserStatusResponseDto leaveUserStatusResponseDto) {
-        return RoomInfoResponseDto.builder()
-                .roomStatus(room.toRoomStatusResponseDto())
-                .leaveUserStatus(leaveUserStatusResponseDto)
-                .userStatus(room.toRoomUserStatusResponseDto())
-                .build();
-    }
-
     private void validateUpdateRoomUserStatusRequest(
             Long roomId, String sessionId, RoomUserStatusUpdateRequestDto requestDto) {
         Room room = roomMap.get(roomId);
