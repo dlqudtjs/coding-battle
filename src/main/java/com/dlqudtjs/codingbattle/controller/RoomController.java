@@ -63,14 +63,14 @@ public class RoomController {
         if (room == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.builder()
                     .message(RoomConfigCode.CREATE_GAME_ROOM_FAIL.getMessage())
-                    .status(RoomConfigCode.CREATE_GAME_ROOM_FAIL.getStatus())
+                    .status(RoomConfigCode.CREATE_GAME_ROOM_FAIL.getStatus().value())
                     .data(null)
                     .build());
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.builder()
                 .message(RoomConfigCode.CREATE_GAME_ROOM_SUCCESS.getMessage())
-                .status(RoomConfigCode.CREATE_GAME_ROOM_SUCCESS.getStatus())
+                .status(RoomConfigCode.CREATE_GAME_ROOM_SUCCESS.getStatus().value())
                 .data(null)
                 .build());
     }
@@ -99,7 +99,7 @@ public class RoomController {
         if (enterdRoom == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.builder()
                     .message(RoomConfigCode.PASSWORD_NOT_MATCH.getMessage())
-                    .status(RoomConfigCode.PASSWORD_NOT_MATCH.getStatus())
+                    .status(RoomConfigCode.PASSWORD_NOT_MATCH.getStatus().value())
                     .data(null)
                     .build());
         }
@@ -116,7 +116,7 @@ public class RoomController {
 
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.builder()
                 .message(RoomConfigCode.JOIN_GAME_ROOM_SUCCESS.getMessage())
-                .status(RoomConfigCode.JOIN_GAME_ROOM_SUCCESS.getStatus())
+                .status(RoomConfigCode.JOIN_GAME_ROOM_SUCCESS.getStatus().value())
                 .data(null)
                 .build());
     }
@@ -164,7 +164,7 @@ public class RoomController {
 
         ResponseDto responseDto = ResponseDto.builder()
                 .message(RoomConfigCode.GET_GAME_ROOM_LIST_SUCCESS.getMessage())
-                .status(RoomConfigCode.GET_GAME_ROOM_LIST_SUCCESS.getStatus())
+                .status(RoomConfigCode.GET_GAME_ROOM_LIST_SUCCESS.getStatus().value())
                 .data(responseDtoList)
                 .build();
 

@@ -3,8 +3,6 @@ package com.dlqudtjs.codingbattle.oauth;
 import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
 import com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
-import com.dlqudtjs.codingbattle.common.exception.oauth.AlreadyExistUserIdException;
-import com.dlqudtjs.codingbattle.common.exception.oauth.PasswordCheckException;
 import com.dlqudtjs.codingbattle.dto.oauth.SignUpRequestDto;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserRole;

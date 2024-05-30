@@ -3,7 +3,6 @@ package com.dlqudtjs.codingbattle.controller;
 import static com.dlqudtjs.codingbattle.common.exception.socket.SocketErrorCode.JSON_PARSE_ERROR;
 
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
-import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
 import com.dlqudtjs.codingbattle.common.exception.socket.CustomSocketException;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.RoomStatusUpdateMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;
@@ -43,8 +42,8 @@ public class SocketRoomController {
 
             // 방에 메시지 전송
             messagingTemplate.convertAndSend("/topic/room/" + roomId, responseDto);
-        } catch (CustomRoomException e) {
-            throw new CustomRoomException(e.getMessage());
+        } catch (Custom4XXException e) {
+            throw new Custom4XXException(e.getMessage(), e.getStatus());
         }
     }
 
@@ -68,9 +67,7 @@ public class SocketRoomController {
             // 방에 메시지 전송
             messagingTemplate.convertAndSend("/topic/room/" + roomId, responseDto);
         } catch (Custom4XXException e) {
-            throw new CustomSocketException(JSON_PARSE_ERROR.getMessage());
-        } catch (CustomRoomException e) {
-            throw new CustomSocketException(e.getMessage());
+            throw new Custom4XXException(e.getMessage(), e.getStatus());
         }
     }
 
@@ -90,9 +87,7 @@ public class SocketRoomController {
             // 방에 메시지 전송
             messagingTemplate.convertAndSend("/topic/room/" + roomId, responseDto);
         } catch (Custom4XXException e) {
-            throw new Custom4XXException(JSON_PARSE_ERROR.getMessage(), JSON_PARSE_ERROR.getStatus());
-        } catch (CustomRoomException e) {
-            throw new CustomSocketException(e.getMessage());
+            throw new Custom4XXException(e.getMessage(), e.getStatus());
         }
     }
 

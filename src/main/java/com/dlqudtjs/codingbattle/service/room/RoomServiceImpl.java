@@ -1,14 +1,15 @@
 package com.dlqudtjs.codingbattle.service.room;
 
 import static com.dlqudtjs.codingbattle.common.constant.code.GameConfigCode.GAME_START_ERROR;
+import static com.dlqudtjs.codingbattle.common.constant.code.RoomConfigCode.INVALID_REQUEST;
+import static com.dlqudtjs.codingbattle.common.constant.code.RoomConfigCode.NOT_CONNECT_USER;
 import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.MessageType;
 import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
-import com.dlqudtjs.codingbattle.common.constant.code.RoomConfigCode;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
-import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
+import com.dlqudtjs.codingbattle.common.exception.socket.CustomSocketException;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;
@@ -266,12 +267,12 @@ public class RoomServiceImpl implements RoomService {
 
         // 세션 아이디와 요청한 유저 아이디가 일치하지 않으면
         if (!requestDto.getUserId().equals(user.getUserId())) {
-            throw new CustomRoomException(RoomConfigCode.INVALID_REQUEST.getMessage());
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
         // 밤에 설정된 language외 다른 language로 변경하려고 하면
         if (room.checkAvailableLanguage(requestDto.getLanguage())) {
-            throw new CustomRoomException(RoomConfigCode.INVALID_REQUEST.getMessage());
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
     }
 
@@ -297,12 +298,12 @@ public class RoomServiceImpl implements RoomService {
 
         // 방장과 세션 아이디가 일치하지 않으면 (웹 소켓 세션에 존재하지 않으면)
         if (!room.isHost(user)) {
-            throw new CustomRoomException(RoomConfigCode.INVALID_REQUEST.getMessage());
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
         // requestDto의 hostId와 userId가 일치하지 않으면
         if (!user.equals(socketUser)) {
-            throw new CustomRoomException(RoomConfigCode.INVALID_REQUEST.getMessage());
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
     }
 
@@ -325,7 +326,7 @@ public class RoomServiceImpl implements RoomService {
 
         // 방이 꽉 찼으면
         if (isFullRoom(requestDto.getRoomId())) {
-            throw new CustomRoomException(RoomConfigCode.FULL_ROOM.getMessage());
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
         // 게임 중인 유저가 방에 들어가려고 하면
@@ -339,7 +340,7 @@ public class RoomServiceImpl implements RoomService {
     private void validateCreateRoomRequest(RoomCreateRequestDto requestDto, User user) {
         // userId와 requestDto의 hostId가 일치하지 않으면
         if (!user.getUserId().equals(requestDto.getHostId())) {
-            throw new CustomRoomException(RoomConfigCode.INVALID_REQUEST.getMessage());
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
         // 요청한 유저가 웹 소켓 세션에 존재하지 않으면
@@ -349,21 +350,21 @@ public class RoomServiceImpl implements RoomService {
     // 유저 세션이 존재하지 않으면
     private void validateUserSession(User user) {
         if (WebsocketSessionHolder.isNotConnected(user)) {
-            throw new CustomRoomException(RoomConfigCode.NOT_CONNECT_USER.getMessage());
+            throw new CustomSocketException(NOT_CONNECT_USER.getMessage());
         }
     }
 
     // 방이 존재하지 않으면
     private void validateRoomExistence(Long roomId) {
         if (!roomMap.containsKey(roomId)) {
-            throw new CustomRoomException(RoomConfigCode.NOT_EXIST_ROOM.getMessage());
+            throw new Custom4XXException(INVALID_REQUEST.getMessage(), INVALID_REQUEST.getStatus());
         }
     }
 
     // 방에 유저가 존재하지 않으면
     private void validateUserInRoom(Long roomId, User user) {
         if (!isExistUserInRoom(user, roomId)) {
-            throw new CustomRoomException(RoomConfigCode.NOT_EXIST_USER_IN_ROOM.getMessage());
+            throw new Custom4XXException(INVALID_REQUEST.getMessage(), INVALID_REQUEST.getStatus());
         }
     }
 
