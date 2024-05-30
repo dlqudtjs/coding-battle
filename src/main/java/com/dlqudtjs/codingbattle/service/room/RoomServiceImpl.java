@@ -12,8 +12,8 @@ import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
 import com.dlqudtjs.codingbattle.common.exception.room.RoomErrorCode;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomCreateRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomEnterRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.SendToRoomMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.RoomStatusUpdateMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomInfoResponseDto;
@@ -30,9 +30,9 @@ import com.dlqudtjs.codingbattle.entity.user.UserInfo;
 import com.dlqudtjs.codingbattle.service.session.SessionService;
 import com.dlqudtjs.codingbattle.service.user.UserService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
+import jakarta.annotation.PostConstruct;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -43,8 +43,12 @@ public class RoomServiceImpl implements RoomService {
 
     private final SessionService sessionService;
     private final UserService userService;
-    private final ConcurrentHashMap<Long, Room> roomMap = new ConcurrentHashMap<>(
-            Map.of(RoomConfig.DEFAULT_ROOM_ID.getValue(), Room.defaultRoom()));
+    private final ConcurrentHashMap<Long, Room> roomMap = new ConcurrentHashMap<>();
+
+    @PostConstruct
+    public void initDefaultRoom() {
+        roomMap.put(RoomConfig.DEFAULT_ROOM_ID.getValue(), new Room(sessionService));
+    }
 
     @Override
     public ResponseDto create(RoomCreateRequestDto requestDto, User host) {
@@ -57,17 +61,18 @@ public class RoomServiceImpl implements RoomService {
         Boolean isHost = leaveRoom(alreadyEnterRoomId, host);
 
         // 방 생성
-        Room createdRoom = roomMap.put(newRoomId,
-                new Room(createGameRunningConfig(requestDto, newRoomId),
-                        sessionService,
-                        newRoomId,
-                        host,
-                        requestDto.getTitle(),
-                        requestDto.getPassword(),
-                        requestDto.getMaxUserCount()));
+        Room createdRoom = new Room(createGameRunningConfig(requestDto, newRoomId),
+                sessionService,
+                newRoomId,
+                host,
+                requestDto.getTitle(),
+                requestDto.getPassword(),
+                requestDto.getMaxUserCount());
 
         // 방 입장
         createdRoom.enter(userService.getUserInfo(host.getUserId()));
+
+        roomMap.put(newRoomId, createdRoom);
 
         RoomInfoResponseDto roomInfoResponseDto = CreateRoomResponseDto(
                 createdRoom,
@@ -271,6 +276,11 @@ public class RoomServiceImpl implements RoomService {
      * 방장일 경우 방을 삭제하고, 방에 있던 유저들의 상태를 default 방으로 변경
      */
     private Boolean leaveRoom(Long roomId, User user) {
+        // 아무 방에 들어가 있지 않은 경우
+        if (roomId.equals(RoomConfig.NO_ROOM_ID.getValue())) {
+            return false;
+        }
+
         Room room = roomMap.get(roomId);
 
         // 방을 삭제해야 된다면 삭제하기 전 방에 있는 모든 유저 leaveRoom
@@ -281,6 +291,7 @@ public class RoomServiceImpl implements RoomService {
             return true;
         }
 
+        room.leave(user);
         return false;
     }
 

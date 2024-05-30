@@ -47,6 +47,18 @@ public class Room {
         this.roomUserStatusMap = new ConcurrentHashMap<>();
     }
 
+    public Room(SessionService sessionService) {
+        this.roomId = RoomConfig.DEFAULT_ROOM_ID.getValue();
+        this.host = User.deafultUser();
+        this.title = "default";
+        this.password = null;
+        this.maxUserCount = GameSetting.DEFAULT_ROOM_MAX_USER_COUNT.getValue();
+        this.isStarted = false;
+        this.gameRunningConfig = GameRunningConfig.defaultGameRunningConfig();
+        this.sessionService = sessionService;
+        this.roomUserStatusMap = new ConcurrentHashMap<>();
+    }
+
     public void startGame() {
         isStarted = true;
     }
@@ -185,15 +197,5 @@ public class Room {
                 .maxSubmitCount(gameRunningConfig.getMaxSubmitCount())
                 .limitTime(gameRunningConfig.getLimitTime())
                 .build();
-    }
-
-    public static Room defaultRoom() {
-        return new Room(GameRunningConfig.defaultGameRunningConfig(),
-                null,
-                RoomConfig.DEFAULT_ROOM_ID.getValue(),
-                User.deafultUser(),
-                "default",
-                null,
-                GameSetting.DEFAULT_ROOM_MAX_USER_COUNT.getValue());
     }
 }
