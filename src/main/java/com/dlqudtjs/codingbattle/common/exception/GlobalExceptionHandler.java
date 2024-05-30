@@ -6,7 +6,6 @@ import com.dlqudtjs.codingbattle.common.exception.oauth.AlreadyExistUserIdExcept
 import com.dlqudtjs.codingbattle.common.exception.oauth.CustomAuthenticationException;
 import com.dlqudtjs.codingbattle.common.exception.oauth.PasswordCheckException;
 import com.dlqudtjs.codingbattle.common.exception.oauth.PasswordNotMatchException;
-import com.dlqudtjs.codingbattle.common.exception.oauth.UnknownException;
 import com.dlqudtjs.codingbattle.common.exception.oauth.UserIdNotFoundException;
 import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
 import com.dlqudtjs.codingbattle.common.exception.socket.CustomSocketException;

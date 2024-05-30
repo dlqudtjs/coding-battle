@@ -1,6 +1,8 @@
 package com.dlqudtjs.codingbattle.security;
 
-import com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode;
+import static com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode.USER_ID_NOT_FOUNT;
+
+import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.exception.oauth.UserIdNotFoundException;
 import com.dlqudtjs.codingbattle.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,8 @@ public class CustomDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String userId) throws UserIdNotFoundException {
 
         return userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserIdNotFoundException(OauthConfigCode.USER_ID_NOT_FOUNT.getMessage()));
+                .orElseThrow(() -> new Custom4XXException(
+                        USER_ID_NOT_FOUNT.getMessage(),
+                        USER_ID_NOT_FOUNT.getStatus()));
     }
 }

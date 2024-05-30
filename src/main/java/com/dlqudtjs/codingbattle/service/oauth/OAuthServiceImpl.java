@@ -1,14 +1,17 @@
 package com.dlqudtjs.codingbattle.service.oauth;
 
+import static com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode.ALREADY_EXIST_USER_ID;
+import static com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode.LANGUAGE_NOT_FOUND;
+import static com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode.PASSWORD_CHECK;
+import static com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode.PASSWORD_NOT_MATCH;
+import static com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode.REFRESH_TOKEN_NOT_FOUND;
+import static com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode.USER_ID_NOT_FOUNT;
+
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
 import com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
-import com.dlqudtjs.codingbattle.common.exception.oauth.AlreadyExistUserIdException;
-import com.dlqudtjs.codingbattle.common.exception.oauth.CustomAuthenticationException;
-import com.dlqudtjs.codingbattle.common.exception.oauth.PasswordCheckException;
-import com.dlqudtjs.codingbattle.common.exception.oauth.PasswordNotMatchException;
-import com.dlqudtjs.codingbattle.common.exception.oauth.UserIdNotFoundException;
+import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.dto.oauth.JwtTokenDto;
 import com.dlqudtjs.codingbattle.dto.oauth.SignInRequestDto;
 import com.dlqudtjs.codingbattle.dto.oauth.SignUpRequestDto;
@@ -46,7 +49,9 @@ public class OAuthServiceImpl implements OAuthService {
     @Transactional
     public ResponseDto signIn(SignInRequestDto signInRequestDto) {
         User user = userRepository.findByUserId(signInRequestDto.getUserId())
-                .orElseThrow(() -> new UserIdNotFoundException(OauthConfigCode.USER_ID_NOT_FOUNT.getMessage()));
+                .orElseThrow(() -> new Custom4XXException(
+                        USER_ID_NOT_FOUNT.getMessage(),
+                        USER_ID_NOT_FOUNT.getStatus()));
 
         validateSignInRequest(signInRequestDto, user);
 
@@ -55,7 +60,7 @@ public class OAuthServiceImpl implements OAuthService {
         saveRefreshToken(jwtTokenDto.getRefreshToken(), user.getId());
 
         return ResponseDto.builder()
-                .status(OauthConfigCode.SIGN_IN_SUCCESS.getStatus())
+                .status(OauthConfigCode.SIGN_IN_SUCCESS.getStatus().value())
                 .message(OauthConfigCode.SIGN_IN_SUCCESS.getMessage())
                 .data(jwtTokenDto)
                 .build();
@@ -83,7 +88,7 @@ public class OAuthServiceImpl implements OAuthService {
                 .build());
 
         return ResponseDto.builder()
-                .status(OauthConfigCode.SIGN_UP_SUCCESS.getStatus())
+                .status(OauthConfigCode.SIGN_UP_SUCCESS.getStatus().value())
                 .message(OauthConfigCode.SIGN_UP_SUCCESS.getMessage())
                 .data(savedUser.getId())
                 .build();
@@ -96,15 +101,18 @@ public class OAuthServiceImpl implements OAuthService {
         Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
 
         User user = userRepository.findByUserId(authentication.getName())
-                .orElseThrow(() -> new CustomAuthenticationException(OauthConfigCode.USER_ID_NOT_FOUNT.getMessage()));
+                .orElseThrow(() -> new Custom4XXException(
+                        USER_ID_NOT_FOUNT.getMessage(),
+                        USER_ID_NOT_FOUNT.getStatus()));
 
         Token token = tokenRepository.findByUserId(user.getId())
-                .orElseThrow(
-                        () -> new CustomAuthenticationException(OauthConfigCode.REFRESH_TOKEN_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new Custom4XXException(
+                        REFRESH_TOKEN_NOT_FOUND.getMessage(),
+                        REFRESH_TOKEN_NOT_FOUND.getStatus()));
 
         // Refresh Token이 일치하지 않을 경우
         if (!token.getRefreshToken().equals(refreshToken.substring(7))) {
-            throw new CustomAuthenticationException(OauthConfigCode.REFRESH_TOKEN_NOT_FOUND.getMessage());
+            throw new Custom4XXException(REFRESH_TOKEN_NOT_FOUND.getMessage(), REFRESH_TOKEN_NOT_FOUND.getStatus());
         }
 
         JwtTokenDto jwtTokenDto = jwtTokenProvider.generateToken(user);
@@ -112,7 +120,7 @@ public class OAuthServiceImpl implements OAuthService {
         saveRefreshToken(jwtTokenDto.getRefreshToken(), user.getId());
 
         return ResponseDto.builder()
-                .status(OauthConfigCode.REFRESH_TOKEN_SUCCESS.getStatus())
+                .status(OauthConfigCode.REFRESH_TOKEN_SUCCESS.getStatus().value())
                 .message(OauthConfigCode.REFRESH_TOKEN_SUCCESS.getMessage())
                 .data(jwtTokenDto)
                 .build();
@@ -122,11 +130,11 @@ public class OAuthServiceImpl implements OAuthService {
     @Transactional
     public ResponseDto checkUserId(String userId) {
         if (isExistUser(userId)) {
-            throw new AlreadyExistUserIdException(OauthConfigCode.ALREADY_EXIST_USER_ID.getMessage());
+            throw new Custom4XXException(ALREADY_EXIST_USER_ID.getMessage(), ALREADY_EXIST_USER_ID.getStatus());
         }
 
         return ResponseDto.builder()
-                .status(OauthConfigCode.CHECK_USER_ID_SUCCESS.getStatus())
+                .status(OauthConfigCode.CHECK_USER_ID_SUCCESS.getStatus().value())
                 .message(OauthConfigCode.CHECK_USER_ID_SUCCESS.getMessage())
                 .build();
     }
@@ -146,21 +154,21 @@ public class OAuthServiceImpl implements OAuthService {
 
     private void validateSignInRequest(SignInRequestDto signInRequestDto, User user) {
         if (!passwordEncoder.matches(signInRequestDto.getPassword(), user.getPassword())) {
-            throw new PasswordNotMatchException(OauthConfigCode.PASSWORD_NOT_MATCH.getMessage());
+            throw new Custom4XXException(PASSWORD_NOT_MATCH.getMessage(), PASSWORD_NOT_MATCH.getStatus());
         }
     }
 
     private void validateSignUpRequest(SignUpRequestDto signUpRequestDto) {
         if (isExistUser(signUpRequestDto.getUserId())) {
-            throw new AlreadyExistUserIdException(OauthConfigCode.ALREADY_EXIST_USER_ID.getMessage());
+            throw new Custom4XXException(ALREADY_EXIST_USER_ID.getMessage(), ALREADY_EXIST_USER_ID.getStatus());
         }
 
         if (!passwordCheck(signUpRequestDto.getPassword(), signUpRequestDto.getPasswordCheck())) {
-            throw new PasswordCheckException(OauthConfigCode.PASSWORD_CHECK.getMessage());
+            throw new Custom4XXException(PASSWORD_CHECK.getMessage(), PASSWORD_CHECK.getStatus());
         }
 
         if (ProgrammingLanguage.isNotContains(signUpRequestDto.getLanguage())) {
-            throw new CustomAuthenticationException(OauthConfigCode.LANGUAGE_NOT_FOUND.getMessage());
+            throw new Custom4XXException(LANGUAGE_NOT_FOUND.getMessage(), LANGUAGE_NOT_FOUND.getStatus());
         }
     }
 
