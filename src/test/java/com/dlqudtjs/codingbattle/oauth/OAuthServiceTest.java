@@ -7,7 +7,7 @@ import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
 import com.dlqudtjs.codingbattle.entity.user.UserRole;
 import com.dlqudtjs.codingbattle.repository.user.UserRepository;
 import com.dlqudtjs.codingbattle.service.oauth.OAuthServiceImpl;
-import com.dlqudtjs.codingbattle.common.constant.code.OauthSuccessCode;
+import com.dlqudtjs.codingbattle.common.constant.code.OauthConfigode;
 import com.dlqudtjs.codingbattle.common.exception.oauth.AlreadyExistUserIdException;
 import com.dlqudtjs.codingbattle.common.exception.oauth.OauthErrorCode;
 import com.dlqudtjs.codingbattle.common.exception.oauth.PasswordCheckException;
@@ -56,7 +56,7 @@ public class OAuthServiceTest {
 
         // then
         Assertions.assertThat(responseDto.getStatus()).isEqualTo(200);
-        Assertions.assertThat(responseDto.getMessage()).isEqualTo(OauthSuccessCode.SIGN_UP_SUCCESS.getMessage());
+        Assertions.assertThat(responseDto.getMessage()).isEqualTo(OauthConfigode.SIGN_UP_SUCCESS.getMessage());
         Assertions.assertThat(responseDto.getData()).isEqualTo(1L);
     }
 

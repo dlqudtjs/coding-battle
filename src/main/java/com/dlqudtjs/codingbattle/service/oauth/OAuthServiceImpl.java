@@ -3,7 +3,7 @@ package com.dlqudtjs.codingbattle.service.oauth;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
-import com.dlqudtjs.codingbattle.common.constant.code.OauthSuccessCode;
+import com.dlqudtjs.codingbattle.common.constant.code.OauthConfigode;
 import com.dlqudtjs.codingbattle.entity.oauth.Token;
 import com.dlqudtjs.codingbattle.dto.oauth.JwtTokenDto;
 import com.dlqudtjs.codingbattle.dto.oauth.SignInRequestDto;
@@ -56,8 +56,8 @@ public class OAuthServiceImpl implements OAuthService {
         saveRefreshToken(jwtTokenDto.getRefreshToken(), user.getId());
 
         return ResponseDto.builder()
-                .status(OauthSuccessCode.SIGN_IN_SUCCESS.getStatus())
-                .message(OauthSuccessCode.SIGN_IN_SUCCESS.getMessage())
+                .status(OauthConfigode.SIGN_IN_SUCCESS.getStatus())
+                .message(OauthConfigode.SIGN_IN_SUCCESS.getMessage())
                 .data(jwtTokenDto)
                 .build();
     }
@@ -84,8 +84,8 @@ public class OAuthServiceImpl implements OAuthService {
                 .build());
 
         return ResponseDto.builder()
-                .status(OauthSuccessCode.SIGN_UP_SUCCESS.getStatus())
-                .message(OauthSuccessCode.SIGN_UP_SUCCESS.getMessage())
+                .status(OauthConfigode.SIGN_UP_SUCCESS.getStatus())
+                .message(OauthConfigode.SIGN_UP_SUCCESS.getMessage())
                 .data(savedUser.getId())
                 .build();
     }
@@ -113,8 +113,8 @@ public class OAuthServiceImpl implements OAuthService {
         saveRefreshToken(jwtTokenDto.getRefreshToken(), user.getId());
 
         return ResponseDto.builder()
-                .status(OauthSuccessCode.REFRESH_TOKEN_SUCCESS.getStatus())
-                .message(OauthSuccessCode.REFRESH_TOKEN_SUCCESS.getMessage())
+                .status(OauthConfigode.REFRESH_TOKEN_SUCCESS.getStatus())
+                .message(OauthConfigode.REFRESH_TOKEN_SUCCESS.getMessage())
                 .data(jwtTokenDto)
                 .build();
     }
@@ -127,8 +127,8 @@ public class OAuthServiceImpl implements OAuthService {
         }
 
         return ResponseDto.builder()
-                .status(OauthSuccessCode.CHECK_USER_ID_SUCCESS.getStatus())
-                .message(OauthSuccessCode.CHECK_USER_ID_SUCCESS.getMessage())
+                .status(OauthConfigode.CHECK_USER_ID_SUCCESS.getStatus())
+                .message(OauthConfigode.CHECK_USER_ID_SUCCESS.getMessage())
                 .build();
     }
 

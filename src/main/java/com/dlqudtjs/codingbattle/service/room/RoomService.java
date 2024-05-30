@@ -1,6 +1,5 @@
 package com.dlqudtjs.codingbattle.service.room;
 
-import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;
@@ -16,7 +15,7 @@ import java.util.List;
 
 public interface RoomService {
 
-    ResponseDto create(RoomCreateRequestDto requestDto, User user);
+    Room create(RoomCreateRequestDto requestDto, User user);
 
     Room enter(RoomEnterRequestDto requestDto);
 

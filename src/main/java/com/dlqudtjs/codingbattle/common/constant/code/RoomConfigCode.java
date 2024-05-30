@@ -1,12 +1,17 @@
-package com.dlqudtjs.codingbattle.common.exception.room;
+package com.dlqudtjs.codingbattle.common.constant.code;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum RoomErrorCode {
+public enum RoomConfigCode {
 
+    CREATE_GAME_ROOM_SUCCESS(201, "대기방 생성 성공"),
+    CREATE_GAME_ROOM_FAIL(400, "대기방 생성 실패"),
+    JOIN_GAME_ROOM_SUCCESS(200, "대기방 입장 성공"),
+    LEAVE_GAME_ROOM_SUCCESS(200, "대기방 퇴장"),
+    GET_GAME_ROOM_LIST_SUCCESS(200, "대기방 목록 조회 성공"),
     INVALID_REQUEST(400, "올바르지 않은 요청입니다."),
     NOT_CONNECT_USER(400, "연결되지 않은 사용자입니다."),
     PASSWORD_NOT_MATCH(400, "비밀번호가 일치하지 않습니다."),

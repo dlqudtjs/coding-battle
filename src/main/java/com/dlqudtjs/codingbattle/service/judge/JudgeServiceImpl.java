@@ -3,7 +3,7 @@ package com.dlqudtjs.codingbattle.service.judge;
 import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
-import com.dlqudtjs.codingbattle.common.constant.code.GameSuccessCode;
+import com.dlqudtjs.codingbattle.common.constant.code.GameConfigCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.dto.judge.JudgeProblemRequestDto;
@@ -131,8 +131,8 @@ public class JudgeServiceImpl implements JudgeService {
         }
 
         return ResponseDto.builder()
-                .message(GameSuccessCode.GAME_END_SUCCESS.getMessage())
-                .status(GameSuccessCode.GAME_END_SUCCESS.getStatus())
+                .message(GameConfigCode.GAME_END_SUCCESS.getMessage())
+                .status(GameConfigCode.GAME_END_SUCCESS.getStatus())
                 .build();
     }
 
