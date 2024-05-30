@@ -9,7 +9,7 @@ import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import lombok.Getter;
 
 @Getter
-public class GameRoomStatusUpdateMessageRequestDto {
+public class RoomStatusUpdateMessageRequestDto {
     private String hostId;
     private String title;
     private String password;

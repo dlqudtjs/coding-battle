@@ -7,7 +7,7 @@ import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import lombok.Getter;
 
 @Getter
-public class GameRoomUserStatusUpdateRequestDto {
+public class RoomUserStatusUpdateRequestDto {
     private String userId;
     private Boolean isReady;
     private String language;

@@ -2,12 +2,12 @@ package com.dlqudtjs.codingbattle.controller;
 
 import com.dlqudtjs.codingbattle.common.constant.code.RoomSuccessCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomCreateRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomEnterRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomInfoResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomInfoResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomListResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomLeaveUserStatusResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomUserStatusResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomEnterUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomLeaveUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.room.Room;
@@ -37,19 +37,19 @@ public class RoomController {
     private final SocketRoomController socketRoomController;
 
     @PostMapping("/v1/gameRoom")
-    public ResponseEntity<ResponseDto> createRoom(@Valid @RequestBody GameRoomCreateRequestDto requestDto,
+    public ResponseEntity<ResponseDto> createRoom(@Valid @RequestBody RoomCreateRequestDto requestDto,
                                                   @RequestHeader("Authorization") String token) {
         requestDto.validate();
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
         ResponseDto responseDto = roomService.create(requestDto, user);
 
         // 방안에 사용자들에게 나간 유저의 정보를 전달
-        GameRoomInfoResponseDto gameRoomInfoResponseDto = (GameRoomInfoResponseDto) responseDto.getData();
-        if (gameRoomInfoResponseDto.getLeaveUserStatus() != null) {
+        RoomInfoResponseDto roomInfoResponseDto = (RoomInfoResponseDto) responseDto.getData();
+        if (roomInfoResponseDto.getLeaveUserStatus() != null) {
             socketRoomController.sendToRoom(
-                    gameRoomInfoResponseDto.getLeaveUserStatus().getRoomId(),
+                    roomInfoResponseDto.getLeaveUserStatus().getRoomId(),
                     GameRoomLeaveUserStatusMessageResponseDto.builder()
-                            .leaveUserStatus(gameRoomInfoResponseDto.getLeaveUserStatus())
+                            .leaveUserStatus(roomInfoResponseDto.getLeaveUserStatus())
                             .build()
             );
         }
@@ -65,19 +65,19 @@ public class RoomController {
         ResponseDto responseDto = roomService.enter(requestDto);
 
         // 방안에 사용자들에게 나간 유저의 정보를 전달
-        GameRoomInfoResponseDto gameRoomInfoResponseDto = (GameRoomInfoResponseDto) responseDto.getData();
-        if (gameRoomInfoResponseDto.getLeaveUserStatus() != null) {
+        RoomInfoResponseDto roomInfoResponseDto = (RoomInfoResponseDto) responseDto.getData();
+        if (roomInfoResponseDto.getLeaveUserStatus() != null) {
             socketRoomController.sendToRoom(
-                    gameRoomInfoResponseDto.getLeaveUserStatus().getRoomId(),
+                    roomInfoResponseDto.getLeaveUserStatus().getRoomId(),
                     GameRoomLeaveUserStatusMessageResponseDto.builder()
-                            .leaveUserStatus(gameRoomInfoResponseDto.getLeaveUserStatus())
+                            .leaveUserStatus(roomInfoResponseDto.getLeaveUserStatus())
                             .build()
             );
         }
 
         // 방안에 사용자들에게 들어온 유저의 정보를 전달
         GameRoomEnterUserStatusMessageResponseDto enterUserStatusResponseDto = GameRoomEnterUserStatusMessageResponseDto.builder()
-                .enterUserStatus(GameRoomUserStatusResponseDto.builder()
+                .enterUserStatus(RoomUserStatusResponseDto.builder()
                         .userId(requestDto.getUserId())
                         .isReady(false)
                         .language(userSetting.getLanguage().getName())

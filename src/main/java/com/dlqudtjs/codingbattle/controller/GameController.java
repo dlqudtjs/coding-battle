@@ -81,7 +81,7 @@ public class GameController {
 
         GameRoomUserStatusListMessageResponseDto gameRoomUserStatusListMessageResponseDto =
                 GameRoomUserStatusListMessageResponseDto.builder()
-                        .userStatusList(room.toGameRoomUserStatusResponseDto())
+                        .userStatusList(room.toRoomUserStatusResponseDto())
                         .build();
 
         // 방에 초기화된 유저 정보 전송

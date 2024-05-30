@@ -5,12 +5,12 @@ import static com.dlqudtjs.codingbattle.common.exception.socket.SocketErrorCode.
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
 import com.dlqudtjs.codingbattle.common.exception.socket.CustomSocketException;
-import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.GameRoomStatusUpdateMessageRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomUserStatusUpdateRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.RoomStatusUpdateMessageRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.SendToRoomMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomStatusUpdateMessageResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomStatusUpdateMessageResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -56,14 +56,14 @@ public class SocketRoomController {
     public void updateRoom(@DestinationVariable("roomId") Long roomId, String message,
                            SimpMessageHeaderAccessor headerAccessor) {
         // json -> dto
-        GameRoomStatusUpdateMessageRequestDto gameRoomStatusUpdateMessageRequestDto =
-                (GameRoomStatusUpdateMessageRequestDto)
-                        parseMessage(message, new GameRoomStatusUpdateMessageRequestDto());
+        RoomStatusUpdateMessageRequestDto roomStatusUpdateMessageRequestDto =
+                (RoomStatusUpdateMessageRequestDto)
+                        parseMessage(message, new RoomStatusUpdateMessageRequestDto());
 
-        gameRoomStatusUpdateMessageRequestDto.validate();
+        roomStatusUpdateMessageRequestDto.validate();
         try {
-            GameRoomStatusUpdateMessageResponseDto responseDto = roomService.updateGameRoomStatus(
-                    roomId, headerAccessor.getSessionId(), gameRoomStatusUpdateMessageRequestDto);
+            RoomStatusUpdateMessageResponseDto responseDto = roomService.updateRoomStatus(
+                    roomId, headerAccessor.getSessionId(), roomStatusUpdateMessageRequestDto);
 
             // 방에 메시지 전송
             messagingTemplate.convertAndSend("/topic/room/" + roomId, responseDto);
@@ -78,14 +78,14 @@ public class SocketRoomController {
     public void updateUserStatus(@DestinationVariable("roomId") Long roomId, String message,
                                  SimpMessageHeaderAccessor headerAccessor) {
         // json -> dto
-        GameRoomUserStatusUpdateRequestDto gameRoomUserStatusUpdateRequestDto =
-                (GameRoomUserStatusUpdateRequestDto) parseMessage(message, new GameRoomUserStatusUpdateRequestDto());
+        RoomUserStatusUpdateRequestDto roomUserStatusUpdateRequestDto =
+                (RoomUserStatusUpdateRequestDto) parseMessage(message, new RoomUserStatusUpdateRequestDto());
 
         try {
-            gameRoomUserStatusUpdateRequestDto.validate();
+            roomUserStatusUpdateRequestDto.validate();
 
-            GameRoomUserStatusUpdateMessageResponseDto responseDto = roomService.updateGameRoomUserStatus(
-                    roomId, headerAccessor.getSessionId(), gameRoomUserStatusUpdateRequestDto);
+            RoomUserStatusUpdateMessageResponseDto responseDto = roomService.updateRoomUserStatus(
+                    roomId, headerAccessor.getSessionId(), roomUserStatusUpdateRequestDto);
 
             // 방에 메시지 전송
             messagingTemplate.convertAndSend("/topic/room/" + roomId, responseDto);

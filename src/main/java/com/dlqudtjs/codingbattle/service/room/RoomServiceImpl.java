@@ -11,17 +11,17 @@ import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.exception.room.CustomRoomException;
 import com.dlqudtjs.codingbattle.common.exception.room.RoomErrorCode;
-import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomCreateRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomUserStatusUpdateRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomCreateRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.SendToRoomMessageRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.GameRoomStatusUpdateMessageRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomInfoResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.RoomStatusUpdateMessageRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomInfoResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomLeaveUserStatusResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomUserStatusResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomStatusUpdateMessageResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomStatusUpdateMessageResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.game.GameRunningConfig;
 import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.room.RoomUserStatus;
@@ -47,8 +47,8 @@ public class RoomServiceImpl implements RoomService {
             Map.of(RoomConfig.DEFAULT_ROOM_ID.getValue(), Room.defaultRoom()));
 
     @Override
-    public ResponseDto create(GameRoomCreateRequestDto requestDto, User host) {
-        validateCreateGameRoomRequest(requestDto, host);
+    public ResponseDto create(RoomCreateRequestDto requestDto, User host) {
+        validateCreateRoomRequest(requestDto, host);
 
         Long newRoomId = getNewRoomId();
 
@@ -69,7 +69,7 @@ public class RoomServiceImpl implements RoomService {
         // 방 입장
         createdRoom.enter(userService.getUserInfo(host.getUserId()));
 
-        GameRoomInfoResponseDto gameRoomInfoResponseDto = CreateGameRoomResponseDto(
+        RoomInfoResponseDto roomInfoResponseDto = CreateRoomResponseDto(
                 createdRoom,
                 RoomLeaveUserStatusResponseDto.builder()
                         .roomId(alreadyEnterRoomId)
@@ -81,13 +81,13 @@ public class RoomServiceImpl implements RoomService {
         return ResponseDto.builder()
                 .status(RoomSuccessCode.CREATE_GAME_ROOM_SUCCESS.getStatus())
                 .message(RoomSuccessCode.CREATE_GAME_ROOM_SUCCESS.getMessage())
-                .data(gameRoomInfoResponseDto)
+                .data(roomInfoResponseDto)
                 .build();
     }
 
     @Override
     public ResponseDto enter(RoomEnterRequestDto requestDto) {
-        User user = validateEnterGameRoomRequest(requestDto);
+        User user = validateEnterRoomRequest(requestDto);
 
         // 방 생성시 기존 방 나가기 (default 방 포함)
         Long alreadyEnterRoomId = sessionService.getRoomIdFromUser(user);
@@ -97,7 +97,7 @@ public class RoomServiceImpl implements RoomService {
         Room joinedRoom = roomMap.get(requestDto.getRoomId());
         joinedRoom.enter(userService.getUserInfo(user.getUserId()));
 
-        GameRoomInfoResponseDto gameRoomInfoResponseDto = CreateGameRoomResponseDto(
+        RoomInfoResponseDto roomInfoResponseDto = CreateRoomResponseDto(
                 joinedRoom,
                 RoomLeaveUserStatusResponseDto.builder()
                         .roomId(alreadyEnterRoomId)
@@ -109,13 +109,13 @@ public class RoomServiceImpl implements RoomService {
         return ResponseDto.builder()
                 .status(RoomSuccessCode.JOIN_GAME_ROOM_SUCCESS.getStatus())
                 .message(RoomSuccessCode.JOIN_GAME_ROOM_SUCCESS.getMessage())
-                .data(gameRoomInfoResponseDto)
+                .data(roomInfoResponseDto)
                 .build();
     }
 
     @Override
     public ResponseDto leave(Long roomId, User user) {
-        validateLeaveGameRoomRequest(roomId, user);
+        validateLeaveRoomRequest(roomId, user);
 
         Boolean isHost = leaveRoom(roomId, user);
         enterDefaultRoom(user);
@@ -208,29 +208,29 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public GameRoomStatusUpdateMessageResponseDto updateGameRoomStatus(
-            Long roomId, String sessionId, GameRoomStatusUpdateMessageRequestDto requestDto) {
-        validateUpdateGameRoomStatusRequest(roomId, sessionId, requestDto);
+    public RoomStatusUpdateMessageResponseDto updateRoomStatus(
+            Long roomId, String sessionId, RoomStatusUpdateMessageRequestDto requestDto) {
+        validateUpdateRoomStatusRequest(roomId, sessionId, requestDto);
 
         Room updatedRoom = roomMap.get(roomId).updateRoomStatus(requestDto);
 
-        return GameRoomStatusUpdateMessageResponseDto.builder()
+        return RoomStatusUpdateMessageResponseDto.builder()
                 .roomStatus(updatedRoom.toRoomStatusResponseDto())
                 .build();
     }
 
     @Override
-    public GameRoomUserStatusUpdateMessageResponseDto updateGameRoomUserStatus(
+    public RoomUserStatusUpdateMessageResponseDto updateRoomUserStatus(
             Long roomId, String sessionId,
-            GameRoomUserStatusUpdateRequestDto requestDto) {
-        validateUpdateGameRoomUserStatusRequest(roomId, sessionId, requestDto);
+            RoomUserStatusUpdateRequestDto requestDto) {
+        validateUpdateRoomUserStatusRequest(roomId, sessionId, requestDto);
 
         Room room = roomMap.get(roomId);
         User user = userService.getUser(requestDto.getUserId());
-        RoomUserStatus updatedUserStatus = room.updateGameRoomUserStatus(requestDto, user);
+        RoomUserStatus updatedUserStatus = room.updateRoomUserStatus(requestDto, user);
 
-        return GameRoomUserStatusUpdateMessageResponseDto.builder()
-                .updateUserStatus(GameRoomUserStatusResponseDto.builder()
+        return RoomUserStatusUpdateMessageResponseDto.builder()
+                .updateUserStatus(RoomUserStatusResponseDto.builder()
                         .userId(updatedUserStatus.getUserId())
                         .isReady(updatedUserStatus.getIsReady())
                         .language(updatedUserStatus.getUseLanguage().getLanguageName())
@@ -294,18 +294,18 @@ public class RoomServiceImpl implements RoomService {
         });
     }
 
-    private GameRoomInfoResponseDto CreateGameRoomResponseDto(
+    private RoomInfoResponseDto CreateRoomResponseDto(
             Room room,
             RoomLeaveUserStatusResponseDto leaveUserStatusResponseDto) {
-        return GameRoomInfoResponseDto.builder()
+        return RoomInfoResponseDto.builder()
                 .roomStatus(room.toRoomStatusResponseDto())
                 .leaveUserStatus(leaveUserStatusResponseDto)
-                .userStatus(room.toGameRoomUserStatusResponseDto())
+                .userStatus(room.toRoomUserStatusResponseDto())
                 .build();
     }
 
-    private void validateUpdateGameRoomUserStatusRequest(
-            Long roomId, String sessionId, GameRoomUserStatusUpdateRequestDto requestDto) {
+    private void validateUpdateRoomUserStatusRequest(
+            Long roomId, String sessionId, RoomUserStatusUpdateRequestDto requestDto) {
         Room room = roomMap.get(roomId);
         User user = WebsocketSessionHolder.getUserFromSessionId(sessionId);
 
@@ -322,7 +322,7 @@ public class RoomServiceImpl implements RoomService {
         }
     }
 
-    private GameRunningConfig createGameRunningConfig(GameRoomCreateRequestDto requestDto, Long newRoomId) {
+    private GameRunningConfig createGameRunningConfig(RoomCreateRequestDto requestDto, Long newRoomId) {
         return new GameRunningConfig(newRoomId,
                 requestDto.getProblemLevel(),
                 requestDto.getLanguage(),
@@ -334,8 +334,8 @@ public class RoomServiceImpl implements RoomService {
         return roomMap.get(roomId).isFull();
     }
 
-    private void validateUpdateGameRoomStatusRequest(
-            Long roomId, String sessionId, GameRoomStatusUpdateMessageRequestDto requestDto) {
+    private void validateUpdateRoomStatusRequest(
+            Long roomId, String sessionId, RoomStatusUpdateMessageRequestDto requestDto) {
         Room room = roomMap.get(roomId);
         User user = userService.getUser(requestDto.getHostId());
         User socketUser = WebsocketSessionHolder.getUserFromSessionId(sessionId);
@@ -353,7 +353,7 @@ public class RoomServiceImpl implements RoomService {
         }
     }
 
-    private void validateLeaveGameRoomRequest(Long roomId, User user) {
+    private void validateLeaveRoomRequest(Long roomId, User user) {
         validateRoomExistence(roomId);
         validateUserSession(user);
         validateUserInRoom(roomId, user);
@@ -364,7 +364,7 @@ public class RoomServiceImpl implements RoomService {
         }
     }
 
-    private User validateEnterGameRoomRequest(RoomEnterRequestDto requestDto) {
+    private User validateEnterRoomRequest(RoomEnterRequestDto requestDto) {
         User user = userService.getUser(requestDto.getUserId());
 
         validateUserSession(user);
@@ -383,7 +383,7 @@ public class RoomServiceImpl implements RoomService {
         return user;
     }
 
-    private void validateCreateGameRoomRequest(GameRoomCreateRequestDto requestDto, User user) {
+    private void validateCreateRoomRequest(RoomCreateRequestDto requestDto, User user) {
         // userId와 requestDto의 hostId가 일치하지 않으면
         if (!user.getUserId().equals(requestDto.getHostId())) {
             throw new CustomRoomException(RoomErrorCode.INVALID_REQUEST.getMessage());

@@ -3,10 +3,10 @@ package com.dlqudtjs.codingbattle.entity.room;
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
-import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomUserStatusUpdateRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.GameRoomStatusUpdateMessageRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomStatusResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomUserStatusResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.RoomStatusUpdateMessageRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomStatusResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.entity.game.GameRunningConfig;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserInfo;
@@ -112,7 +112,7 @@ public class Room {
                 .allMatch(RoomUserStatus::getIsReady);
     }
 
-    public Room updateRoomStatus(GameRoomStatusUpdateMessageRequestDto requestDto) {
+    public Room updateRoomStatus(RoomStatusUpdateMessageRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.password = requestDto.getPassword();
         this.maxUserCount = requestDto.getMaxUserCount();
@@ -131,8 +131,8 @@ public class Room {
         return gameRunningConfig;
     }
 
-    public RoomUserStatus updateGameRoomUserStatus(
-            GameRoomUserStatusUpdateRequestDto requestDto, User user) {
+    public RoomUserStatus updateRoomUserStatus(
+            RoomUserStatusUpdateRequestDto requestDto, User user) {
 
         RoomUserStatus userStatus = getUserStatus(user);
         userStatus.updateStatus(requestDto.getIsReady(), requestDto.getLanguage());
@@ -162,9 +162,9 @@ public class Room {
         return roomUserStatusMap.get(user);
     }
 
-    public List<GameRoomUserStatusResponseDto> toGameRoomUserStatusResponseDto() {
+    public List<RoomUserStatusResponseDto> toRoomUserStatusResponseDto() {
         return roomUserStatusMap.values().stream()
-                .map(status -> GameRoomUserStatusResponseDto.builder()
+                .map(status -> RoomUserStatusResponseDto.builder()
                         .userId(status.getUserId())
                         .isReady(status.getIsReady())
                         .language(status.getUseLanguage().getLanguageName())
@@ -172,8 +172,8 @@ public class Room {
                 .toList();
     }
 
-    public GameRoomStatusResponseDto toRoomStatusResponseDto() {
-        return GameRoomStatusResponseDto.builder()
+    public RoomStatusResponseDto toRoomStatusResponseDto() {
+        return RoomStatusResponseDto.builder()
                 .roomId(roomId)
                 .hostId(host.getUserId())
                 .title(title)

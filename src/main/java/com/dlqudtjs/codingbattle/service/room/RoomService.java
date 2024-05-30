@@ -1,21 +1,21 @@
 package com.dlqudtjs.codingbattle.service.room;
 
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomCreateRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.requestdto.GameRoomUserStatusUpdateRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomCreateRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.SendToRoomMessageRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.GameRoomStatusUpdateMessageRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.RoomStatusUpdateMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomStatusUpdateMessageResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomUserStatusUpdateMessageResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomStatusUpdateMessageResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import java.util.List;
 
 public interface RoomService {
 
-    ResponseDto create(GameRoomCreateRequestDto requestDto, User user);
+    ResponseDto create(RoomCreateRequestDto requestDto, User user);
 
     ResponseDto enter(RoomEnterRequestDto requestDto);
 
@@ -38,9 +38,9 @@ public interface RoomService {
     SendToRoomMessageResponseDto parseMessage(Long roomId, String sessionId,
                                               SendToRoomMessageRequestDto requestDto);
 
-    GameRoomStatusUpdateMessageResponseDto updateGameRoomStatus(
-            Long roomId, String sessionId, GameRoomStatusUpdateMessageRequestDto requestDto);
+    RoomStatusUpdateMessageResponseDto updateRoomStatus(
+            Long roomId, String sessionId, RoomStatusUpdateMessageRequestDto requestDto);
 
-    GameRoomUserStatusUpdateMessageResponseDto updateGameRoomUserStatus(
-            Long roomId, String sessionId, GameRoomUserStatusUpdateRequestDto requestDto);
+    RoomUserStatusUpdateMessageResponseDto updateRoomUserStatus(
+            Long roomId, String sessionId, RoomUserStatusUpdateRequestDto requestDto);
 }

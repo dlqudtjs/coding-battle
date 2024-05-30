@@ -1,6 +1,6 @@
 package com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto;
 
-import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomUserStatusResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,5 +9,5 @@ import lombok.Getter;
 @Builder
 public class GameRoomUserStatusListMessageResponseDto {
 
-    private List<GameRoomUserStatusResponseDto> userStatusList;
+    private List<RoomUserStatusResponseDto> userStatusList;
 }

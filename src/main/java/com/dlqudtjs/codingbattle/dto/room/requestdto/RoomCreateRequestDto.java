@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GameRoomCreateRequestDto {
+public class RoomCreateRequestDto {
 
     @NotBlank
     private String hostId;
