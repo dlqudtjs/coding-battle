@@ -23,6 +23,7 @@ import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseD
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.game.GameRunningConfig;
+import com.dlqudtjs.codingbattle.entity.room.LeaveRoomUserStatus;
 import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.room.RoomUserStatus;
 import com.dlqudtjs.codingbattle.entity.user.User;
@@ -119,20 +120,16 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public ResponseDto leave(Long roomId, User user) {
+    public LeaveRoomUserStatus leave(Long roomId, User user) {
         validateLeaveRoomRequest(roomId, user);
 
         Boolean isHost = leaveRoom(roomId, user);
         enterDefaultRoom(user);
 
-        // 상태 변경
-        return ResponseDto.builder()
-                .status(RoomSuccessCode.LEAVE_GAME_ROOM_SUCCESS.getStatus())
-                .message(RoomSuccessCode.LEAVE_GAME_ROOM_SUCCESS.getMessage())
-                .data(RoomLeaveUserStatusResponseDto.builder()
-                        .roomId(roomId)
-                        .userId(user.getUserId())
-                        .isHost(isHost))
+        return LeaveRoomUserStatus.builder()
+                .roomId(roomId)
+                .user(user)
+                .isHost(isHost)
                 .build();
     }
 
@@ -420,7 +417,7 @@ public class RoomServiceImpl implements RoomService {
 
     // 방에 유저가 존재하지 않으면
     private void validateUserInRoom(Long roomId, User user) {
-        if (isExistUserInRoom(user, roomId)) {
+        if (!isExistUserInRoom(user, roomId)) {
             throw new CustomRoomException(RoomErrorCode.NOT_EXIST_USER_IN_ROOM.getMessage());
         }
     }

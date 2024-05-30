@@ -10,6 +10,7 @@ import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomLeaveUserStatusRespons
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomEnterUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomLeaveUserStatusMessageResponseDto;
+import com.dlqudtjs.codingbattle.entity.room.LeaveRoomUserStatus;
 import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserSetting;
@@ -19,6 +20,7 @@ import com.dlqudtjs.codingbattle.service.user.UserService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -92,19 +94,21 @@ public class RoomController {
     public ResponseEntity<ResponseDto> leaveRoom(@PathVariable("roomId") Long roomId,
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
-        ResponseDto responseDto = roomService.leave(roomId, user);
 
-        RoomLeaveUserStatusResponseDto roomLeaveUserStatusResponseDto =
-                (RoomLeaveUserStatusResponseDto) responseDto.getData();
+        LeaveRoomUserStatus leaveRoomUserStatus = roomService.leave(roomId, user);
 
         socketRoomController.sendToRoom(
                 roomId,
                 GameRoomLeaveUserStatusMessageResponseDto.builder()
-                        .leaveUserStatus(roomLeaveUserStatusResponseDto)
+                        .leaveUserStatus(RoomLeaveUserStatusResponseDto.builder()
+                                .roomId(leaveRoomUserStatus.getRoomId())
+                                .userId(leaveRoomUserStatus.getUser().getUserId())
+                                .isHost(leaveRoomUserStatus.getIsHost())
+                                .build())
                         .build()
         );
 
-        return ResponseEntity.status(responseDto.getStatus()).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @GetMapping("/v1/gameRoomList")
