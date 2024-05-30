@@ -9,6 +9,7 @@ public enum RoomErrorCode {
 
     INVALID_REQUEST(400, "올바르지 않은 요청입니다."),
     NOT_CONNECT_USER(400, "연결되지 않은 사용자입니다."),
+    PASSWORD_NOT_MATCH(400, "비밀번호가 일치하지 않습니다."),
     NOT_EXIST_ROOM(400, "존재하지 않는 방입니다."),
     FULL_ROOM(400, "방이 가득 찼습니다."),
     NOT_EXIST_USER_IN_ROOM(400, "방에 존재하지 않는 사용자입니다."),

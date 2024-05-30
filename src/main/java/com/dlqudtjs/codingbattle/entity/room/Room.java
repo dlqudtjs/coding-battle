@@ -63,7 +63,11 @@ public class Room {
         isStarted = true;
     }
 
-    public Room enter(UserInfo userInfo) {
+    public Room enter(UserInfo userInfo, String password) {
+        if (isLocked() && !isMatchPassword(password)) {
+            return null;
+        }
+
         User user = userInfo.getUser();
         WebSocketSession session = WebsocketSessionHolder.getSessionFromUser(user);
 
@@ -90,6 +94,10 @@ public class Room {
 
     public Boolean isHost(User user) {
         return host.equals(user);
+    }
+
+    private Boolean isMatchPassword(String password) {
+        return this.password.equals(password);
     }
 
     public Boolean isExistUser(User user) {

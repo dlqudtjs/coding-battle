@@ -59,7 +59,7 @@ public class RoomServiceImpl implements RoomService {
 
         // 방 생성시 기존 방 나가기 (default 방 포함)
         Long alreadyEnterRoomId = sessionService.getRoomIdFromUser(host);
-        Boolean isHost = leaveRoom(alreadyEnterRoomId, host);
+        LeaveRoomUserStatus leaveRoomUserStatus = leave(alreadyEnterRoomId, host);
 
         // 방 생성
         Room createdRoom = new Room(createGameRunningConfig(requestDto, newRoomId),
@@ -71,7 +71,7 @@ public class RoomServiceImpl implements RoomService {
                 requestDto.getMaxUserCount());
 
         // 방 입장
-        createdRoom.enter(userService.getUserInfo(host.getUserId()));
+        createdRoom.enter(userService.getUserInfo(host.getUserId()), requestDto.getPassword());
 
         roomMap.put(newRoomId, createdRoom);
 
@@ -80,7 +80,7 @@ public class RoomServiceImpl implements RoomService {
                 RoomLeaveUserStatusResponseDto.builder()
                         .roomId(alreadyEnterRoomId)
                         .userId(host.getUserId())
-                        .isHost(isHost)
+                        .isHost(leaveRoomUserStatus.getIsHost())
                         .build()
         );
 
@@ -92,44 +92,43 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public ResponseDto enter(RoomEnterRequestDto requestDto) {
+    public Room enter(RoomEnterRequestDto requestDto) {
         User user = validateEnterRoomRequest(requestDto);
-
-        // 방 생성시 기존 방 나가기 (default 방 포함)
-        Long alreadyEnterRoomId = sessionService.getRoomIdFromUser(user);
-        Boolean isHost = leaveRoom(alreadyEnterRoomId, user);
 
         // 방 입장
         Room joinedRoom = roomMap.get(requestDto.getRoomId());
-        joinedRoom.enter(userService.getUserInfo(user.getUserId()));
-
-        RoomInfoResponseDto roomInfoResponseDto = CreateRoomResponseDto(
-                joinedRoom,
-                RoomLeaveUserStatusResponseDto.builder()
-                        .roomId(alreadyEnterRoomId)
-                        .userId(user.getUserId())
-                        .isHost(isHost)
-                        .build()
-        );
-
-        return ResponseDto.builder()
-                .status(RoomSuccessCode.JOIN_GAME_ROOM_SUCCESS.getStatus())
-                .message(RoomSuccessCode.JOIN_GAME_ROOM_SUCCESS.getMessage())
-                .data(roomInfoResponseDto)
-                .build();
+        return joinedRoom.enter(userService.getUserInfo(user.getUserId()), requestDto.getPassword());
     }
 
     @Override
     public LeaveRoomUserStatus leave(Long roomId, User user) {
+        // 아무 방에 들어가 있지 않은 경우
+        if (roomId.equals(RoomConfig.NO_ROOM_ID.getValue())) {
+            return LeaveRoomUserStatus.builder()
+                    .roomId(roomId)
+                    .user(user)
+                    .isHost(false)
+                    .build();
+        }
+
         validateLeaveRoomRequest(roomId, user);
 
-        Boolean isHost = leaveRoom(roomId, user);
-        enterDefaultRoom(user);
+        Room room = roomMap.get(roomId);
+
+        // 방을 삭제해야 된다면 삭제하기 전 방에 있는 모든 유저 leaveRoom
+        if (room.isHost(user)) {
+            leaveAllUserInRoom(roomId);
+            roomMap.remove(roomId);
+        } else {
+            // 방장이 아닐 경우 방을 나가고, 유저의 상태를 default 으로 변경
+            room.leave(user);
+            enterDefaultRoom(user);
+        }
 
         return LeaveRoomUserStatus.builder()
                 .roomId(roomId)
                 .user(user)
-                .isHost(isHost)
+                .isHost(room.isHost(user))
                 .build();
     }
 
@@ -240,13 +239,6 @@ public class RoomServiceImpl implements RoomService {
                 .build();
     }
 
-    private Room joinRoom(User user, Long roomId) {
-        UserInfo userInfo = userService.getUserInfo(user.getUserId());
-
-        sessionService.enterRoom(user, roomId);
-        return roomMap.get(roomId).enter(userInfo);
-    }
-
     /*
      * 게임 시작 가능한지 확인하는 메서드
      * 모든 유저가 준비 상태 확인,
@@ -265,31 +257,6 @@ public class RoomServiceImpl implements RoomService {
 
     private Boolean isUserInGame(User user) {
         return sessionService.isUserInGame(user);
-    }
-
-    /*
-     * 방을 나가는 메서드
-     * 방장이 아닐 경우 방을 나가고, 유저의 상태를 default 으로 변경
-     * 방장일 경우 방을 삭제하고, 방에 있던 유저들의 상태를 default 방으로 변경
-     */
-    private Boolean leaveRoom(Long roomId, User user) {
-        // 아무 방에 들어가 있지 않은 경우
-        if (roomId.equals(RoomConfig.NO_ROOM_ID.getValue())) {
-            return false;
-        }
-
-        Room room = roomMap.get(roomId);
-
-        // 방을 삭제해야 된다면 삭제하기 전 방에 있는 모든 유저 leaveRoom
-        if (room.isHost(user)) {
-            leaveAllUserInRoom(roomId);
-            roomMap.remove(roomId);
-
-            return true;
-        }
-
-        room.leave(user);
-        return false;
     }
 
     // 방에 있는 모든 유저 leave 하는 메서드
@@ -434,6 +401,6 @@ public class RoomServiceImpl implements RoomService {
 
     private void enterDefaultRoom(User user) {
         UserInfo userInfo = userService.getUserInfo(user.getUserId());
-        roomMap.get(RoomConfig.DEFAULT_ROOM_ID.getValue()).enter(userInfo);
+        roomMap.get(RoomConfig.DEFAULT_ROOM_ID.getValue()).enter(userInfo, null);
     }
 }

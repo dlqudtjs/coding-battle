@@ -2,6 +2,7 @@ package com.dlqudtjs.codingbattle.controller;
 
 import com.dlqudtjs.codingbattle.common.constant.code.RoomSuccessCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
+import com.dlqudtjs.codingbattle.common.exception.room.RoomErrorCode;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomInfoResponseDto;
@@ -16,6 +17,7 @@ import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserSetting;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
+import com.dlqudtjs.codingbattle.service.session.SessionService;
 import com.dlqudtjs.codingbattle.service.user.UserService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -35,10 +37,11 @@ public class RoomController {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RoomService roomService;
+    private final SessionService sessionService;
     private final UserService userService;
     private final SocketRoomController socketRoomController;
 
-    @PostMapping("/v1/gameRoom")
+    @PostMapping("/v1/room")
     public ResponseEntity<ResponseDto> createRoom(@Valid @RequestBody RoomCreateRequestDto requestDto,
                                                   @RequestHeader("Authorization") String token) {
         requestDto.validate();
@@ -59,22 +62,33 @@ public class RoomController {
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
-    @PostMapping("/v1/gameRoom/enter")
-    public ResponseEntity<ResponseDto> enterRoom(@RequestBody RoomEnterRequestDto requestDto,
+    @PostMapping("/v1/room/enter")
+    public ResponseEntity<ResponseDto> enterRoom(@Valid @RequestBody RoomEnterRequestDto requestDto,
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
         UserSetting userSetting = userService.getUserSetting(user);
-        ResponseDto responseDto = roomService.enter(requestDto);
+
+        LeaveRoomUserStatus leaveRoomUserStatus = alreadyLeaveRoom(user);
 
         // 방안에 사용자들에게 나간 유저의 정보를 전달
-        RoomInfoResponseDto roomInfoResponseDto = (RoomInfoResponseDto) responseDto.getData();
-        if (roomInfoResponseDto.getLeaveUserStatus() != null) {
-            socketRoomController.sendToRoom(
-                    roomInfoResponseDto.getLeaveUserStatus().getRoomId(),
-                    GameRoomLeaveUserStatusMessageResponseDto.builder()
-                            .leaveUserStatus(roomInfoResponseDto.getLeaveUserStatus())
-                            .build()
-            );
+        socketRoomController.sendToRoom(
+                leaveRoomUserStatus.getRoomId(),
+                GameRoomLeaveUserStatusMessageResponseDto.builder()
+                        .leaveUserStatus(RoomLeaveUserStatusResponseDto.builder()
+                                .roomId(leaveRoomUserStatus.getRoomId())
+                                .userId(leaveRoomUserStatus.getUser().getUserId())
+                                .isHost(leaveRoomUserStatus.getIsHost())
+                                .build())
+                        .build()
+        );
+
+        Room enterdRoom = roomService.enter(requestDto);
+        if (enterdRoom == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.builder()
+                    .message(RoomErrorCode.PASSWORD_NOT_MATCH.getMessage())
+                    .status(RoomErrorCode.PASSWORD_NOT_MATCH.getStatus())
+                    .data(null)
+                    .build());
         }
 
         // 방안에 사용자들에게 들어온 유저의 정보를 전달
@@ -87,10 +101,14 @@ public class RoomController {
                 .build();
         socketRoomController.sendToRoom(requestDto.getRoomId(), enterUserStatusResponseDto);
 
-        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.builder()
+                .message(RoomSuccessCode.JOIN_GAME_ROOM_SUCCESS.getMessage())
+                .status(RoomSuccessCode.JOIN_GAME_ROOM_SUCCESS.getStatus())
+                .data(null)
+                .build());
     }
 
-    @PostMapping("/v1/gameRoom/leave/{roomId}")
+    @PostMapping("/v1/room/leave/{roomId}")
     public ResponseEntity<ResponseDto> leaveRoom(@PathVariable("roomId") Long roomId,
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
@@ -111,7 +129,7 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
-    @GetMapping("/v1/gameRoomList")
+    @GetMapping("/v1/roomList")
     public ResponseEntity<ResponseDto> getGameRoomList() {
         List<Room> roomList = roomService.getRoomList();
 
@@ -138,5 +156,10 @@ public class RoomController {
                 .build();
 
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
+    private LeaveRoomUserStatus alreadyLeaveRoom(User user) {
+        Long alreadyEnterRoomId = sessionService.getRoomIdFromUser(user);
+        return roomService.leave(alreadyEnterRoomId, user);
     }
 }

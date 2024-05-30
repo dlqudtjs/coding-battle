@@ -18,7 +18,7 @@ public interface RoomService {
 
     ResponseDto create(RoomCreateRequestDto requestDto, User user);
 
-    ResponseDto enter(RoomEnterRequestDto requestDto);
+    Room enter(RoomEnterRequestDto requestDto);
 
     LeaveRoomUserStatus leave(Long roomId, User user);
 

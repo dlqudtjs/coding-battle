@@ -55,6 +55,7 @@ public class StompHandler implements ChannelInterceptor {
             roomService.enter(RoomEnterRequestDto.builder()
                     .roomId(RoomConfig.DEFAULT_ROOM_ID.getValue())
                     .userId(user.getUserId())
+                    .password("")
                     .build());
         }
 
