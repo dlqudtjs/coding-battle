@@ -45,11 +45,11 @@ public class GameRoomCreateRequestDto {
     }
 
     public void validate() {
-        if (!ProgrammingLanguage.isContains(language)) {
+        if (ProgrammingLanguage.isNotContains(language)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
-        if (ProblemLevelType.isContains(problemLevel)) {
+        if (!ProblemLevelType.isNotContains(problemLevel)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
     }

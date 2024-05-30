@@ -219,7 +219,7 @@ public class JudgeServiceImpl implements JudgeService {
         User user = userService.getUser(judgeProblemRequestDto.getUserId());
 
         // 언어 검증
-        if (!ProgrammingLanguage.isContains(judgeProblemRequestDto.getLanguage())) {
+        if (ProgrammingLanguage.isNotContains(judgeProblemRequestDto.getLanguage())) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 

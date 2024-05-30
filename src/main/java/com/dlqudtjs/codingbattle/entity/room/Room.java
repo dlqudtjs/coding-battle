@@ -120,9 +120,9 @@ public class Room {
     }
 
     public RoomUserStatus updateGameRoomUserStatus(
-            GameRoomUserStatusUpdateRequestDto requestDto) {
+            GameRoomUserStatusUpdateRequestDto requestDto, User user) {
 
-        RoomUserStatus userStatus = getUserStatus(requestDto.getUserId());
+        RoomUserStatus userStatus = getUserStatus(user);
         userStatus.updateStatus(requestDto.getIsReady(), requestDto.getLanguage());
 
         return userStatus;
@@ -146,8 +146,8 @@ public class Room {
         );
     }
 
-    private RoomUserStatus getUserStatus(String userId) {
-        return roomUserStatusMap.get(userId);
+    private RoomUserStatus getUserStatus(User user) {
+        return roomUserStatusMap.get(user);
     }
 
     public List<GameRoomUserStatusResponseDto> toGameRoomUserStatusResponseDto() {

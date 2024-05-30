@@ -1,7 +1,10 @@
 package com.dlqudtjs.codingbattle.repository.socket.room;
 
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
+import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
+import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
+import com.dlqudtjs.codingbattle.entity.game.GameRunningConfig;
 import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserInfo;
@@ -16,11 +19,16 @@ public class RoomRepositoryImpl implements RoomRepository {
     private final ConcurrentHashMap<Long, Room> roomMap = new ConcurrentHashMap<>(
             Map.of(RoomConfig.DEFAULT_ROOM_ID.getValue(),
                     new Room(
-                            null,
+                            new GameRunningConfig(
+                                    RoomConfig.DEFAULT_ROOM_ID.getValue(),
+                                    ProblemLevelType.BRONZE1,
+                                    ProgrammingLanguage.DEFAULT,
+                                    GameSetting.MIN_SUBMISSION_COUNT.getValue(),
+                                    (long) GameSetting.MIN_LIMIT_TIME.getValue()),
                             RoomConfig.DEFAULT_ROOM_ID.getValue(),
+                            User.builder().userId("admin").build(),
+                            "default",
                             null,
-                            "default",
-                            "default",
                             GameSetting.DEFAULT_ROOM_MAX_USER_COUNT.getValue()
                     )
             )

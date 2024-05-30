@@ -27,7 +27,6 @@ import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.room.RoomUserStatus;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserInfo;
-import com.dlqudtjs.codingbattle.entity.user.UserSetting;
 import com.dlqudtjs.codingbattle.repository.socket.room.RoomRepository;
 import com.dlqudtjs.codingbattle.service.session.SessionService;
 import com.dlqudtjs.codingbattle.service.user.UserService;
@@ -83,7 +82,6 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public ResponseDto enter(Long roomId, User user) {
-        UserSetting userSetting = userService.getUserSetting(user);
         validateEnterGameRoomRequest(roomId, user);
 
         Long alreadyEnterRoomId = sessionService.getRoomIdFromUser(user);
@@ -99,7 +97,6 @@ public class RoomServiceImpl implements RoomService {
         }
 
         Room joinedRoom = joinRoom(user, roomId);
-
         GameRoomInfoResponseDto gameRoomInfoResponseDto = CreateGameRoomResponseDto(
                 joinedRoom,
                 leaveUserStatusResponseDto
@@ -250,7 +247,8 @@ public class RoomServiceImpl implements RoomService {
         validateUpdateGameRoomUserStatusRequest(roomId, sessionId, requestDto);
 
         Room room = roomRepository.getGameRoom(roomId);
-        RoomUserStatus updatedUserStatus = room.updateGameRoomUserStatus(requestDto);
+        User user = userService.getUser(requestDto.getUserId());
+        RoomUserStatus updatedUserStatus = room.updateGameRoomUserStatus(requestDto, user);
 
         return GameRoomUserStatusUpdateMessageResponseDto.builder()
                 .updateUserStatus(GameRoomUserStatusResponseDto.builder()

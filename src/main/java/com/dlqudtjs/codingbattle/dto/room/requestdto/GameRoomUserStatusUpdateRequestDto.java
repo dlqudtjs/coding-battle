@@ -21,7 +21,7 @@ public class GameRoomUserStatusUpdateRequestDto {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
-        if (!ProgrammingLanguage.isContains(language)) {
+        if (ProgrammingLanguage.isNotContains(language)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
     }

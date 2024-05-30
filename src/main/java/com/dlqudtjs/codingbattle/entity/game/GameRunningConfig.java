@@ -55,13 +55,13 @@ public class GameRunningConfig {
     }
 
     private void validateMaxSubmitCount(Integer maxSubmitCount) throws Custom4XXException {
-        if (MIN_SUBMISSION_COUNT.getValue() <= maxSubmitCount && maxSubmitCount <= MAX_SUBMISSION_COUNT.getValue()) {
+        if (MIN_SUBMISSION_COUNT.getValue() > maxSubmitCount || maxSubmitCount > MAX_SUBMISSION_COUNT.getValue()) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
     }
 
     private void validateLimitTime(Long limitTime) throws Custom4XXException {
-        if (MIN_LIMIT_TIME.getValue() <= limitTime && limitTime <= MAX_LIMIT_TIME.getValue()) {
+        if (MIN_LIMIT_TIME.getValue() > limitTime || limitTime > MAX_LIMIT_TIME.getValue()) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
     }

@@ -31,15 +31,15 @@ public enum ProgrammingLanguage {
         return languageName;
     }
 
-    public static boolean isContains(String language) {
+    public static boolean isNotContains(String language) {
         language = language.toUpperCase();
 
         for (ProgrammingLanguage pl : ProgrammingLanguage.values()) {
             if (pl.name().equals(language)) {
-                return true;
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 }
