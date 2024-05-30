@@ -132,7 +132,7 @@ public class JudgeServiceImpl implements JudgeService {
 
         return ResponseDto.builder()
                 .message(GameConfigCode.GAME_END_SUCCESS.getMessage())
-                .status(GameConfigCode.GAME_END_SUCCESS.getStatus())
+                .status(GameConfigCode.GAME_END_SUCCESS.getStatus().value())
                 .build();
     }
 

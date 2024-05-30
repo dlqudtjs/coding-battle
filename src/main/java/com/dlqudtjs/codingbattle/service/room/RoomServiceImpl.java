@@ -1,7 +1,7 @@
 package com.dlqudtjs.codingbattle.service.room;
 
+import static com.dlqudtjs.codingbattle.common.constant.code.GameConfigCode.GAME_START_ERROR;
 import static com.dlqudtjs.codingbattle.common.exception.CommonErrorCode.INVALID_INPUT_VALUE;
-import static com.dlqudtjs.codingbattle.common.exception.game.GameErrorCode.GAME_START_ERROR;
 
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.MessageType;
