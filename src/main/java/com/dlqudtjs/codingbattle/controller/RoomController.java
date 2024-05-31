@@ -186,7 +186,6 @@ public class RoomController {
 
     private LeaveRoomUserStatus alreadyLeaveRoom(User user) {
         Long alreadyEnterRoomId = sessionService.getRoomIdFromUser(user);
-        System.out.println("alreadyEnterRoomId = " + alreadyEnterRoomId);
         return roomService.leave(alreadyEnterRoomId, user);
     }
 }
