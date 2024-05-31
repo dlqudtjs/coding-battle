@@ -1,8 +1,8 @@
 package com.dlqudtjs.codingbattle.service.room;
 
+import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 import static com.dlqudtjs.codingbattle.common.constant.code.GameConfigCode.GAME_START_ERROR;
 import static com.dlqudtjs.codingbattle.common.constant.code.RoomConfigCode.INVALID_REQUEST;
-import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 import static com.dlqudtjs.codingbattle.common.constant.code.SocketConfigCode.NOT_CONNECT_USER;
 
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
@@ -17,7 +17,6 @@ import com.dlqudtjs.codingbattle.dto.room.requestdto.SendToRoomMessageRequestDto
 import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.RoomStatusUpdateMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.game.GameRunningConfig;
 import com.dlqudtjs.codingbattle.entity.room.LeaveRoomUserStatus;
@@ -187,15 +186,11 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomStatusUpdateMessageResponseDto updateRoomStatus(
+    public Room updateRoomStatus(
             Long roomId, String sessionId, RoomStatusUpdateMessageRequestDto requestDto) {
         validateUpdateRoomStatusRequest(roomId, sessionId, requestDto);
 
-        Room updatedRoom = roomMap.get(roomId).updateRoomStatus(requestDto);
-
-        return RoomStatusUpdateMessageResponseDto.builder()
-                .roomStatus(updatedRoom.toRoomStatusResponseDto())
-                .build();
+        return roomMap.get(roomId).updateRoomStatus(requestDto);
     }
 
     @Override

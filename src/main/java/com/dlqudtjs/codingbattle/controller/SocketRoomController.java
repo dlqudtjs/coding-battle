@@ -7,6 +7,7 @@ import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.RoomStatu
 import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomUserStatusUpdateMessageResponseDto;
+import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -48,7 +49,14 @@ public class SocketRoomController {
             SimpMessageHeaderAccessor headerAccessor) {
         roomStatusUpdateMessageRequestDto.validate();
 
-        return roomService.updateRoomStatus(roomId, headerAccessor.getSessionId(), roomStatusUpdateMessageRequestDto);
+        Room room = roomService.updateRoomStatus(
+                roomId,
+                headerAccessor.getSessionId(),
+                roomStatusUpdateMessageRequestDto);
+
+        return RoomStatusUpdateMessageResponseDto.builder()
+                .roomStatus(room.toRoomStatusResponseDto())
+                .build();
     }
 
     @MessageMapping("/room/{roomId}/update/user-status")
