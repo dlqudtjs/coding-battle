@@ -14,7 +14,6 @@ import com.dlqudtjs.codingbattle.entity.room.LeaveRoomUserStatus;
 import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserInfo;
-import com.dlqudtjs.codingbattle.entity.user.UserSetting;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import com.dlqudtjs.codingbattle.service.session.SessionService;
@@ -72,13 +71,13 @@ public class RoomController {
     @PostMapping("/v1/room/enter")
     public ResponseEntity<ResponseDto> enterRoom(@Valid @RequestBody RoomEnterRequestDto requestDto,
                                                  @RequestHeader("Authorization") String token) {
-        User user = userService.getUser(jwtTokenProvider.getUserName(token));
-        UserSetting userSetting = userService.getUserSetting(user);
+        UserInfo userInfo = userService.getUserInfo(jwtTokenProvider.getUserName(token));
 
-        LeaveRoomUserStatus leaveRoomUserStatus = alreadyLeaveRoom(user);
+        LeaveRoomUserStatus leaveRoomUserStatus = alreadyLeaveRoom(userInfo.getUser());
         sendLeaveRoomUserStatusMessage(leaveRoomUserStatus.getRoomId(), leaveRoomUserStatus);
 
         Room enterdRoom = roomService.enter(requestDto);
+
         if (enterdRoom == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.builder()
                     .message(RoomConfigCode.PASSWORD_NOT_MATCH.getMessage())
@@ -87,16 +86,7 @@ public class RoomController {
                     .build());
         }
 
-        // 방안에 사용자들에게 들어온 유저의 정보를 전달
-        messagingTemplate.convertAndSend("/topic/room/" + enterdRoom.getRoomId(),
-                GameRoomEnterUserStatusMessageResponseDto.builder()
-                        .enterUserStatus(RoomUserStatusResponseDto.builder()
-                                .userId(requestDto.getUserId())
-                                .isReady(false)
-                                .language(userSetting.getLanguage().getName())
-                                .build())
-                        .build()
-        );
+        sendEnterRoomUserStatusMessage(enterdRoom.getRoomId(), userInfo);
 
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.builder()
                 .message(RoomConfigCode.JOIN_GAME_ROOM_SUCCESS.getMessage())
@@ -153,6 +143,18 @@ public class RoomController {
                 .build();
 
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
+    private void sendEnterRoomUserStatusMessage(Long roomId, UserInfo userInfo) {
+        messagingTemplate.convertAndSend("/topic/room/" + roomId,
+                GameRoomEnterUserStatusMessageResponseDto.builder()
+                        .enterUserStatus(RoomUserStatusResponseDto.builder()
+                                .userId(userInfo.getUser().getUserId())
+                                .isReady(false)
+                                .language(userInfo.getUserSetting().getLanguage().getName())
+                                .build())
+                        .build()
+        );
     }
 
     private void sendLeaveRoomUserStatusMessage(Long roomId, LeaveRoomUserStatus leaveRoomUserStatus) {
