@@ -5,27 +5,26 @@ import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.IN
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoomCreateRequestDto {
 
-    @NotBlank
+    @NotNull
     private String hostId;
 
-    @NotBlank
+    @NotNull
     private String title;
 
+    @NotNull
     private String password;
 
-    @NotBlank
+    @NotNull
     private String language;
 
     private Integer problemLevel;

@@ -4,6 +4,7 @@ import com.dlqudtjs.codingbattle.common.constant.code.RoomConfigCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomEnterRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.CreateRoomResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomListResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomLeaveUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
@@ -12,6 +13,7 @@ import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoom
 import com.dlqudtjs.codingbattle.entity.room.LeaveRoomUserStatus;
 import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.user.User;
+import com.dlqudtjs.codingbattle.entity.user.UserInfo;
 import com.dlqudtjs.codingbattle.entity.user.UserSetting;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
@@ -43,9 +45,9 @@ public class RoomController {
     public ResponseEntity<ResponseDto> createRoom(@Valid @RequestBody RoomCreateRequestDto requestDto,
                                                   @RequestHeader("Authorization") String token) {
         requestDto.validate();
-        User user = userService.getUser(jwtTokenProvider.getUserName(token));
+        UserInfo userInfo = userService.getUserInfo(jwtTokenProvider.getUserName(token));
 
-        LeaveRoomUserStatus leaveRoomUserStatus = alreadyLeaveRoom(user);
+        LeaveRoomUserStatus leaveRoomUserStatus = alreadyLeaveRoom(userInfo.getUser());
 
         // 방안에 사용자들에게 나간 유저의 정보를 전달
         socketRoomController.sendToRoom(
@@ -59,7 +61,7 @@ public class RoomController {
                         .build()
         );
 
-        Room room = roomService.create(requestDto, user);
+        Room room = roomService.create(requestDto, userInfo.getUser());
         if (room == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.builder()
                     .message(RoomConfigCode.CREATE_GAME_ROOM_FAIL.getMessage())
@@ -71,7 +73,14 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.builder()
                 .message(RoomConfigCode.CREATE_GAME_ROOM_SUCCESS.getMessage())
                 .status(RoomConfigCode.CREATE_GAME_ROOM_SUCCESS.getStatus().value())
-                .data(null)
+                .data(CreateRoomResponseDto.builder()
+                        .roomStatus(room.toRoomStatusResponseDto())
+                        .userStatus(RoomUserStatusResponseDto.builder()
+                                .userId(userInfo.getUser().getUserId())
+                                .isReady(false)
+                                .language(userInfo.getUserSetting().getLanguage().getName())
+                                .build())
+                        .build())
                 .build());
     }
 
