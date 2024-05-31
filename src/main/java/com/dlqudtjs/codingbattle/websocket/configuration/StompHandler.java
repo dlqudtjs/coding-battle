@@ -59,21 +59,6 @@ public class StompHandler implements ChannelInterceptor {
                     .build());
         }
 
-        if (headerAccessor.getCommand() == StompCommand.DISCONNECT) {
-            User user = WebsocketSessionHolder.getUserFromSessionId(headerAccessor.getSessionId());
-
-            if (user == null) {
-                return message;
-            }
-
-            // 유저 세션 삭제 & 방에서 나가기
-            roomService.logout(user);
-            // 유저의 세션 상태 삭제
-            sessionStatusRepository.removeSessionStatus(user);
-            // userId와 sessionId 매핑 삭제
-            WebsocketSessionHolder.removeSessionFromUserId(user);
-        }
-
         return message;
     }
 }

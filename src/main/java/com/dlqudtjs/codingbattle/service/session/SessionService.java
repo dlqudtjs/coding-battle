@@ -13,4 +13,6 @@ public interface SessionService {
     void startGame(User user);
 
     Boolean isUserInGame(User user);
+
+    void removeSessionStatus(User user);
 }
