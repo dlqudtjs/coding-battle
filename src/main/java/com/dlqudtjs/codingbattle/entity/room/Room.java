@@ -134,6 +134,7 @@ public class Room {
 
     public Boolean isAllUserReady() {
         return roomUserStatusMap.values().stream()
+                .filter(roomUserStatus -> !roomUserStatus.getUserInfo().getUser().equals(host))
                 .allMatch(RoomUserStatus::getIsReady);
     }
 
@@ -179,8 +180,9 @@ public class Room {
 
     private Boolean canStartGame() {
         return isAllUserReady() &&
-                isUserAndRoomLanguageMatch() &&
-                getUserCount() >= GameSetting.GAME_START_MIN_USER_COUNT.getValue();
+                isUserAndRoomLanguageMatch();
+        // 시작 인원 제한
+        //                getUserCount() >= GameSetting.GAME_START_MIN_USER_COUNT.getValue();
     }
 
     private void setAllUsersToGameStart() {

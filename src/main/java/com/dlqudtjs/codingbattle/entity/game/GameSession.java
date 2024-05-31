@@ -52,12 +52,14 @@ public class GameSession {
         return getWinner();
     }
 
-    public void leaveGame(User user) {
+    public User leaveGame(User user) {
         if (!gameUserStatusMap.containsKey(user)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
+        roomService.leave(gameRunningConfig.getRoomId(), user);
         gameUserStatusMap.remove(user);
+        return user;
     }
 
     private Winner getWinner() {

@@ -3,10 +3,9 @@ package com.dlqudtjs.codingbattle.service.game;
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
-import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
-import com.dlqudtjs.codingbattle.entity.game.MatchHistory;
+import com.dlqudtjs.codingbattle.entity.game.LeaveGameUserStatus;
 import com.dlqudtjs.codingbattle.entity.game.Winner;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
 import com.dlqudtjs.codingbattle.entity.room.Room;
@@ -32,26 +31,22 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public GameSession startGame(Long roomId, User user) {
-        // 게임 시작
+        // Room의 상태를 게임 시작으로 변경
         Room room = roomService.start(roomId, user);
 
         // 난이도에 따른 문제 리스트 가져오기
         ProblemLevelType problemLevel = room.getGameRunningConfig().getProblemLevel();
         List<ProblemInfo> problemInfoList = problemService.getProblemInfoList(null, problemLevel, 1);
 
-        GameSession gameSession = new GameSession(room, problemInfoList, sessionService, roomService);
+        GameSession gameSession = new GameSession(room, problemInfoList, matchService, roomService);
 
         gameSessionMap.put(roomId, gameSession);
-
-        // 매치 기록 저장
-        MatchHistory matchHistory = matchService.startMatch(gameSession);
-        gameSession.setMatchId(matchHistory.getId());
 
         return gameSession;
     }
 
     @Override
-    public User leaveGame(Long roomId, User user) {
+    public LeaveGameUserStatus leaveGame(Long roomId, User user) {
         // 나가려는 방이 존재하지 않을 때
         if (!gameSessionMap.containsKey(roomId)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
@@ -59,13 +54,12 @@ public class GameServiceImpl implements GameService {
 
         GameSession gameSession = gameSessionMap.get(roomId);
 
-        // GameSession, Room 퇴장
         gameSession.leaveGame(user);
 
-        // 소켓 세션 상태 변경 (Default Room으로 이동)
-        sessionService.enterRoom(user, RoomConfig.DEFAULT_ROOM_ID.getValue());
-
-        return user;
+        return LeaveGameUserStatus.builder()
+                .roomId(roomId)
+                .user(user)
+                .build();
     }
 
     @Override

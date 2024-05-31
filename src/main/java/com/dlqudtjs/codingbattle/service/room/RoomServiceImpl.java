@@ -15,7 +15,7 @@ import com.dlqudtjs.codingbattle.dto.room.requestdto.SendToRoomMessageRequestDto
 import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.RoomStatusUpdateMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.game.GameRunningConfig;
-import com.dlqudtjs.codingbattle.entity.room.LeaveUserStatus;
+import com.dlqudtjs.codingbattle.entity.room.LeaveRoomUserStatus;
 import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.room.RoomUserStatus;
 import com.dlqudtjs.codingbattle.entity.user.User;
@@ -74,10 +74,10 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public LeaveUserStatus leave(Long roomId, User user) {
+    public LeaveRoomUserStatus leave(Long roomId, User user) {
         // 아무 방에 들어가 있지 않은 경우
         if (roomId.equals(RoomConfig.NO_ROOM_ID.getValue())) {
-            return LeaveUserStatus.builder()
+            return LeaveRoomUserStatus.builder()
                     .roomId(roomId)
                     .user(user)
                     .isHost(false)
@@ -98,7 +98,7 @@ public class RoomServiceImpl implements RoomService {
             enterDefaultRoom(user);
         }
 
-        return LeaveUserStatus.builder()
+        return LeaveRoomUserStatus.builder()
                 .roomId(roomId)
                 .user(user)
                 .isHost(room.isHost(user))
@@ -265,11 +265,6 @@ public class RoomServiceImpl implements RoomService {
         validateRoomExistence(roomId);
         validateUserSession(user);
         validateUserInRoom(roomId, user);
-
-        // 게임이 시작 된 방에서는 roomLeave를 할 수 없음 (gameLeave 가능)
-        if (isStartedGame(roomId)) {
-            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
-        }
     }
 
     private User validateEnterRoomRequest(RoomEnterRequestDto requestDto) {

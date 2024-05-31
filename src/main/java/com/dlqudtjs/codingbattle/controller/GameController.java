@@ -4,9 +4,11 @@ import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.GameEndResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.StartGameResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameEndMessageResponseDto;
+import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameLeaveUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameUserStatusListMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
+import com.dlqudtjs.codingbattle.entity.game.LeaveGameUserStatus;
 import com.dlqudtjs.codingbattle.entity.game.Winner;
 import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.user.User;
@@ -39,7 +41,6 @@ public class GameController {
 
         GameSession gameSession = gameService.startGame(roomId, user);
 
-        // 방에 게임 문제 전송
         messagingTemplate.convertAndSend("/topic/room/" + roomId,
                 StartGameResponseDto.builder()
                         .matchId(gameSession.getMatchId())
@@ -54,7 +55,12 @@ public class GameController {
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
 
-        gameService.leaveGame(roomId, user);
+        LeaveGameUserStatus leaveGameUserStatus = gameService.leaveGame(roomId, user);
+
+        messagingTemplate.convertAndSend("/topic/room/" + roomId,
+                GameLeaveUserStatusMessageResponseDto.builder()
+                        .leaveUserStatus(leaveGameUserStatus)
+                        .build());
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
