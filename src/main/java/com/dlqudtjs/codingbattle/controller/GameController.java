@@ -2,7 +2,6 @@ package com.dlqudtjs.codingbattle.controller;
 
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.GameEndResponseDto;
-import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemInfoResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.StartGameResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameEndMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
@@ -39,16 +38,13 @@ public class GameController {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
 
         GameSession gameSession = gameService.startGame(roomId, user);
-        List<ProblemInfoResponseDto> infoResponseDtoList = gameSession.getProblemInfo();
-
-        StartGameResponseDto startGameResponseDto = StartGameResponseDto.builder()
-                .matchId(gameSession.getMatchId())
-                .gameStartInfo(infoResponseDtoList)
-                .build();
 
         // 방에 게임 문제 전송
         messagingTemplate.convertAndSend("/topic/room/" + roomId,
-                startGameResponseDto);
+                StartGameResponseDto.builder()
+                        .matchId(gameSession.getMatchId())
+                        .gameStartInfo(gameSession.getProblemInfo())
+                        .build());
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
@@ -56,7 +52,9 @@ public class GameController {
     @PostMapping("/v1/game/{roomId}/leave")
     public ResponseEntity<ResponseDto> leaveGame(@PathVariable("roomId") Long roomId,
                                                  @RequestHeader("Authorization") String token) {
-        User user = gameService.leaveGame(roomId, userService.getUser(jwtTokenProvider.getUserName(token)));
+        User user = userService.getUser(jwtTokenProvider.getUserName(token));
+
+        gameService.leaveGame(roomId, user);
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }

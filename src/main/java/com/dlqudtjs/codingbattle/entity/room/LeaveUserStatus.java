@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class LeaveRoomUserStatus {
+public class LeaveUserStatus {
 
     User user;
     Long roomId;

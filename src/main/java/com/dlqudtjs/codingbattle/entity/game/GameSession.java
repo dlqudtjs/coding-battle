@@ -11,8 +11,8 @@ import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
 import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.submit.Submit;
 import com.dlqudtjs.codingbattle.entity.user.User;
+import com.dlqudtjs.codingbattle.service.match.MatchService;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
-import com.dlqudtjs.codingbattle.service.session.SessionService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,24 +22,26 @@ import lombok.Getter;
 @Getter
 public class GameSession {
     private Long matchId;
-    private Map<User, GameUserStatus> gameUserStatusMap;
     private final Long startTime;
     private Submit firstCorrectSubmit;
     private Boolean perfectWin;
     private final GameRunningConfig gameRunningConfig;
-    private final SessionService sessionService;
+    private final MatchService matchService;
     private final RoomService roomService;
+    private final Map<User, GameUserStatus> gameUserStatusMap = new ConcurrentHashMap<>();
 
-
-    public GameSession(Room room, List<ProblemInfo> problemInfoList,
-                       SessionService sessionService, RoomService roomService) {
+    public GameSession(Room room,
+                       List<ProblemInfo> problemInfoList,
+                       MatchService matchService,
+                       RoomService roomService) {
         initGameUserStatusMap(room);
 
-        this.startTime = System.currentTimeMillis();
         this.gameRunningConfig = room.getGameRunningConfig();
-        this.sessionService = sessionService;
+        this.startTime = System.currentTimeMillis();
+        this.matchService = matchService;
         this.roomService = roomService;
         gameRunningConfig.setProblemInfoList(problemInfoList);
+        this.matchId = saveMatch().getId();
     }
 
     public Winner endGame() {
@@ -84,6 +86,10 @@ public class GameSession {
                 .toList();
     }
 
+    private MatchHistory saveMatch() {
+        return matchService.startMatch(this);
+    }
+
     private Boolean canEndGame() {
         return isAlone() ||
                 isTimeOver() ||
@@ -108,8 +114,6 @@ public class GameSession {
     }
 
     private void initGameUserStatusMap(Room room) {
-        gameUserStatusMap = new ConcurrentHashMap<>();
-
         room.getUserList().forEach(user -> {
             gameUserStatusMap.put(user, GameUserStatus.builder()
                     .user(user)

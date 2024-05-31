@@ -10,7 +10,7 @@ import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomLeaveUserStatusRespons
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomEnterUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomLeaveUserStatusMessageResponseDto;
-import com.dlqudtjs.codingbattle.entity.room.LeaveRoomUserStatus;
+import com.dlqudtjs.codingbattle.entity.room.LeaveUserStatus;
 import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserInfo;
@@ -48,8 +48,8 @@ public class RoomController {
         requestDto.validate();
         UserInfo userInfo = userService.getUserInfo(jwtTokenProvider.getUserName(token));
 
-        LeaveRoomUserStatus leaveRoomUserStatus = alreadyLeaveRoom(userInfo.getUser());
-        sendLeaveRoomUserStatusMessage(leaveRoomUserStatus.getRoomId(), leaveRoomUserStatus);
+        LeaveUserStatus leaveUserStatus = alreadyLeaveRoom(userInfo.getUser());
+        sendLeaveRoomUserStatusMessage(leaveUserStatus.getRoomId(), leaveUserStatus);
 
         Room room = roomService.create(requestDto, userInfo.getUser());
 
@@ -73,8 +73,8 @@ public class RoomController {
                                                  @RequestHeader("Authorization") String token) {
         UserInfo userInfo = userService.getUserInfo(jwtTokenProvider.getUserName(token));
 
-        LeaveRoomUserStatus leaveRoomUserStatus = alreadyLeaveRoom(userInfo.getUser());
-        sendLeaveRoomUserStatusMessage(leaveRoomUserStatus.getRoomId(), leaveRoomUserStatus);
+        LeaveUserStatus leaveUserStatus = alreadyLeaveRoom(userInfo.getUser());
+        sendLeaveRoomUserStatusMessage(leaveUserStatus.getRoomId(), leaveUserStatus);
 
         Room enterdRoom = roomService.enter(requestDto);
 
@@ -100,15 +100,15 @@ public class RoomController {
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
 
-        LeaveRoomUserStatus leaveRoomUserStatus = roomService.leave(roomId, user);
+        LeaveUserStatus leaveUserStatus = roomService.leave(roomId, user);
 
         socketRoomController.sendToRoom(
                 roomId,
                 RoomLeaveUserStatusMessageResponseDto.builder()
                         .leaveUserStatus(RoomLeaveUserStatusResponseDto.builder()
-                                .roomId(leaveRoomUserStatus.getRoomId())
-                                .userId(leaveRoomUserStatus.getUser().getUserId())
-                                .isHost(leaveRoomUserStatus.getIsHost())
+                                .roomId(leaveUserStatus.getRoomId())
+                                .userId(leaveUserStatus.getUser().getUserId())
+                                .isHost(leaveUserStatus.getIsHost())
                                 .build())
                         .build()
         );
@@ -157,13 +157,13 @@ public class RoomController {
         );
     }
 
-    private void sendLeaveRoomUserStatusMessage(Long roomId, LeaveRoomUserStatus leaveRoomUserStatus) {
+    private void sendLeaveRoomUserStatusMessage(Long roomId, LeaveUserStatus leaveUserStatus) {
         messagingTemplate.convertAndSend("/topic/room/" + roomId,
                 RoomLeaveUserStatusMessageResponseDto.builder()
                         .leaveUserStatus(RoomLeaveUserStatusResponseDto.builder()
-                                .roomId(leaveRoomUserStatus.getRoomId())
-                                .userId(leaveRoomUserStatus.getUser().getUserId())
-                                .isHost(leaveRoomUserStatus.getIsHost())
+                                .roomId(leaveUserStatus.getRoomId())
+                                .userId(leaveUserStatus.getUser().getUserId())
+                                .isHost(leaveUserStatus.getIsHost())
                                 .build())
                         .build()
         );
@@ -184,7 +184,7 @@ public class RoomController {
                 .build();
     }
 
-    private LeaveRoomUserStatus alreadyLeaveRoom(User user) {
+    private LeaveUserStatus alreadyLeaveRoom(User user) {
         Long alreadyEnterRoomId = sessionService.getRoomIdFromUser(user);
         return roomService.leave(alreadyEnterRoomId, user);
     }
