@@ -24,6 +24,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RoomController {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final SimpMessagingTemplate messagingTemplate;
     private final RoomService roomService;
     private final SessionService sessionService;
     private final UserService userService;
@@ -48,18 +50,7 @@ public class RoomController {
         UserInfo userInfo = userService.getUserInfo(jwtTokenProvider.getUserName(token));
 
         LeaveRoomUserStatus leaveRoomUserStatus = alreadyLeaveRoom(userInfo.getUser());
-
-        // 방안에 사용자들에게 나간 유저의 정보를 전달
-        socketRoomController.sendToRoom(
-                leaveRoomUserStatus.getRoomId(),
-                GameRoomLeaveUserStatusMessageResponseDto.builder()
-                        .leaveUserStatus(RoomLeaveUserStatusResponseDto.builder()
-                                .roomId(leaveRoomUserStatus.getRoomId())
-                                .userId(leaveRoomUserStatus.getUser().getUserId())
-                                .isHost(leaveRoomUserStatus.getIsHost())
-                                .build())
-                        .build()
-        );
+        sendLeaveRoomUserStatusMessage(leaveRoomUserStatus.getRoomId(), leaveRoomUserStatus);
 
         Room room = roomService.create(requestDto, userInfo.getUser());
 
@@ -85,18 +76,7 @@ public class RoomController {
         UserSetting userSetting = userService.getUserSetting(user);
 
         LeaveRoomUserStatus leaveRoomUserStatus = alreadyLeaveRoom(user);
-
-        // 방안에 사용자들에게 나간 유저의 정보를 전달
-        socketRoomController.sendToRoom(
-                leaveRoomUserStatus.getRoomId(),
-                GameRoomLeaveUserStatusMessageResponseDto.builder()
-                        .leaveUserStatus(RoomLeaveUserStatusResponseDto.builder()
-                                .roomId(leaveRoomUserStatus.getRoomId())
-                                .userId(leaveRoomUserStatus.getUser().getUserId())
-                                .isHost(leaveRoomUserStatus.getIsHost())
-                                .build())
-                        .build()
-        );
+        sendLeaveRoomUserStatusMessage(leaveRoomUserStatus.getRoomId(), leaveRoomUserStatus);
 
         Room enterdRoom = roomService.enter(requestDto);
         if (enterdRoom == null) {
@@ -108,14 +88,15 @@ public class RoomController {
         }
 
         // 방안에 사용자들에게 들어온 유저의 정보를 전달
-        GameRoomEnterUserStatusMessageResponseDto enterUserStatusResponseDto = GameRoomEnterUserStatusMessageResponseDto.builder()
-                .enterUserStatus(RoomUserStatusResponseDto.builder()
-                        .userId(requestDto.getUserId())
-                        .isReady(false)
-                        .language(userSetting.getLanguage().getName())
-                        .build())
-                .build();
-        socketRoomController.sendToRoom(requestDto.getRoomId(), enterUserStatusResponseDto);
+        messagingTemplate.convertAndSend("/topic/room/" + enterdRoom.getRoomId(),
+                GameRoomEnterUserStatusMessageResponseDto.builder()
+                        .enterUserStatus(RoomUserStatusResponseDto.builder()
+                                .userId(requestDto.getUserId())
+                                .isReady(false)
+                                .language(userSetting.getLanguage().getName())
+                                .build())
+                        .build()
+        );
 
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.builder()
                 .message(RoomConfigCode.JOIN_GAME_ROOM_SUCCESS.getMessage())
@@ -174,6 +155,18 @@ public class RoomController {
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
+    private void sendLeaveRoomUserStatusMessage(Long roomId, LeaveRoomUserStatus leaveRoomUserStatus) {
+        messagingTemplate.convertAndSend("/topic/room/" + roomId,
+                GameRoomLeaveUserStatusMessageResponseDto.builder()
+                        .leaveUserStatus(RoomLeaveUserStatusResponseDto.builder()
+                                .roomId(leaveRoomUserStatus.getRoomId())
+                                .userId(leaveRoomUserStatus.getUser().getUserId())
+                                .isHost(leaveRoomUserStatus.getIsHost())
+                                .build())
+                        .build()
+        );
+    }
+
     private RoomInfoResponseDto getRoomInfoResponseDto(Room room) {
         List<RoomUserStatusResponseDto> userStatus = room.getRoomUserStatusList().stream()
                 .map(roomUserStatus -> RoomUserStatusResponseDto.builder()
@@ -191,6 +184,7 @@ public class RoomController {
 
     private LeaveRoomUserStatus alreadyLeaveRoom(User user) {
         Long alreadyEnterRoomId = sessionService.getRoomIdFromUser(user);
+        System.out.println("alreadyEnterRoomId = " + alreadyEnterRoomId);
         return roomService.leave(alreadyEnterRoomId, user);
     }
 }
