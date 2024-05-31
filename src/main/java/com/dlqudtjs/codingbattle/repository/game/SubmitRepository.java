@@ -10,7 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 public interface SubmitRepository extends JpaRepository<Submit, Long> {
 
     @Modifying
-    @Query("UPDATE Submit s SET s.executionTime = :execution_time WHERE s.id = :submit_id")
+    @Query("UPDATE Submit s SET s.executionTime = :execution_time, s.submitResultCode.id = :submit_result_code_id WHERE s.id = :submit_id")
     @Transactional
-    int updateSubmitResult(@Param("submit_id") Long submit_id, @Param("execution_time") Long execution_time);
+    int updateSubmitResult(@Param("submit_id") Long submit_id,
+                           @Param("execution_time") Long execution_time,
+                           @Param("submit_result_code_id") Long submit_result_code_id);
 }
