@@ -42,7 +42,6 @@ public class SubmitServiceImpl implements SubmitService {
                 judgeResultResponseDto.getExecutionTime(),
                 submitResultCode.getId());
 
-        // 첫번째 정답 제출 저장
         gameService.getGameSession(judgeResultResponseDto.getRoomId()).reflectSubmit(submit);
     }
 

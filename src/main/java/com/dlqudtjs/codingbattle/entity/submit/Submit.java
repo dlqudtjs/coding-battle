@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "submit")
-public class Submit {
+public class Submit implements Comparable<Submit> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,5 +68,14 @@ public class Submit {
 
     public String getCode() {
         return code;
+    }
+
+    public SubmitResultCode getSubmitResultCode() {
+        return submitResultCode;
+    }
+
+    @Override
+    public int compareTo(Submit o) {
+        return this.submitTime.compareTo(o.submitTime);
     }
 }

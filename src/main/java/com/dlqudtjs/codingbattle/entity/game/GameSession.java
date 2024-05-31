@@ -1,10 +1,9 @@
 package com.dlqudtjs.codingbattle.entity.game;
 
-import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.PERFECT_WIN;
 import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.WIN;
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
-import com.dlqudtjs.codingbattle.common.constant.MatchingResultType;
+import com.dlqudtjs.codingbattle.common.constant.JudgeResultCode;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemInfoResponseDto;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
@@ -16,6 +15,8 @@ import com.dlqudtjs.codingbattle.service.room.RoomService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.Getter;
 
@@ -23,11 +24,10 @@ import lombok.Getter;
 public class GameSession {
     private Long matchId;
     private final Long startTime;
-    private Submit firstCorrectSubmit;
-    private Boolean perfectWin;
     private final GameRunningConfig gameRunningConfig;
     private final MatchService matchService;
     private final RoomService roomService;
+    private final Queue<Submit> submitQueue;
     private final Map<User, GameUserStatus> gameUserStatusMap = new ConcurrentHashMap<>();
 
     public GameSession(Room room,
@@ -42,6 +42,7 @@ public class GameSession {
         this.roomService = roomService;
         gameRunningConfig.setProblemInfoList(problemInfoList);
         this.matchId = saveMatch().getId();
+        submitQueue = new PriorityQueue<>();
     }
 
     public Winner endGame() {
@@ -63,22 +64,14 @@ public class GameSession {
     }
 
     private Winner getWinner() {
-        // 혼자 남았을 때
-        if (isAlone()) {
-            GameUserStatus gameUserStatus = gameUserStatusMap.values().stream().findFirst().orElseThrow(
-                    () -> new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus())
-            );
+        while (!submitQueue.isEmpty()) {
+            Submit submit = submitQueue.poll();
 
-            return new Winner(gameUserStatus.getUser(), PERFECT_WIN, null);
+            if (gameUserStatusMap.containsKey(submit.getUser())) {
+                return new Winner(submit.getUser(), WIN, submit.getCode());
+            }
         }
 
-        // 문제를 맞춘 사람이 있을 경우
-        if (firstCorrectSubmit != null) {
-            MatchingResultType matchingResultType = perfectWin ? PERFECT_WIN : WIN;
-            new Winner(firstCorrectSubmit.getUser(), matchingResultType, firstCorrectSubmit.getCode());
-        }
-
-        // 시간 초과 및 `다 풀었어요!`버튼을 다 눌렀지만 맞춘 사람이 없는 경우
         return null;
     }
 
@@ -98,20 +91,9 @@ public class GameSession {
                 isAllUserSubmitDone();
     }
 
-    public void setMatchId(Long matchId) {
-        this.matchId = matchId;
-    }
-
     public void reflectSubmit(Submit submit) {
-        if (firstCorrectSubmit == null) {
-            this.firstCorrectSubmit = submit;
-            perfectWin = true;
-            return;
-        }
-
-        // 처음 제출한 코드의 실행 시간보다 늦게 제출한 코드의 실행 시간이 더 빠른 경우
-        if (firstCorrectSubmit.getExecutionTime() < submit.getExecutionTime()) {
-            perfectWin = false;
+        if (JudgeResultCode.valueOf(submit.getSubmitResultCode().getName()) == JudgeResultCode.PASS) {
+            submitQueue.add(submit);
         }
     }
 
