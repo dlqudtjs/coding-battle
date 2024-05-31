@@ -1,11 +1,9 @@
 package com.dlqudtjs.codingbattle.service.room;
 
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
-import static com.dlqudtjs.codingbattle.common.constant.code.GameConfigCode.GAME_START_ERROR;
 import static com.dlqudtjs.codingbattle.common.constant.code.RoomConfigCode.INVALID_REQUEST;
 import static com.dlqudtjs.codingbattle.common.constant.code.SocketConfigCode.NOT_CONNECT_USER;
 
-import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.MessageType;
 import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
@@ -124,15 +122,9 @@ public class RoomServiceImpl implements RoomService {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
-        if (canStartable(room)) {
-            throw new Custom4XXException(GAME_START_ERROR.getMessage(), GAME_START_ERROR.getStatus());
+        if (!room.startGame()) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
-
-        // room 상태 변경
-        room.startGame();
-
-        // room 내 유저 상태 변경
-        room.getUserList().forEach(sessionService::startGame);
 
         return room;
     }
@@ -203,22 +195,6 @@ public class RoomServiceImpl implements RoomService {
 
         return room.updateRoomUserStatus(requestDto, user);
     }
-
-    /*
-     * 게임 시작 가능한지 확인하는 메서드
-     * 모든 유저가 준비 상태 확인,
-     * 방에 있는 모든 유저의 언어가 일치한지 확인,
-     * 게임 시작 최소 인원 확인,
-     * 이미 게임 중인 유저가 있는지 확인
-     */
-    public Boolean canStartable(Room room) {
-        return room != null &&
-                room.isAllUserReady() &&
-                room.isUserAndRoomLanguageMatch() &&
-                room.getUserCount() >= GameSetting.GAME_START_MIN_USER_COUNT.getValue() &&
-                room.getUserList().stream().noneMatch(this::isUserInGame);
-    }
-
 
     private Boolean isUserInGame(User user) {
         return sessionService.isUserInGame(user);

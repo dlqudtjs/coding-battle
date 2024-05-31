@@ -56,9 +56,17 @@ public class Room {
         this.roomUserStatusMap = new ConcurrentHashMap<>();
     }
 
-    public void startGame() {
+    public Boolean startGame() {
+        if (!canStartGame()) {
+            return false;
+        }
+
+        setAllUsersToGameStart();
+
         isStarted = true;
+        return true;
     }
+
 
     public Room enter(UserInfo userInfo, String password) {
         if (isLocked() && !isMatchPassword(password)) {
@@ -167,6 +175,16 @@ public class Room {
 
         return roomUserStatusMap.values().stream()
                 .allMatch(user -> user.getUseLanguage().equals(language));
+    }
+
+    private Boolean canStartGame() {
+        return isAllUserReady() &&
+                isUserAndRoomLanguageMatch() &&
+                getUserCount() >= GameSetting.GAME_START_MIN_USER_COUNT.getValue();
+    }
+
+    private void setAllUsersToGameStart() {
+        getUserList().forEach(sessionService::startGame);
     }
 
     private RoomUserStatus getUserStatus(User user) {
