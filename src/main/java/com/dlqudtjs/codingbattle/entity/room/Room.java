@@ -110,7 +110,7 @@ public class Room {
     }
 
     public Boolean isLocked() {
-        return password.isBlank();
+        return !password.isBlank();
     }
 
     public Boolean checkAvailableLanguage(ProgrammingLanguage language) {
