@@ -62,6 +62,7 @@ public class RoomController {
         );
 
         Room room = roomService.create(requestDto, userInfo.getUser());
+        
         if (room == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.builder()
                     .message(RoomConfigCode.CREATE_GAME_ROOM_FAIL.getMessage())
@@ -70,16 +71,20 @@ public class RoomController {
                     .build());
         }
 
+        List<RoomUserStatusResponseDto> userStatus = room.getRoomUserStatusList().stream()
+                .map(roomUserStatus -> RoomUserStatusResponseDto.builder()
+                        .userId(roomUserStatus.getUserId())
+                        .isReady(roomUserStatus.getIsReady())
+                        .language(roomUserStatus.getUseLanguage().getLanguageName())
+                        .build())
+                .toList();
+
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.builder()
                 .message(RoomConfigCode.CREATE_GAME_ROOM_SUCCESS.getMessage())
                 .status(RoomConfigCode.CREATE_GAME_ROOM_SUCCESS.getStatus().value())
                 .data(CreateRoomResponseDto.builder()
                         .roomStatus(room.toRoomStatusResponseDto())
-                        .userStatus(RoomUserStatusResponseDto.builder()
-                                .userId(userInfo.getUser().getUserId())
-                                .isReady(false)
-                                .language(userInfo.getUserSetting().getLanguage().getName())
-                                .build())
+                        .userStatus(userStatus)
                         .build())
                 .build());
     }

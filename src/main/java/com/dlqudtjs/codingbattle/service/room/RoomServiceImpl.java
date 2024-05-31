@@ -65,7 +65,8 @@ public class RoomServiceImpl implements RoomService {
 
         // 방 입장
         createdRoom.enter(userService.getUserInfo(host.getUserId()), requestDto.getPassword());
-        return roomMap.put(newRoomId, createdRoom);
+        roomMap.put(newRoomId, createdRoom);
+        return createdRoom;
     }
 
     @Override
@@ -199,12 +200,14 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomUserStatusUpdateMessageResponseDto updateRoomUserStatus(
-            Long roomId, String sessionId,
+            Long roomId,
+            String sessionId,
             RoomUserStatusUpdateRequestDto requestDto) {
         validateUpdateRoomUserStatusRequest(roomId, sessionId, requestDto);
 
         Room room = roomMap.get(roomId);
         User user = userService.getUser(requestDto.getUserId());
+
         RoomUserStatus updatedUserStatus = room.updateRoomUserStatus(requestDto, user);
 
         return RoomUserStatusUpdateMessageResponseDto.builder()
@@ -247,7 +250,9 @@ public class RoomServiceImpl implements RoomService {
     }
 
     private void validateUpdateRoomUserStatusRequest(
-            Long roomId, String sessionId, RoomUserStatusUpdateRequestDto requestDto) {
+            Long roomId,
+            String sessionId,
+            RoomUserStatusUpdateRequestDto requestDto) {
         Room room = roomMap.get(roomId);
         User user = WebsocketSessionHolder.getUserFromSessionId(sessionId);
 

@@ -5,6 +5,7 @@ import com.dlqudtjs.codingbattle.dto.game.responseDto.GameEndResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemInfoResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.StartGameResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameEndMessageResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomUserStatusListMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.Winner;
@@ -79,9 +80,17 @@ public class GameController {
 
         Room room = gameService.resetRoom(roomId);
 
+        List<RoomUserStatusResponseDto> userStatus = room.getRoomUserStatusList().stream()
+                .map(roomUserStatus -> RoomUserStatusResponseDto.builder()
+                        .userId(roomUserStatus.getUserId())
+                        .isReady(roomUserStatus.getIsReady())
+                        .language(roomUserStatus.getUseLanguage().getLanguageName())
+                        .build())
+                .toList();
+
         GameRoomUserStatusListMessageResponseDto gameRoomUserStatusListMessageResponseDto =
                 GameRoomUserStatusListMessageResponseDto.builder()
-                        .userStatusList(room.toRoomUserStatusResponseDto())
+                        .userStatusList(userStatus)
                         .build();
 
         // 방에 초기화된 유저 정보 전송

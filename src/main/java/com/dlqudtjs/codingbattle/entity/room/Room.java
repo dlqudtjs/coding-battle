@@ -6,7 +6,6 @@ import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.RoomStatusUpdateMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomStatusResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.entity.game.GameRunningConfig;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserInfo;
@@ -14,10 +13,8 @@ import com.dlqudtjs.codingbattle.service.session.SessionService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import lombok.Getter;
 import org.springframework.web.socket.WebSocketSession;
 
-@Getter
 public class Room {
     private Long roomId;
     private final User host;
@@ -113,7 +110,7 @@ public class Room {
     }
 
     public Boolean isLocked() {
-        return password != null;
+        return password.isBlank();
     }
 
     public Boolean checkAvailableLanguage(ProgrammingLanguage language) {
@@ -176,13 +173,8 @@ public class Room {
         return roomUserStatusMap.get(user);
     }
 
-    public List<RoomUserStatusResponseDto> toRoomUserStatusResponseDto() {
+    public List<RoomUserStatus> getRoomUserStatusList() {
         return roomUserStatusMap.values().stream()
-                .map(status -> RoomUserStatusResponseDto.builder()
-                        .userId(status.getUserId())
-                        .isReady(status.getIsReady())
-                        .language(status.getUseLanguage().getLanguageName())
-                        .build())
                 .toList();
     }
 
@@ -199,5 +191,25 @@ public class Room {
                 .maxSubmitCount(gameRunningConfig.getMaxSubmitCount())
                 .limitTime(gameRunningConfig.getLimitTime())
                 .build();
+    }
+
+    public Long getRoomId() {
+        return roomId;
+    }
+
+    public User getHost() {
+        return host;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Boolean getIsStarted() {
+        return isStarted;
+    }
+
+    public Integer getMaxUserCount() {
+        return maxUserCount;
     }
 }
