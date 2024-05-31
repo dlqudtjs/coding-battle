@@ -4,8 +4,8 @@ import com.dlqudtjs.codingbattle.common.constant.code.RoomConfigCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomEnterRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.CreateRoomResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomListResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomInfoResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomLeaveUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomEnterUserStatusMessageResponseDto;
@@ -62,7 +62,7 @@ public class RoomController {
         );
 
         Room room = roomService.create(requestDto, userInfo.getUser());
-        
+
         if (room == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.builder()
                     .message(RoomConfigCode.CREATE_GAME_ROOM_FAIL.getMessage())
@@ -71,21 +71,10 @@ public class RoomController {
                     .build());
         }
 
-        List<RoomUserStatusResponseDto> userStatus = room.getRoomUserStatusList().stream()
-                .map(roomUserStatus -> RoomUserStatusResponseDto.builder()
-                        .userId(roomUserStatus.getUserId())
-                        .isReady(roomUserStatus.getIsReady())
-                        .language(roomUserStatus.getUseLanguage().getLanguageName())
-                        .build())
-                .toList();
-
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.builder()
                 .message(RoomConfigCode.CREATE_GAME_ROOM_SUCCESS.getMessage())
                 .status(RoomConfigCode.CREATE_GAME_ROOM_SUCCESS.getStatus().value())
-                .data(CreateRoomResponseDto.builder()
-                        .roomStatus(room.toRoomStatusResponseDto())
-                        .userStatus(userStatus)
-                        .build())
+                .data(getRoomInfoResponseDto(room))
                 .build());
     }
 
@@ -131,7 +120,7 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.builder()
                 .message(RoomConfigCode.JOIN_GAME_ROOM_SUCCESS.getMessage())
                 .status(RoomConfigCode.JOIN_GAME_ROOM_SUCCESS.getStatus().value())
-                .data(null)
+                .data(getRoomInfoResponseDto(enterdRoom))
                 .build());
     }
 
@@ -183,6 +172,21 @@ public class RoomController {
                 .build();
 
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
+    private RoomInfoResponseDto getRoomInfoResponseDto(Room room) {
+        List<RoomUserStatusResponseDto> userStatus = room.getRoomUserStatusList().stream()
+                .map(roomUserStatus -> RoomUserStatusResponseDto.builder()
+                        .userId(roomUserStatus.getUserId())
+                        .isReady(roomUserStatus.getIsReady())
+                        .language(roomUserStatus.getUseLanguage().getLanguageName())
+                        .build())
+                .toList();
+
+        return RoomInfoResponseDto.builder()
+                .roomStatus(room.toRoomStatusResponseDto())
+                .userStatus(userStatus)
+                .build();
     }
 
     private LeaveRoomUserStatus alreadyLeaveRoom(User user) {

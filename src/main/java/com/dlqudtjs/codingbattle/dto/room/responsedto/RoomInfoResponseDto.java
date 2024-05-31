@@ -8,6 +8,5 @@ import lombok.Getter;
 @Getter
 public class RoomInfoResponseDto {
     private RoomStatusResponseDto roomStatus;
-    private RoomLeaveUserStatusResponseDto leaveUserStatus;
     private List<RoomUserStatusResponseDto> userStatus;
 }

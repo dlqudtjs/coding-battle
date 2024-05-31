@@ -48,7 +48,7 @@ public class Room {
         this.roomId = RoomConfig.DEFAULT_ROOM_ID.getValue();
         this.host = User.deafultUser();
         this.title = "default";
-        this.password = null;
+        this.password = "";
         this.maxUserCount = GameSetting.DEFAULT_ROOM_MAX_USER_COUNT.getValue();
         this.isStarted = false;
         this.gameRunningConfig = GameRunningConfig.defaultGameRunningConfig();
