@@ -6,9 +6,9 @@ import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequest
 import com.dlqudtjs.codingbattle.dto.room.requestdto.SendToRoomMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.RoomStatusUpdateMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.room.LeaveRoomUserStatus;
 import com.dlqudtjs.codingbattle.entity.room.Room;
+import com.dlqudtjs.codingbattle.entity.room.RoomUserStatus;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import java.util.List;
 
@@ -39,6 +39,5 @@ public interface RoomService {
 
     Room updateRoomStatus(Long roomId, String sessionId, RoomStatusUpdateMessageRequestDto requestDto);
 
-    RoomUserStatusUpdateMessageResponseDto updateRoomUserStatus(
-            Long roomId, String sessionId, RoomUserStatusUpdateRequestDto requestDto);
+    RoomUserStatus updateRoomUserStatus(Long roomId, String sessionId, RoomUserStatusUpdateRequestDto requestDto);
 }

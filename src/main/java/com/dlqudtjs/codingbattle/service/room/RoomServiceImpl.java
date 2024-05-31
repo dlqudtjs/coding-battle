@@ -194,7 +194,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomUserStatusUpdateMessageResponseDto updateRoomUserStatus(
+    public RoomUserStatus updateRoomUserStatus(
             Long roomId,
             String sessionId,
             RoomUserStatusUpdateRequestDto requestDto) {
@@ -203,15 +203,7 @@ public class RoomServiceImpl implements RoomService {
         Room room = roomMap.get(roomId);
         User user = userService.getUser(requestDto.getUserId());
 
-        RoomUserStatus updatedUserStatus = room.updateRoomUserStatus(requestDto, user);
-
-        return RoomUserStatusUpdateMessageResponseDto.builder()
-                .updateUserStatus(RoomUserStatusResponseDto.builder()
-                        .userId(updatedUserStatus.getUserId())
-                        .isReady(updatedUserStatus.getIsReady())
-                        .language(updatedUserStatus.getUseLanguage().getLanguageName())
-                        .build())
-                .build();
+        return room.updateRoomUserStatus(requestDto, user);
     }
 
     /*

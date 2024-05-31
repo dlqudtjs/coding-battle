@@ -4,10 +4,12 @@ import com.dlqudtjs.codingbattle.common.exception.CustomSocketException;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.SendToRoomMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.RoomStatusUpdateMessageRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.room.Room;
+import com.dlqudtjs.codingbattle.entity.room.RoomUserStatus;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -67,7 +69,18 @@ public class SocketRoomController {
             SimpMessageHeaderAccessor headerAccessor) {
         roomUserStatusUpdateRequestDto.validate();
 
-        return roomService.updateRoomUserStatus(roomId, headerAccessor.getSessionId(), roomUserStatusUpdateRequestDto);
+        RoomUserStatus roomUserStatus = roomService.updateRoomUserStatus(
+                roomId,
+                headerAccessor.getSessionId(),
+                roomUserStatusUpdateRequestDto);
+
+        return RoomUserStatusUpdateMessageResponseDto.builder()
+                .updateUserStatus(RoomUserStatusResponseDto.builder()
+                        .userId(roomUserStatus.getUserId())
+                        .isReady(roomUserStatus.getIsReady())
+                        .language(roomUserStatus.getUseLanguage().getLanguageName())
+                        .build())
+                .build();
     }
 
     @MessageExceptionHandler
