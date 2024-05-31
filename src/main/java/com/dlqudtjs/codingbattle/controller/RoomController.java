@@ -4,12 +4,12 @@ import com.dlqudtjs.codingbattle.common.constant.code.RoomConfigCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomEnterRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.GameRoomListResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomListResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomInfoResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomLeaveUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomEnterUserStatusMessageResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomLeaveUserStatusMessageResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomEnterUserStatusMessageResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomLeaveUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.room.LeaveRoomUserStatus;
 import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.user.User;
@@ -104,7 +104,7 @@ public class RoomController {
 
         socketRoomController.sendToRoom(
                 roomId,
-                GameRoomLeaveUserStatusMessageResponseDto.builder()
+                RoomLeaveUserStatusMessageResponseDto.builder()
                         .leaveUserStatus(RoomLeaveUserStatusResponseDto.builder()
                                 .roomId(leaveRoomUserStatus.getRoomId())
                                 .userId(leaveRoomUserStatus.getUser().getUserId())
@@ -117,11 +117,11 @@ public class RoomController {
     }
 
     @GetMapping("/v1/roomList")
-    public ResponseEntity<ResponseDto> getGameRoomList() {
+    public ResponseEntity<ResponseDto> getRoomList() {
         List<Room> roomList = roomService.getRoomList();
 
-        List<GameRoomListResponseDto> responseDtoList = roomList.stream()
-                .map(room -> GameRoomListResponseDto.builder()
+        List<RoomListResponseDto> responseDtoList = roomList.stream()
+                .map(room -> RoomListResponseDto.builder()
                         .roomId(room.getRoomId())
                         .hostId(room.getHost().getUserId())
                         .title(room.getTitle())
@@ -147,7 +147,7 @@ public class RoomController {
 
     private void sendEnterRoomUserStatusMessage(Long roomId, UserInfo userInfo) {
         messagingTemplate.convertAndSend("/topic/room/" + roomId,
-                GameRoomEnterUserStatusMessageResponseDto.builder()
+                RoomEnterUserStatusMessageResponseDto.builder()
                         .enterUserStatus(RoomUserStatusResponseDto.builder()
                                 .userId(userInfo.getUser().getUserId())
                                 .isReady(false)
@@ -159,7 +159,7 @@ public class RoomController {
 
     private void sendLeaveRoomUserStatusMessage(Long roomId, LeaveRoomUserStatus leaveRoomUserStatus) {
         messagingTemplate.convertAndSend("/topic/room/" + roomId,
-                GameRoomLeaveUserStatusMessageResponseDto.builder()
+                RoomLeaveUserStatusMessageResponseDto.builder()
                         .leaveUserStatus(RoomLeaveUserStatusResponseDto.builder()
                                 .roomId(leaveRoomUserStatus.getRoomId())
                                 .userId(leaveRoomUserStatus.getUser().getUserId())

@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class GameRoomListResponseDto {
+public class RoomListResponseDto {
     private Long roomId;
     private String hostId;
     private String title;

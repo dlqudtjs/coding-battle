@@ -59,7 +59,7 @@ public class GameServiceImpl implements GameService {
 
         GameSession gameSession = gameSessionMap.get(roomId);
 
-        // GameSession, GameRoom 퇴장
+        // GameSession, Room 퇴장
         gameSession.leaveGame(user);
 
         // 소켓 세션 상태 변경 (Default Room으로 이동)

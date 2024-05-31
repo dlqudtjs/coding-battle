@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class GameRoomLeaveUserStatusMessageResponseDto {
+public class RoomLeaveUserStatusMessageResponseDto {
     private RoomLeaveUserStatusResponseDto leaveUserStatus;
 }
 

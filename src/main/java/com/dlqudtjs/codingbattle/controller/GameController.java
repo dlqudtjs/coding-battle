@@ -6,7 +6,7 @@ import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemInfoResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.StartGameResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameEndMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameRoomUserStatusListMessageResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameUserStatusListMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.Winner;
 import com.dlqudtjs.codingbattle.entity.room.Room;
@@ -88,14 +88,14 @@ public class GameController {
                         .build())
                 .toList();
 
-        GameRoomUserStatusListMessageResponseDto gameRoomUserStatusListMessageResponseDto =
-                GameRoomUserStatusListMessageResponseDto.builder()
+        GameUserStatusListMessageResponseDto gameUserStatusListMessageResponseDto =
+                GameUserStatusListMessageResponseDto.builder()
                         .userStatusList(userStatus)
                         .build();
 
         // 방에 초기화된 유저 정보 전송
         messagingTemplate.convertAndSend("/topic/room/" + roomId,
-                gameRoomUserStatusListMessageResponseDto);
+                gameUserStatusListMessageResponseDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
