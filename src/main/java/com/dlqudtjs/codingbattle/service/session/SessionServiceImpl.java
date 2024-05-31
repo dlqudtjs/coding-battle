@@ -42,6 +42,11 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    public void initSessionStatus(User user) {
+        sessionStatusRepository.initSessionStatus(user);
+    }
+
+    @Override
     public void removeSessionStatus(User user) {
         sessionStatusRepository.removeSessionStatus(user);
     }
