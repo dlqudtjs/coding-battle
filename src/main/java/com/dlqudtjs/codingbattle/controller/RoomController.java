@@ -40,7 +40,6 @@ public class RoomController {
     private final RoomService roomService;
     private final SessionService sessionService;
     private final UserService userService;
-    private final SocketRoomController socketRoomController;
 
     @PostMapping("/v1/room")
     public ResponseEntity<ResponseDto> createRoom(@Valid @RequestBody RoomCreateRequestDto requestDto,
@@ -101,17 +100,7 @@ public class RoomController {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
 
         LeaveRoomUserStatus leaveRoomUserStatus = roomService.leave(roomId, user);
-
-        socketRoomController.sendToRoom(
-                roomId,
-                RoomLeaveUserStatusMessageResponseDto.builder()
-                        .leaveUserStatus(RoomLeaveUserStatusResponseDto.builder()
-                                .roomId(leaveRoomUserStatus.getRoomId())
-                                .userId(leaveRoomUserStatus.getUser().getUserId())
-                                .isHost(leaveRoomUserStatus.getIsHost())
-                                .build())
-                        .build()
-        );
+        sendLeaveRoomUserStatusMessage(roomId, leaveRoomUserStatus);
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
