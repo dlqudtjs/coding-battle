@@ -44,6 +44,7 @@ public class GameController {
     public ResponseEntity<ResponseDto> startGame(@PathVariable("roomId") Long roomId,
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
+        validateUserInRoom(roomId, user);
 
         gameService.startGame(roomId, user);
 
@@ -71,6 +72,7 @@ public class GameController {
     public ResponseEntity<ResponseDto> leaveGame(@PathVariable("roomId") Long roomId,
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
+        validateUserInRoom(roomId, user);
 
         LeaveGameUserStatus leaveGameUserStatus = gameService.leaveGame(roomId, user);
 
@@ -86,6 +88,8 @@ public class GameController {
     public ResponseEntity<ResponseDto> endGame(@PathVariable("roomId") Long roomId,
                                                @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
+        validateUserInRoom(roomId, user);
+        
         Winner winner = gameService.endGame(roomId, user);
 
         GameEndResponseDto gameEndResponseDto = GameEndResponseDto.builder()
