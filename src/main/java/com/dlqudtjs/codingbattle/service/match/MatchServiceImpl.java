@@ -45,7 +45,9 @@ public class MatchServiceImpl implements MatchService {
         gameSession.getGameUserList().forEach(user -> {
             MatchingResultType matchingResultType;
 
-            if (winner.equals(user)) {
+            if (winner == null) {
+                matchingResultType = DRAW;
+            } else if (winner.equals(user)) {
                 matchingResultType = winner.getMatchingResultType();
             } else {
                 matchingResultType = LOSE;
