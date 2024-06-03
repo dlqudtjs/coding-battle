@@ -30,7 +30,6 @@ public class SessionServiceImpl implements SessionService {
         return sessionStatusRepository.getRoomIdFromUser(user);
     }
 
-
     @Override
     public void startGame(User user) {
         sessionStatusRepository.startGame(user);

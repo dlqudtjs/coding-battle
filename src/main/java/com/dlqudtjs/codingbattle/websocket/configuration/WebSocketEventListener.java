@@ -56,14 +56,14 @@ public class WebSocketEventListener {
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-        User userFromSessionId = WebsocketSessionHolder.getUserFromSessionId(event.getSessionId());
-        Long roomIdFromUser = sessionService.getRoomIdFromUser(userFromSessionId);
+        User user = WebsocketSessionHolder.getUserFromSessionId(event.getSessionId());
+        Long roomId = sessionService.getRoomIdFromUser(user);
 
-        LeaveRoomUserStatus leaveRoomUserStatus = roomService.leave(roomIdFromUser, userFromSessionId);
-        sessionService.removeSessionStatus(userFromSessionId);
-        WebsocketSessionHolder.removeSessionIdFromUser(userFromSessionId);
+        LeaveRoomUserStatus leaveRoomUserStatus = roomService.leave(roomId, user);
+        sessionService.removeSessionStatus(user);
+        WebsocketSessionHolder.removeSessionIdFromUser(user);
 
-        simpMessagingTemplate.convertAndSend("/topic/room/" + roomIdFromUser,
+        simpMessagingTemplate.convertAndSend("/topic/room/" + roomId,
                 RoomLeaveUserStatusMessageResponseDto.builder()
                         .leaveUserStatus(RoomLeaveUserStatusResponseDto.builder()
                                 .roomId(leaveRoomUserStatus.getRoomId())
