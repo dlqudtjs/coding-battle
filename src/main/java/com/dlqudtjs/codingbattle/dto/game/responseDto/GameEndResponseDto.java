@@ -7,6 +7,7 @@ import lombok.Getter;
 @Builder
 public class GameEndResponseDto {
 
+    private String result;
     private String userId;
     private String code;
 }

@@ -163,12 +163,17 @@ public class RoomServiceImpl implements RoomService {
             Long roomId,
             String sessionId,
             SendToRoomMessageRequestDto requestDto) {
-        String senderId = WebsocketSessionHolder.getSessionIdFromUser(userService.getUser(requestDto.getSenderId()));
-        User user = WebsocketSessionHolder.getUserFromSessionId(sessionId);
-
+        User user = userService.getUser(requestDto.getSenderId());
         validateRoomExistence(roomId);
         validateUserSession(user);
         validateUserInRoom(roomId, user);
+
+        String senderSessionId = WebsocketSessionHolder.getSessionIdFromUser(user);
+
+        // Sender의 세션 아이디와 요청한 세션 아이디가 일치하지 않으면
+        if (!senderSessionId.equals(sessionId)) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
+        }
 
         return SendToRoomMessageResponseDto.builder()
                 .messageType(MessageType.USER.getMessageType())

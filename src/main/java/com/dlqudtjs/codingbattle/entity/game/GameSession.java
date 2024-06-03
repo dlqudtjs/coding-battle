@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.entity.game;
 
+import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.DRAW;
 import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.WIN;
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
@@ -72,7 +73,7 @@ public class GameSession {
             }
         }
 
-        return null;
+        return new Winner(null, DRAW, null);
     }
 
     public List<User> getGameUserList() {
