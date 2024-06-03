@@ -44,7 +44,6 @@ public class RoomController {
     @PostMapping("/v1/room")
     public ResponseEntity<ResponseDto> createRoom(@Valid @RequestBody RoomCreateRequestDto requestDto,
                                                   @RequestHeader("Authorization") String token) {
-        requestDto.validate();
         UserInfo userInfo = userService.getUserInfo(jwtTokenProvider.getUserName(token));
 
         LeaveRoomUserStatus leaveRoomUserStatus = alreadyLeaveRoom(userInfo.getUser());
