@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.entity.problem;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,7 +29,8 @@ public class AlgorithmClassification {
         return id;
     }
 
-    public String getName() {
+    @JsonValue
+    public String getValue() {
         return name;
     }
 }

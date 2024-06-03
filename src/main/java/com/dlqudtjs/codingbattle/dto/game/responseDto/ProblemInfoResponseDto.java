@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.dto.game.responseDto;
 
+import com.dlqudtjs.codingbattle.entity.problem.AlgorithmClassification;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import lombok.Getter;
 public class ProblemInfoResponseDto {
 
     private Long id;
-    private String algorithmClassification;
+    private AlgorithmClassification algorithmClassification;
     private String problemLevel;
     private String title;
     private String problemDescription;
