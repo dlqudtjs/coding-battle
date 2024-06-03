@@ -1,5 +1,7 @@
 package com.dlqudtjs.codingbattle.common.constant;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -41,5 +43,13 @@ public enum ProgrammingLanguage {
         }
 
         return true;
+    }
+
+    @JsonCreator
+    public static ProgrammingLanguage parsing(String input) {
+        return Stream.of(ProgrammingLanguage.values())
+                .filter(language -> language.name().equals(input.toUpperCase()))
+                .findFirst()
+                .orElse(null);
     }
 }
