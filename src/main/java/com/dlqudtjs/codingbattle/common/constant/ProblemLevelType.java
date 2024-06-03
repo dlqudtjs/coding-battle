@@ -1,5 +1,7 @@
 package com.dlqudtjs.codingbattle.common.constant;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -30,13 +32,11 @@ public enum ProblemLevelType {
         return null;
     }
 
-    public static boolean isNotContains(int value) {
-        for (ProblemLevelType pl : ProblemLevelType.values()) {
-            if (pl.getValue() == value) {
-                return false;
-            }
-        }
-
-        return true;
+    @JsonCreator
+    public static ProblemLevelType parsing(int input) {
+        return Stream.of(ProblemLevelType.values())
+                .filter(level -> level.getValue() == input)
+                .findFirst()
+                .orElse(null);
     }
 }
