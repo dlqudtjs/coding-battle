@@ -1,64 +1,48 @@
 package com.dlqudtjs.codingbattle.websocket.configuration;
 
+import static com.dlqudtjs.codingbattle.common.constant.code.SocketConfigCode.NOT_CONNECT_USER;
+
+import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.entity.user.User;
-import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 @Slf4j
-public class WebsocketSessionHolder {
-    private static final ConcurrentHashMap<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<User, String> socketMap = new ConcurrentHashMap<>();
+public class WebsocketSessionHolder extends TextWebSocketHandler {
 
-    public static void addSession(User user, String sessionId) {
-        if (socketMap.containsKey(user)) {
-            removeSessionFromSessionId(socketMap.get(user));
-            socketMap.remove(user);
-        }
+    private static final ConcurrentHashMap<User, String> userAndSessionIdMap = new ConcurrentHashMap<>();
 
-        socketMap.put(user, sessionId);
+    public static void addUserAndSessionId(User user, String sessionId) {
+        userAndSessionIdMap.put(user, sessionId);
     }
 
-    public static void addSession(String sessionId, WebSocketSession session) {
-        sessions.put(sessionId, session);
+    public static void removeSessionIdFromUser(User user) {
+        userAndSessionIdMap.remove(user);
     }
 
-    public static void removeSessionFromSessionId(String sessionId) {
-        try {
-            sessions.get(sessionId).close();
-        } catch (IOException e) {
-            log.error("Failed to close session: {}", e.getMessage());
-        }
-
-        sessions.remove(sessionId);
-    }
-
-    public static void removeSessionFromUserId(User user) {
-        socketMap.remove(user);
-    }
-
-    public static WebSocketSession getSessionFromUser(User user) {
-        return sessions.get(socketMap.get(user));
+    // TODO: getUserFromSessionId -> getSessionIdFromUser 사용하도록 변경하기
+    public static String getSessionIdFromUser(User user) {
+        return userAndSessionIdMap.get(user);
     }
 
     public static User getUserFromSessionId(String sessionId) {
-        return socketMap.entrySet().stream()
+        return userAndSessionIdMap.entrySet().stream()
                 .filter(entry -> entry.getValue().equals(sessionId))
                 .map(ConcurrentHashMap.Entry::getKey)
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new Custom4XXException(NOT_CONNECT_USER.getMessage(), NOT_CONNECT_USER.getStatus()));
     }
 
     public static boolean isNotConnected(User user) {
-        return !socketMap.containsKey(user);
+        return !userAndSessionIdMap.containsKey(user);
     }
 
     public static boolean isMatched(String sessionId, User user) {
-        if (!socketMap.containsKey(user)) {
+        if (!userAndSessionIdMap.containsKey(user)) {
             return false;
         }
 
-        return socketMap.get(user).equals(sessionId);
+        return userAndSessionIdMap.get(user).equals(sessionId);
     }
 }

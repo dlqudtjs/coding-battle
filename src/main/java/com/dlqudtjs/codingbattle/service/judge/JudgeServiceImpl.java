@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.service.judge;
 
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
+import static com.dlqudtjs.codingbattle.common.constant.code.SocketConfigCode.NOT_CONNECT_USER;
 
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.constant.code.GameConfigCode;
@@ -235,7 +236,7 @@ public class JudgeServiceImpl implements JudgeService {
 
         // 사용자가 연결되어 있는지 검증
         if (WebsocketSessionHolder.isNotConnected(user)) {
-            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
+            throw new Custom4XXException(NOT_CONNECT_USER.getMessage(), NOT_CONNECT_USER.getStatus());
         }
 
         // 사용자가 방에 들어가 있는지 검증

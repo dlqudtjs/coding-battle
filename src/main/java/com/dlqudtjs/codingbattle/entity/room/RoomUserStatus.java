@@ -3,18 +3,17 @@ package com.dlqudtjs.codingbattle.entity.room;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.entity.user.UserInfo;
 import lombok.Getter;
-import org.springframework.web.socket.WebSocketSession;
 
 @Getter
 public class RoomUserStatus {
     UserInfo userInfo;
-    WebSocketSession session;
+    String sessionId;
     Boolean isReady;
     ProgrammingLanguage useLanguage;
 
-    public RoomUserStatus(UserInfo userInfo, WebSocketSession session) {
+    public RoomUserStatus(UserInfo userInfo, String sessionId) {
         this.userInfo = userInfo;
-        this.session = session;
+        this.sessionId = sessionId;
         this.isReady = false;
         this.useLanguage = userInfo.getUserSetting().getProgrammingLanguage();
     }

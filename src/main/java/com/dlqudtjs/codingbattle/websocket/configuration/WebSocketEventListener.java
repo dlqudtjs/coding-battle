@@ -34,21 +34,17 @@ public class WebSocketEventListener {
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-
         String token = headerAccessor.getFirstNativeHeader(Header.AUTHORIZATION.getHeaderName());
 
-        System.out.println(1);
         // token이 유효한지 확인
         jwtTokenProvider.validateToken(token);
-        System.out.println(2);
 
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
 
         // 유저 세션 상태 추가
         sessionService.initSessionStatus(user);
 
-        // userId와 sessionId를 매핑
-        WebsocketSessionHolder.addSession(user, headerAccessor.getSessionId());
+        WebsocketSessionHolder.addUserAndSessionId(user, headerAccessor.getSessionId());
 
         // 소켓을 연결한 유저는 Default 방을 입장
         roomService.enter(RoomEnterRequestDto.builder()
@@ -65,7 +61,7 @@ public class WebSocketEventListener {
 
         LeaveRoomUserStatus leaveRoomUserStatus = roomService.leave(roomIdFromUser, userFromSessionId);
         sessionService.removeSessionStatus(userFromSessionId);
-        WebsocketSessionHolder.removeSessionFromUserId(userFromSessionId);
+        WebsocketSessionHolder.removeSessionIdFromUser(userFromSessionId);
 
         simpMessagingTemplate.convertAndSend("/topic/room/" + roomIdFromUser,
                 RoomLeaveUserStatusMessageResponseDto.builder()

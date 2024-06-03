@@ -159,8 +159,11 @@ public class RoomServiceImpl implements RoomService {
      방에 보내는 메시지의 유효성을 검사하고 SendToRoomMessageResponseDto로 변환하는 메서드
      */
     @Override
-    public SendToRoomMessageResponseDto parseMessage(Long roomId, String sessionId,
-                                                     SendToRoomMessageRequestDto requestDto) {
+    public SendToRoomMessageResponseDto parseMessage(
+            Long roomId,
+            String sessionId,
+            SendToRoomMessageRequestDto requestDto) {
+        String senderId = WebsocketSessionHolder.getSessionIdFromUser(userService.getUser(requestDto.getSenderId()));
         User user = WebsocketSessionHolder.getUserFromSessionId(sessionId);
 
         validateRoomExistence(roomId);

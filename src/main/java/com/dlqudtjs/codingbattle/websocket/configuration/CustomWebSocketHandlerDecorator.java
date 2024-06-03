@@ -18,12 +18,12 @@ public class CustomWebSocketHandlerDecorator extends WebSocketHandlerDecorator {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         super.afterConnectionEstablished(session);
-        WebsocketSessionHolder.addSession(session.getId(), session);
+//        WebsocketSessionHolder.addSessionIdAndWebSocketSession(session.getId(), session);
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
         super.afterConnectionClosed(session, closeStatus);
-        WebsocketSessionHolder.removeSessionFromSessionId(session.getId());
+//        WebsocketSessionHolder.removeWebSocketSessionFromSessionId(session.getId());
     }
 }

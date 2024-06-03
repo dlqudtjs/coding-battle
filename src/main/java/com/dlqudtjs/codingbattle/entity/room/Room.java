@@ -13,7 +13,6 @@ import com.dlqudtjs.codingbattle.service.session.SessionService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import org.springframework.web.socket.WebSocketSession;
 
 public class Room {
     private Long roomId;
@@ -74,9 +73,9 @@ public class Room {
         }
 
         User user = userInfo.getUser();
-        WebSocketSession session = WebsocketSessionHolder.getSessionFromUser(user);
+        String sessionId = WebsocketSessionHolder.getSessionIdFromUser(user);
 
-        roomUserStatusMap.put(user, new RoomUserStatus(userInfo, session));
+        roomUserStatusMap.put(user, new RoomUserStatus(userInfo, sessionId));
         sessionService.enterRoom(user, roomId);
 
         return this;
