@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.dto.game.responseDto;
 
+import com.dlqudtjs.codingbattle.common.constant.MatchingResultType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -7,7 +8,7 @@ import lombok.Getter;
 @Builder
 public class GameEndResponseDto {
 
-    private String result;
+    private MatchingResultType result;
     private String userId;
     private String code;
 }

@@ -84,7 +84,7 @@ public class GameController {
         Winner winner = gameService.endGame(roomId, user);
 
         GameEndResponseDto gameEndResponseDto = GameEndResponseDto.builder()
-                .result(winner.getMatchingResultType().name())
+                .result(winner.getMatchingResultType())
                 .userId(winner.getWinnerId())
                 .code(winner.getCode())
                 .build();
