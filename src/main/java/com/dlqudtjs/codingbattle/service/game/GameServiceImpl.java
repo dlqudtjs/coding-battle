@@ -13,7 +13,6 @@ import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.service.match.MatchService;
 import com.dlqudtjs.codingbattle.service.problem.ProblemService;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
-import com.dlqudtjs.codingbattle.service.session.SessionService;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,7 +26,6 @@ public class GameServiceImpl implements GameService {
     private final RoomService roomService;
     private final ProblemService problemService;
     private final MatchService matchService;
-    private final SessionService sessionService;
 
     @Override
     public GameSession startGame(Long roomId, User user) {

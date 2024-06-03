@@ -23,7 +23,7 @@ import lombok.Getter;
 
 @Getter
 public class GameSession {
-    private Long matchId;
+    private final Long matchId;
     private final Long startTime;
     private final GameRunningConfig gameRunningConfig;
     private final MatchService matchService;

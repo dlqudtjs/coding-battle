@@ -6,8 +6,6 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class StartGameResponseDto {
-    
-    private Long matchId;
-    private List<ProblemInfoResponseDto> gameStartInfo;
+public class ProblemsResponseDto {
+    private List<ProblemInfoResponseDto> problems;
 }

@@ -2,7 +2,7 @@ package com.dlqudtjs.codingbattle.controller;
 
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.GameEndResponseDto;
-import com.dlqudtjs.codingbattle.dto.game.responseDto.StartGameResponseDto;
+import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemsResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameEndMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameLeaveUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -39,15 +40,19 @@ public class GameController {
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
 
-        GameSession gameSession = gameService.startGame(roomId, user);
+        gameService.startGame(roomId, user);
 
-        messagingTemplate.convertAndSend("/topic/room/" + roomId,
-                StartGameResponseDto.builder()
-                        .matchId(gameSession.getMatchId())
-                        .gameStartInfo(gameSession.getProblemInfo())
-                        .build());
+        messagingTemplate.convertAndSend("/topic/room/" + roomId, "GameStart");
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @GetMapping("/v1/game/{roomId}/problems")
+    public ResponseEntity<ProblemsResponseDto> getProblems(@PathVariable("roomId") Long roomId) {
+        GameSession gameSession = gameService.getGameSession(roomId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(ProblemsResponseDto.builder()
+                .problems(gameSession.getProblemInfo()).build());
     }
 
     @PostMapping("/v1/game/{roomId}/leave")
