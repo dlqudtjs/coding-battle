@@ -23,9 +23,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
     private final static Map<Long, GameSession> gameSessionMap = new ConcurrentHashMap<>();
-    private final RoomService roomService;
     private final ProblemService problemService;
     private final MatchService matchService;
+    private final RoomService roomService;
 
     @Override
     public GameSession startGame(Long roomId, User user) {
@@ -64,7 +64,7 @@ public class GameServiceImpl implements GameService {
     public Winner endGame(Long roomId, User user) {
         GameSession gameSession = gameSessionMap.get(roomId);
 
-        Winner winner = gameSession.endGame();
+        Winner winner = gameSession.endGame(user);
 
         // 매치 기록 저장
         matchService.saveUserMatchHistory(gameSession, winner);
