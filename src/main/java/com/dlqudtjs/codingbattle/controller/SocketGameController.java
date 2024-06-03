@@ -28,7 +28,6 @@ public class SocketGameController {
     public void submitDone(@DestinationVariable("roomId") Long roomId,
                            @DestinationVariable("userId") String userId,
                            SimpMessageHeaderAccessor headerAccessor) {
-
         User user = userService.getUser(userId);
         if (WebsocketSessionHolder.isMatched(headerAccessor.getSessionId(), user)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
