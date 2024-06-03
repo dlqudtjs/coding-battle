@@ -1,5 +1,7 @@
 package com.dlqudtjs.codingbattle.common.constant;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,4 +14,12 @@ public enum JudgeResultCode {
     ERROR(3);
 
     private final int code;
+
+    @JsonCreator
+    public static JudgeResultCode parsing(String input) {
+        return Stream.of(JudgeResultCode.values())
+                .filter(result -> result.name().equals(input.toUpperCase()))
+                .findFirst()
+                .orElse(null);
+    }
 }
