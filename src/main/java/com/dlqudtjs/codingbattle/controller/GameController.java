@@ -57,7 +57,15 @@ public class GameController {
     }
 
     @GetMapping("/v1/game/{roomId}/problems")
-    public ResponseEntity<ProblemsResponseDto> getProblems(@PathVariable("roomId") Long roomId) {
+    public ResponseEntity<ProblemsResponseDto> getProblems(@PathVariable("roomId") Long roomId,
+                                                           @RequestHeader("Authorization") String token) {
+        User user = userService.getUser(jwtTokenProvider.getUserName(token));
+        if (!userInRoomCheck(roomId, user)) {
+            throw new Custom4XXException(
+                    OauthConfigCode.MALFORMED_JWT.getMessage(),
+                    OauthConfigCode.MALFORMED_JWT.getStatus());
+        }
+
         GameSession gameSession = gameService.getGameSession(roomId);
 
         return ResponseEntity.status(HttpStatus.OK).body(ProblemsResponseDto.builder()
@@ -117,5 +125,10 @@ public class GameController {
                 gameUserStatusListMessageResponseDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    private boolean userInRoomCheck(Long roomId, User user) {
+        Long roomIdFromUser = sessionService.getRoomIdFromUser(user);
+        return roomId.equals(roomIdFromUser);
     }
 }
