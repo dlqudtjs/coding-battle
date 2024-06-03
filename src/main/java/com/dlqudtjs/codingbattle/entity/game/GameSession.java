@@ -48,7 +48,7 @@ public class GameSession {
 
     public Winner endGame(User user) {
         // 방장이 아니면 게임 종료 불가
-        if (!roomService.getRoom(gameRunningConfig.getRoomId()).isHost(user))) {
+        if (!roomService.getRoom(gameRunningConfig.getRoomId()).isHost(user)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
