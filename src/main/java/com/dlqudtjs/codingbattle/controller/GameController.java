@@ -1,8 +1,6 @@
 package com.dlqudtjs.codingbattle.controller;
 
-import com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
-import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.GameEndResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemsResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameEndMessageResponseDto;
@@ -17,7 +15,6 @@ import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.game.GameService;
-import com.dlqudtjs.codingbattle.service.session.SessionService;
 import com.dlqudtjs.codingbattle.service.user.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +33,6 @@ public class GameController {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final JwtTokenProvider jwtTokenProvider;
-    private final SessionService sessionService;
     private final UserService userService;
     private final GameService gameService;
 
@@ -44,7 +40,6 @@ public class GameController {
     public ResponseEntity<ResponseDto> startGame(@PathVariable("roomId") Long roomId,
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
-        validateUserInRoom(roomId, user);
 
         gameService.startGame(roomId, user);
 
@@ -60,8 +55,6 @@ public class GameController {
     @GetMapping("/v1/game/{roomId}/problems")
     public ResponseEntity<ProblemsResponseDto> getProblems(@PathVariable("roomId") Long roomId,
                                                            @RequestHeader("Authorization") String token) {
-        validateUserInRoom(roomId, userService.getUser(jwtTokenProvider.getUserName(token)));
-
         GameSession gameSession = gameService.getGameSession(roomId);
 
         return ResponseEntity.status(HttpStatus.OK).body(ProblemsResponseDto.builder()
@@ -72,7 +65,6 @@ public class GameController {
     public ResponseEntity<ResponseDto> leaveGame(@PathVariable("roomId") Long roomId,
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
-        validateUserInRoom(roomId, user);
 
         LeaveGameUserStatus leaveGameUserStatus = gameService.leaveGame(roomId, user);
 
@@ -88,8 +80,7 @@ public class GameController {
     public ResponseEntity<ResponseDto> endGame(@PathVariable("roomId") Long roomId,
                                                @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
-        validateUserInRoom(roomId, user);
-        
+
         Winner winner = gameService.endGame(roomId, user);
 
         GameEndResponseDto gameEndResponseDto = GameEndResponseDto.builder()
@@ -124,15 +115,5 @@ public class GameController {
                 gameUserStatusListMessageResponseDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
-    }
-
-    private void validateUserInRoom(Long roomId, User user) {
-        Long roomIdFromUser = sessionService.getRoomIdFromUser(user);
-
-        if (!roomId.equals(roomIdFromUser)) {
-            throw new Custom4XXException(
-                    OauthConfigCode.MALFORMED_JWT.getMessage(),
-                    OauthConfigCode.MALFORMED_JWT.getStatus());
-        }
     }
 }
