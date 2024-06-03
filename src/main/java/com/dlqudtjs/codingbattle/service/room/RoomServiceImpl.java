@@ -252,21 +252,10 @@ public class RoomServiceImpl implements RoomService {
 
     private void validateUpdateRoomStatusRequest(
             Long roomId, String sessionId, RoomStatusUpdateMessageRequestDto requestDto) {
-        Room room = roomMap.get(roomId);
-        User user = userService.getUser(requestDto.getHostId());
         User socketUser = WebsocketSessionHolder.getUserFromSessionId(sessionId);
 
         validateRoomExistence(roomId);
-
-        // 방장과 세션 아이디가 일치하지 않으면 (웹 소켓 세션에 존재하지 않으면)
-        if (!room.isHost(user)) {
-            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
-        }
-
-        // requestDto의 hostId와 userId가 일치하지 않으면
-        if (!user.equals(socketUser)) {
-            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
-        }
+        validateUserIsHost(roomId, socketUser);
     }
 
     private void validateLeaveRoomRequest(Long roomId, User user) {
@@ -292,6 +281,12 @@ public class RoomServiceImpl implements RoomService {
         }
 
         return user;
+    }
+
+    private void validateUserIsHost(Long roomId, User user) {
+        if (!roomMap.get(roomId).isHost(user)) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
+        }
     }
 
     private void validateCreateRoomRequest(RoomCreateRequestDto requestDto, User user) {
