@@ -89,13 +89,6 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Room resetRoom(Long roomId) {
-        gameSessionMap.remove(roomId);
-
-        return roomService.getRoom(roomId);
-    }
-
-    @Override
     public GameSession getGameSession(Long roomId) {
         if (!gameSessionMap.containsKey(roomId)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
