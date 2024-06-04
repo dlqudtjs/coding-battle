@@ -17,4 +17,6 @@ public interface SessionStatusRepository {
     Boolean isUserInGame(User user);
 
     void startGame(User user);
+
+    void endGame(User user);
 }

@@ -68,4 +68,13 @@ public class SessionStatusRepositoryImpl implements SessionStatusRepository {
 
         sessionStatusMap.get(user).startGame();
     }
+
+    @Override
+    public void endGame(User user) {
+        if (!sessionStatusMap.containsKey(user)) {
+            throw new CustomSocketException(SocketConfigCode.NOT_CONNECT_USER.getMessage());
+        }
+
+        sessionStatusMap.get(user).endGame();
+    }
 }
