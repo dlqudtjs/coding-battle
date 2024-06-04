@@ -26,6 +26,8 @@ public interface RoomService {
 
     Room start(Long roomId, User user);
 
+    Room gameEnd(Long roomId);
+
     Boolean isExistUserInRoom(User user, Long roomId);
 
     Boolean isExistRoom(Long roomId);

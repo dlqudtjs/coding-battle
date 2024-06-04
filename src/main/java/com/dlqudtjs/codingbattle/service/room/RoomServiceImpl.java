@@ -106,6 +106,11 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    public Room gameEnd(Long roomId) {
+        return roomMap.get(roomId).gameEnd();
+    }
+
+    @Override
     public Room getRoom(Long roomId) {
         if (!roomMap.containsKey(roomId)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
