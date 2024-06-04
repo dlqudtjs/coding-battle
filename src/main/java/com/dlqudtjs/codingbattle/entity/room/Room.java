@@ -81,6 +81,16 @@ public class Room {
         return this;
     }
 
+    public Room gameEnd() {
+        roomUserStatusMap.values().forEach(roomUserStatus -> {
+            roomUserStatus.updateStatus(false, roomUserStatus.getUseLanguage());
+            sessionService.endGame(roomUserStatus.getUserInfo().getUser());
+        });
+
+        isStarted = false;
+        return this;
+    }
+
     public User leave(User user) {
         roomUserStatusMap.remove(user);
         sessionService.leaveRoom(user);
