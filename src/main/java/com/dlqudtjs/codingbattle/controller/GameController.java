@@ -85,8 +85,9 @@ public class GameController {
 
         GameEndResponseDto gameEndResponseDto = GameEndResponseDto.builder()
                 .result(winner.getMatchingResultType())
-                .userId(winner.getWinnerId())
+                .userId(winner.getUserId())
                 .code(winner.getCode())
+                .language(winner.getLanguage())
                 .build();
 
         // 방에 Winner 전송

@@ -21,7 +21,7 @@ public enum ProgrammingLanguage {
 
     public static ProgrammingLanguage getLanguage(String language) {
         for (ProgrammingLanguage pl : ProgrammingLanguage.values()) {
-            if (pl.getLanguageName().equals(language)) {
+            if (pl.name().equals(language.toUpperCase())) {
                 return pl;
             }
         }

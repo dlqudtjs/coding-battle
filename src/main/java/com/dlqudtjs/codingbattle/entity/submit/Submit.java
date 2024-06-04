@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.entity.submit;
 
+import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.UpdateSubmitResultRequestDto;
 import com.dlqudtjs.codingbattle.entity.game.MatchHistory;
 import com.dlqudtjs.codingbattle.entity.user.User;
@@ -63,6 +64,10 @@ public class Submit implements Comparable<Submit> {
         return user;
     }
 
+    public ProgrammingLanguage getLanguage() {
+        return ProgrammingLanguage.getLanguage(language);
+    }
+
     public Long getExecutionTime() {
         return executionTime;
     }
@@ -83,5 +88,12 @@ public class Submit implements Comparable<Submit> {
     @Override
     public int compareTo(Submit o) {
         return this.submitTime.compareTo(o.submitTime);
+    }
+
+    public static Submit drawSubmit() {
+        return Submit.builder()
+                .code("")
+                .language(ProgrammingLanguage.DEFAULT.getLanguageName())
+                .build();
     }
 }

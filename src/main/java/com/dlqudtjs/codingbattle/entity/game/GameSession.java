@@ -74,11 +74,11 @@ public class GameSession {
             Submit submit = submitQueue.poll();
 
             if (gameUserStatusMap.containsKey(submit.getUser())) {
-                return new Winner(submit.getUser(), WIN, submit.getCode());
+                return new Winner(submit.getUser(), WIN, submit);
             }
         }
 
-        return new Winner(null, DRAW, null);
+        return new Winner(User.deafultUser(), DRAW, Submit.drawSubmit());
     }
 
     public List<User> getGameUserList() {
