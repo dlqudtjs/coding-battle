@@ -73,9 +73,18 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Boolean toggleSubmitDone(Long roomId, User user) {
+    public User surrender(Long roomId, User user) {
         GameSession gameSession = gameSessionMap.get(roomId);
-        return gameSession.toggleSubmitDone(user);
+
+        if (gameSession == null) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
+        }
+
+        if (!gameSession.existUser(user)) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
+        }
+
+        return gameSession.surrender(user);
     }
 
     @Override

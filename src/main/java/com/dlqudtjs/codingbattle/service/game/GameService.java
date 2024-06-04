@@ -18,7 +18,7 @@ public interface GameService {
 
     Room resetRoom(Long roomId);
 
-    Boolean toggleSubmitDone(Long roomId, User user);
+    User surrender(Long roomId, User user);
 
     GameSession getGameSession(Long roomId);
 
