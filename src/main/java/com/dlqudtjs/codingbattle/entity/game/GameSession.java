@@ -81,6 +81,10 @@ public class GameSession {
         return new Winner(User.deafultUser(), DRAW, Submit.drawSubmit());
     }
 
+    public Boolean existUser(User user) {
+        return gameUserStatusMap.containsKey(user);
+    }
+
     public List<User> getGameUserList() {
         return gameUserStatusMap.values().stream()
                 .map(GameUserStatus::getUser)
