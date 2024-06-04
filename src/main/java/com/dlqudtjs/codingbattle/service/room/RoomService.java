@@ -22,8 +22,6 @@ public interface RoomService {
 
     Room getRoom(Long roomId);
 
-    void logout(User user);
-
     List<Room> getRoomList();
 
     Room start(Long roomId, User user);

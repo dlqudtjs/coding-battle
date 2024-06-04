@@ -145,12 +145,6 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void logout(User user) {
-        Long roomId = sessionService.getRoomIdFromUser(user);
-        getRoom(roomId).leave(user);
-    }
-
-    @Override
     public List<Room> getRoomList() {
         return List.copyOf(roomMap.values());
     }
