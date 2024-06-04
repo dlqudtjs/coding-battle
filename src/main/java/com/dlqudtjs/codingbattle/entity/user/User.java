@@ -110,9 +110,9 @@ public class User implements UserDetails {
     public static User deafultUser() {
         return User.builder()
                 .id(0L)
-                .role(UserRole.builder().name(UserRoleType.ROLE_ADMIN).build())
-                .userId("ADMIN")
-                .password("ADMIN")
+                .role(UserRole.builder().name(UserRoleType.ROLE_USER).build())
+                .userId("DEFAULT")
+                .password("DEFAULT")
                 .build();
     }
 }
