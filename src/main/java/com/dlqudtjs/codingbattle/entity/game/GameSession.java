@@ -98,7 +98,7 @@ public class GameSession {
     }
 
     public void reflectSubmit(Submit submit) {
-        if (JudgeResultCode.valueOf(submit.getSubmitResultCode().getName()) == JudgeResultCode.PASS) {
+        if (JudgeResultCode.isPass(submit)) {
             submitQueue.add(submit);
         }
     }

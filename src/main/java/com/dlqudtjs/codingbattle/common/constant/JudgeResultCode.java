@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.common.constant;
 
+import com.dlqudtjs.codingbattle.entity.submit.Submit;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
@@ -21,5 +22,14 @@ public enum JudgeResultCode {
                 .filter(result -> result.name().equals(input.toUpperCase()))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public static Boolean isPass(Submit submit) {
+        if (submit == null) {
+            return false;
+        }
+
+        String result = submit.getSubmitResultCode().getName().toUpperCase();
+        return JudgeResultCode.PASS.name().equals(result);
     }
 }
