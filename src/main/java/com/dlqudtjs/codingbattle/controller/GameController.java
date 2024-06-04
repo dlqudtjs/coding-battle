@@ -20,6 +20,7 @@ import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.game.GameService;
+import com.dlqudtjs.codingbattle.service.room.RoomService;
 import com.dlqudtjs.codingbattle.service.user.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,7 @@ public class GameController {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RoomService roomService;
     private final UserService userService;
     private final GameService gameService;
 
@@ -101,7 +103,7 @@ public class GameController {
                         .gameEnd(gameEndResponseDto)
                         .build());
 
-        Room room = gameService.resetRoom(roomId);
+        Room room = roomService.gameEnd(roomId);
 
         List<RoomUserStatusResponseDto> userStatus = room.getRoomUserStatusList().stream()
                 .map(roomUserStatus -> RoomUserStatusResponseDto.builder()
