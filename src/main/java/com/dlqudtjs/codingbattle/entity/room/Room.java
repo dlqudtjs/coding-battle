@@ -81,10 +81,6 @@ public class Room {
         return this;
     }
 
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
-    }
-
     public User leave(User user) {
         roomUserStatusMap.remove(user);
         sessionService.leaveRoom(user);
