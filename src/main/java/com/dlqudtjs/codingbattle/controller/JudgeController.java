@@ -5,7 +5,7 @@ import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.IN
 import com.dlqudtjs.codingbattle.common.constant.JudgeResultCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
-import com.dlqudtjs.codingbattle.dto.game.requestDto.JudgeResultResponseDto;
+import com.dlqudtjs.codingbattle.dto.game.requestDto.JudgeResultRequestDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.JudgeResultMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.judge.JudgeProblemRequestDto;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
@@ -47,36 +47,36 @@ public class JudgeController {
     }
 
     @PostMapping("/v1/judge/results")
-    public ResponseEntity<ResponseDto> judgeResults(@RequestBody JudgeResultResponseDto JudgeResultResponseDto) {
+    public ResponseEntity<ResponseDto> judgeResults(@RequestBody JudgeResultRequestDto JudgeResultRequestDto) {
 
         // secret key 검증
-        if (!JudgeResultResponseDto.getSecretKey().equals(secretKey)) {
+        if (!JudgeResultRequestDto.getSecretKey().equals(secretKey)) {
             log.error("JudgeResults - secret key is not matched");
             return ResponseEntity.badRequest().build();
         }
 
-        log.info("userId : " + JudgeResultResponseDto.getUserId() + " / " +
-                "result : " + JudgeResultResponseDto.getResult());
+        log.info("userId : " + JudgeResultRequestDto.getUserId() + " / " +
+                "result : " + JudgeResultRequestDto.getResult());
 
-        System.out.println("results : " + JudgeResultResponseDto.getResult());
+        System.out.println("results : " + JudgeResultRequestDto.getResult());
 
         JudgeResultMessageResponseDto responseDto = JudgeResultMessageResponseDto.builder()
-                .judgeResult(JudgeResultResponseDto.toParsedJudgeResultResponseDto())
+                .judgeResult(JudgeResultRequestDto.toParsedJudgeResultResponseDto())
                 .build();
 
         // 결과 전송
-        messagingTemplate.convertAndSend("/topic/room/" + JudgeResultResponseDto.getRoomId(), responseDto);
+        messagingTemplate.convertAndSend("/topic/room/" + JudgeResultRequestDto.getRoomId(), responseDto);
 
         // 결과 저장 (마지막 테스트까지 통과, Fail, Error)
-        if (isFinished(JudgeResultResponseDto)) {
-            submitService.saveSubmitResult(JudgeResultResponseDto.toParsedJudgeResultResponseDto());
-            judgeService.closeDockerContainer(JudgeResultResponseDto.getContainerId());
+        if (isFinished(JudgeResultRequestDto)) {
+            submitService.saveSubmitResult(JudgeResultRequestDto.toParsedJudgeResultResponseDto());
+            judgeService.closeDockerContainer(JudgeResultRequestDto.getContainerId());
         }
 
         return ResponseEntity.ok().build();
     }
 
-    private Boolean isFinished(JudgeResultResponseDto result) {
+    private Boolean isFinished(JudgeResultRequestDto result) {
         return !result.getResult().equals(JudgeResultCode.PASS.name()) ||
                 result.getCurrentTest().equals(result.getTotalTests());
     }

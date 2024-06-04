@@ -1,36 +1,24 @@
 package com.dlqudtjs.codingbattle.dto.game.requestDto;
 
-import com.dlqudtjs.codingbattle.common.constant.JudgeResultCode;
-import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ParsedJudgeResultResponseDto;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
-public class JudgeResultResponseDto {
+public class JudgeResultRequestDto {
 
-    @NotNull
     private String roomId;
 
-    @NotNull
     private String userId;
 
-    @NotNull
     private String problemId;
 
-    @NotNull
     private String submitId;
 
-    @NotNull
-    private ProgrammingLanguage language;
+    private String language;
 
-    @NotNull
     private String testcaseNumber;
 
-    @NotNull
-    private JudgeResultCode result;
+    private String result;
 
     private String errorMessage;
     private String executionTime;
