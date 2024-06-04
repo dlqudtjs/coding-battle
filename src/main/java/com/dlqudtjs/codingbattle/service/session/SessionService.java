@@ -12,6 +12,8 @@ public interface SessionService {
 
     void startGame(User user);
 
+    void endGame(User user);
+
     Boolean isUserInGame(User user);
 
     void initSessionStatus(User user);

@@ -36,6 +36,11 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    public void endGame(User user) {
+        sessionStatusRepository.endGame(user);
+    }
+
+    @Override
     public Boolean isUserInGame(User user) {
         return sessionStatusRepository.isUserInGame(user);
     }
