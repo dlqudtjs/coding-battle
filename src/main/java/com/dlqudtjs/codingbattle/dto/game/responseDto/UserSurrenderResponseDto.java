@@ -5,8 +5,8 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class SubmitDoneResponseDto {
+public class UserSurrenderResponseDto {
 
     private String userId;
-    private Boolean submitDone;
+    private Boolean surrender;
 }
