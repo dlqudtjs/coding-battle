@@ -43,11 +43,6 @@ public class SubmitServiceImpl implements SubmitService {
                 .submitResultCode(submitResultCode)
                 .build());
 
-        submitRepository.updateSubmitResult(
-                judgeResultResponseDto.getSubmitId(),
-                judgeResultResponseDto.getExecutionTime(),
-                submitResultCode.getId());
-
         gameService.getGameSession(judgeResultResponseDto.getRoomId()).reflectSubmit(submit);
     }
 
