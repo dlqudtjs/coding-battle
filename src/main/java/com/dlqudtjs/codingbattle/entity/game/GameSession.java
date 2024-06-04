@@ -98,12 +98,13 @@ public class GameSession {
     private Boolean canEndGame() {
         return isAlone() ||
                 isTimeOver() ||
-                isAllUserSubmitDone();
+                isAllUserSurrender();
     }
 
     public void reflectSubmit(Submit submit) {
         if (JudgeResultCode.isPass(submit)) {
             submitQueue.add(submit);
+            surrender(submit.getUser());
         }
     }
 
@@ -111,14 +112,14 @@ public class GameSession {
         room.getUserList().forEach(user -> {
             gameUserStatusMap.put(user, GameUserStatus.builder()
                     .user(user)
-                    .isSubmitDone(false)
+                    .isSurrender(false)
                     .build());
         });
     }
 
-    public Boolean toggleSubmitDone(User user) {
+    public User surrender(User user) {
         GameUserStatus gameUserStatus = gameUserStatusMap.get(user);
-        return gameUserStatus.toggleSubmitDone();
+        return gameUserStatus.surrender();
     }
 
 
@@ -135,9 +136,9 @@ public class GameSession {
     }
 
     // 모든 유저가 `다 풀었어요!` 버튼을 눌렀는지 확인
-    private Boolean isAllUserSubmitDone() {
+    private Boolean isAllUserSurrender() {
         return gameUserStatusMap.values().stream()
-                .allMatch(GameUserStatus::getIsSubmitDone);
+                .allMatch(GameUserStatus::isSurrender);
     }
 
     public List<ProblemInfoResponseDto> getProblemInfo() {
