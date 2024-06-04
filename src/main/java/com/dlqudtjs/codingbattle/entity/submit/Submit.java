@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.entity.submit;
 
+import com.dlqudtjs.codingbattle.dto.game.requestDto.UpdateSubmitResultRequestDto;
 import com.dlqudtjs.codingbattle.entity.game.MatchHistory;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import jakarta.persistence.Column;
@@ -72,6 +73,11 @@ public class Submit implements Comparable<Submit> {
 
     public SubmitResultCode getSubmitResultCode() {
         return submitResultCode;
+    }
+
+    public void updateSubmitResult(UpdateSubmitResultRequestDto updateSubmitResultRequestDto) {
+        this.executionTime = updateSubmitResultRequestDto.getExecutionTime();
+        this.submitResultCode = updateSubmitResultRequestDto.getSubmitResultCode();
     }
 
     @Override

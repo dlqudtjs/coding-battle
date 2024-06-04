@@ -4,6 +4,7 @@ import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.IN
 
 import com.dlqudtjs.codingbattle.common.constant.JudgeResultCode;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
+import com.dlqudtjs.codingbattle.dto.game.requestDto.UpdateSubmitResultRequestDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ParsedJudgeResultResponseDto;
 import com.dlqudtjs.codingbattle.dto.judge.JudgeProblemRequestDto;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
@@ -34,7 +35,13 @@ public class SubmitServiceImpl implements SubmitService {
         Submit submit = submitRepository.findById(judgeResultResponseDto.getSubmitId()).orElseThrow(
                 () -> new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus()));
 
-        SubmitResultCode submitResultCode = getSubmitResultCode(judgeResultResponseDto.getResult());
+        SubmitResultCode submitResultCode = getSubmitResultCode(
+                JudgeResultCode.valueOf(judgeResultResponseDto.getResult()));
+
+        submit.updateSubmitResult(UpdateSubmitResultRequestDto.builder()
+                .executionTime(judgeResultResponseDto.getExecutionTime())
+                .submitResultCode(submitResultCode)
+                .build());
 
         submitRepository.updateSubmitResult(
                 judgeResultResponseDto.getSubmitId(),
