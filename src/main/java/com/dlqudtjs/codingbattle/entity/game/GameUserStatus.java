@@ -6,15 +6,15 @@ import lombok.Builder;
 @Builder
 public class GameUserStatus {
     private User user;
-    private Boolean isSubmitDone;
+    private Boolean isSurrender;
 
-    public Boolean getIsSubmitDone() {
-        return isSubmitDone;
+    public Boolean isSurrender() {
+        return isSurrender;
     }
 
-    public Boolean toggleSubmitDone() {
-        isSubmitDone = !isSubmitDone;
-        return isSubmitDone;
+    public User surrender() {
+        isSurrender = true;
+        return user;
     }
 
     public User getUser() {
