@@ -126,7 +126,7 @@ public class Room {
         return !password.isBlank();
     }
 
-    public Boolean checkAvailableLanguage(ProgrammingLanguage language) {
+    public Boolean isAvailableLanguage(ProgrammingLanguage language) {
         return language.equals(ProgrammingLanguage.DEFAULT) || gameRunningConfig.getLanguage().equals(language);
     }
 

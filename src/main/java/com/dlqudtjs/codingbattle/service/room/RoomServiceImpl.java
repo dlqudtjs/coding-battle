@@ -4,6 +4,7 @@ import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.IN
 import static com.dlqudtjs.codingbattle.common.constant.code.RoomConfigCode.INVALID_REQUEST;
 import static com.dlqudtjs.codingbattle.common.constant.code.SocketConfigCode.NOT_CONNECT_USER;
 
+import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.exception.CustomSocketException;
@@ -152,7 +153,9 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Room updateRoomStatus(
-            Long roomId, String sessionId, RoomStatusUpdateMessageRequestDto requestDto) {
+            Long roomId,
+            String sessionId,
+            RoomStatusUpdateMessageRequestDto requestDto) {
         validateUpdateRoomStatusRequest(roomId, sessionId);
 
         return roomMap.get(roomId).updateRoomStatus(requestDto);
@@ -163,10 +166,10 @@ public class RoomServiceImpl implements RoomService {
             Long roomId,
             String sessionId,
             RoomUserStatusUpdateRequestDto requestDto) {
-        validateUpdateRoomUserStatusRequest(roomId, sessionId, requestDto);
+        validateUpdateRoomUserStatusRequest(roomId, requestDto);
 
         Room room = roomMap.get(roomId);
-        User user = userService.getUser(requestDto.getUserId());
+        User user = WebsocketSessionHolder.getUserFromSessionId(sessionId);
 
         return room.updateRoomUserStatus(requestDto, user);
     }
@@ -187,22 +190,9 @@ public class RoomServiceImpl implements RoomService {
 
     private void validateUpdateRoomUserStatusRequest(
             Long roomId,
-            String sessionId,
             RoomUserStatusUpdateRequestDto requestDto) {
-        Room room = roomMap.get(roomId);
-        User user = WebsocketSessionHolder.getUserFromSessionId(sessionId);
-
         validateRoomExistence(roomId);
-
-        // 세션 아이디와 요청한 유저 아이디가 일치하지 않으면
-        if (!requestDto.getUserId().equals(user.getUserId())) {
-            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
-        }
-
-        // 밤에 설정된 language외 다른 language로 변경하려고 하면
-        if (room.checkAvailableLanguage(requestDto.getLanguage())) {
-            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
-        }
+        validateUserLanguage(roomId, requestDto.getLanguage());
     }
 
     private GameRunningConfig createGameRunningConfig(RoomCreateRequestDto requestDto, Long newRoomId) {
@@ -216,6 +206,7 @@ public class RoomServiceImpl implements RoomService {
     private Boolean isFullRoom(Long roomId) {
         return roomMap.get(roomId).isFull();
     }
+
 
     private void validateUpdateRoomStatusRequest(Long roomId, String sessionId) {
         User socketUser = WebsocketSessionHolder.getUserFromSessionId(sessionId);
@@ -247,6 +238,12 @@ public class RoomServiceImpl implements RoomService {
         }
 
         return user;
+    }
+
+    private void validateUserLanguage(Long roomId, ProgrammingLanguage language) {
+        if (!roomMap.get(roomId).isAvailableLanguage(language)) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
+        }
     }
 
     private void validateUserIsHost(Long roomId, User user) {
