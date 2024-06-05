@@ -28,8 +28,8 @@ public class SocketRoomController {
     private final SimpMessagingTemplate messagingTemplate;
     private final RoomService roomService;
 
-    @MessageMapping("/room/message/{roomId}")
-    @SendTo("/topic/room/{roomId}")
+    @MessageMapping("/rooms/{roomId}/messages/")
+    @SendTo("/topic/rooms/{roomId}")
     public SendToRoomMessageResponseDto sendToRoom(
             @DestinationVariable("roomId") Long roomId,
             @Payload SendToRoomMessageRequestDto sendToRoomMessageRequestDto,
@@ -43,8 +43,8 @@ public class SocketRoomController {
         messagingTemplate.convertAndSend("/topic/room/" + roomId, responseDto);
     }
 
-    @MessageMapping("/room/{roomId}/update/room-status")
-    @SendTo("/topic/room/{roomId}")
+    @MessageMapping("/rooms/{roomId}/update/room-status")
+    @SendTo("/topic/rooms/{roomId}")
     public RoomStatusUpdateMessageResponseDto updateRoom(
             @DestinationVariable("roomId") Long roomId,
             @Payload RoomStatusUpdateMessageRequestDto roomStatusUpdateMessageRequestDto,
@@ -61,8 +61,8 @@ public class SocketRoomController {
                 .build();
     }
 
-    @MessageMapping("/room/{roomId}/update/user-status")
-    @SendTo("/topic/room/{roomId}")
+    @MessageMapping("/rooms/{roomId}/update/user-status")
+    @SendTo("/topic/rooms/{roomId}")
     public RoomUserStatusUpdateMessageResponseDto updateUserStatus(
             @DestinationVariable("roomId") Long roomId,
             @Payload RoomUserStatusUpdateRequestDto roomUserStatusUpdateRequestDto,
