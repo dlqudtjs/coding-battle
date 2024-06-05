@@ -96,7 +96,7 @@ public class RoomController {
                 .build());
     }
 
-    @PostMapping("/v1/rooms/{roomId}/leave/")
+    @PostMapping("/v1/rooms/{roomId}/leave")
     public ResponseEntity<ResponseDto> leaveRoom(@PathVariable("roomId") Long roomId,
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
@@ -115,7 +115,7 @@ public class RoomController {
 
         gameService.startGame(roomId, user);
 
-        messagingTemplate.convertAndSend("/topic/room/" + roomId,
+        messagingTemplate.convertAndSend("/topic/rooms/" + roomId,
                 GameStartMessageResponseDto.builder()
                         .startMessage("Game Start")
                         .build()
@@ -155,7 +155,7 @@ public class RoomController {
     }
 
     private void sendEnterRoomUserStatusMessage(Long roomId, UserInfo userInfo) {
-        messagingTemplate.convertAndSend("/topic/room/" + roomId,
+        messagingTemplate.convertAndSend("/topic/rooms/" + roomId,
                 RoomEnterUserStatusMessageResponseDto.builder()
                         .enterUserStatus(RoomUserStatusResponseDto.builder()
                                 .userId(userInfo.getUser().getUserId())
@@ -167,7 +167,7 @@ public class RoomController {
     }
 
     private void sendLeaveRoomUserStatusMessage(Long roomId, LeaveRoomUserStatus leaveRoomUserStatus) {
-        messagingTemplate.convertAndSend("/topic/room/" + roomId,
+        messagingTemplate.convertAndSend("/topic/rooms/" + roomId,
                 RoomLeaveUserStatusMessageResponseDto.builder()
                         .leaveUserStatus(RoomLeaveUserStatusResponseDto.builder()
                                 .roomId(leaveRoomUserStatus.getRoomId())
