@@ -2,11 +2,12 @@ package com.dlqudtjs.codingbattle.controller;
 
 import com.dlqudtjs.codingbattle.common.constant.code.RoomConfigCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
+import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameStartMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomEnterRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomListResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomInfoResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomLeaveUserStatusResponseDto;
+import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomListResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomEnterUserStatusMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomLeaveUserStatusMessageResponseDto;
@@ -15,6 +16,7 @@ import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserInfo;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
+import com.dlqudtjs.codingbattle.service.game.GameService;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import com.dlqudtjs.codingbattle.service.session.SessionService;
 import com.dlqudtjs.codingbattle.service.user.UserService;
@@ -37,8 +39,9 @@ public class RoomController {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final SimpMessagingTemplate messagingTemplate;
-    private final RoomService roomService;
     private final SessionService sessionService;
+    private final GameService gameService;
+    private final RoomService roomService;
     private final UserService userService;
 
     @PostMapping("/v1/room")
@@ -103,6 +106,24 @@ public class RoomController {
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
+
+
+    @PostMapping("/v1/game/{roomId}/start")
+    public ResponseEntity<ResponseDto> startGame(@PathVariable("roomId") Long roomId,
+                                                 @RequestHeader("Authorization") String token) {
+        User user = userService.getUser(jwtTokenProvider.getUserName(token));
+
+        gameService.startGame(roomId, user);
+
+        messagingTemplate.convertAndSend("/topic/room/" + roomId,
+                GameStartMessageResponseDto.builder()
+                        .startMessage("Game Start")
+                        .build()
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
 
     @GetMapping("/v1/roomList")
     public ResponseEntity<ResponseDto> getRoomList() {

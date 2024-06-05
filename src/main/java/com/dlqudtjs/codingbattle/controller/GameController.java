@@ -9,7 +9,6 @@ import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemsResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.UserSurrenderResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameEndMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameLeaveUserStatusMessageResponseDto;
-import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameStartMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.UserSurrenderMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameUserStatusListMessageResponseDto;
@@ -42,22 +41,6 @@ public class GameController {
     private final RoomService roomService;
     private final UserService userService;
     private final GameService gameService;
-
-    @PostMapping("/v1/game/{roomId}/start")
-    public ResponseEntity<ResponseDto> startGame(@PathVariable("roomId") Long roomId,
-                                                 @RequestHeader("Authorization") String token) {
-        User user = userService.getUser(jwtTokenProvider.getUserName(token));
-
-        gameService.startGame(roomId, user);
-
-        messagingTemplate.convertAndSend("/topic/room/" + roomId,
-                GameStartMessageResponseDto.builder()
-                        .startMessage("Game Start")
-                        .build()
-        );
-
-        return ResponseEntity.status(HttpStatus.OK).body(null);
-    }
 
     @GetMapping("/v1/game/{roomId}/problems")
     public ResponseEntity<ProblemsResponseDto> getProblems(@PathVariable("roomId") Long roomId,
