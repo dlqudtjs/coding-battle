@@ -18,4 +18,12 @@ public enum GameSetting {
     GAME_START_MIN_USER_COUNT(2);
 
     private final int value;
+
+    public static final int MIN_USER_COUNT_VALUE = 2;
+    public static final int MAX_USER_COUNT_VALUE = 4;
+    public static final int MIN_SUBMISSION_COUNT_VALUE = 1;
+    public static final int MAX_SUBMISSION_COUNT_VALUE = 10;
+    public static final int MIN_LIMIT_TIME_VALUE = 10;
+    public static final int MAX_LIMIT_TIME_VALUE = 120;
+
 }

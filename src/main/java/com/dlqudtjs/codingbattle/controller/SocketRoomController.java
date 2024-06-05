@@ -60,8 +60,6 @@ public class SocketRoomController {
             @DestinationVariable("roomId") Long roomId,
             @Payload RoomStatusUpdateMessageRequestDto roomStatusUpdateMessageRequestDto,
             SimpMessageHeaderAccessor headerAccessor) {
-        roomStatusUpdateMessageRequestDto.validate();
-
         Room room = roomService.updateRoomStatus(
                 roomId,
                 headerAccessor.getSessionId(),
