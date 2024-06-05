@@ -7,9 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum MessageType {
 
-    SYSTEM("SYSTEM"),
-    USER("USER"),
+    SYSTEM,
+    USER,
     ;
-
-    private final String messageType;
 }
