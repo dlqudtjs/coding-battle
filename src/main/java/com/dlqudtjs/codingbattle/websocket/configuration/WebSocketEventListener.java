@@ -2,10 +2,10 @@ package com.dlqudtjs.codingbattle.websocket.configuration;
 
 import com.dlqudtjs.codingbattle.common.constant.Header;
 import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
+import com.dlqudtjs.codingbattle.controller.GameController;
+import com.dlqudtjs.codingbattle.controller.RoomController;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomEnterRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomLeaveUserStatusResponseDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomLeaveUserStatusMessageResponseDto;
-import com.dlqudtjs.codingbattle.entity.room.LeaveRoomUserStatus;
+import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
@@ -14,7 +14,6 @@ import com.dlqudtjs.codingbattle.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.event.EventListener;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
@@ -25,9 +24,10 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 @Log4j2
 public class WebSocketEventListener {
 
-    private final SimpMessagingTemplate simpMessagingTemplate;
     private final JwtTokenProvider jwtTokenProvider;
     private final SessionService sessionService;
+    private final GameController gameController;
+    private final RoomController roomController;
     private final RoomService roomService;
     private final UserService userService;
 
@@ -58,19 +58,15 @@ public class WebSocketEventListener {
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         User user = WebsocketSessionHolder.getUserFromSessionId(event.getSessionId());
         Long roomId = sessionService.getRoomIdFromUser(user);
+        Room enterRoom = roomService.getRoom(roomId);
 
-        LeaveRoomUserStatus leaveRoomUserStatus = roomService.leave(roomId, user);
+        if (enterRoom.isStarted()) {
+            gameController.logout(roomId, user);
+        } else {
+            roomController.logout(roomId, user);
+        }
+
         sessionService.removeSessionStatus(user);
         WebsocketSessionHolder.removeSessionIdFromUser(user);
-
-        simpMessagingTemplate.convertAndSend("/topic/room/" + roomId,
-                RoomLeaveUserStatusMessageResponseDto.builder()
-                        .leaveUserStatus(RoomLeaveUserStatusResponseDto.builder()
-                                .roomId(leaveRoomUserStatus.getRoomId())
-                                .userId(leaveRoomUserStatus.getUser().getUserId())
-                                .isHost(leaveRoomUserStatus.getIsHost())
-                                .build())
-                        .build()
-        );
     }
 }
