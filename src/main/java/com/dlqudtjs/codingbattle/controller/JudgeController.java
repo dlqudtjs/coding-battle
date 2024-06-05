@@ -35,7 +35,7 @@ public class JudgeController {
     private final SubmitService submitService;
     private final SimpMessagingTemplate messagingTemplate;
 
-    @PostMapping("/v1/judge")
+    @PostMapping("/v1/judges")
     public ResponseEntity<ResponseDto> judge(@Valid @RequestBody JudgeProblemRequestDto judgeProblemRequestDto,
                                              @RequestHeader("Authorization") String token) {
         if (!jwtTokenProvider.getUserName(token).equals(judgeProblemRequestDto.getUserId())) {
@@ -46,7 +46,7 @@ public class JudgeController {
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
-    @PostMapping("/v1/judge/results")
+    @PostMapping("/v1/judges/results")
     public ResponseEntity<ResponseDto> judgeResults(@RequestBody JudgeResultRequestDto JudgeResultRequestDto) {
 
         // secret key 검증
