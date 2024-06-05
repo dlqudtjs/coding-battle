@@ -60,9 +60,11 @@ public class SocketRoomController {
             @DestinationVariable("roomId") Long roomId,
             @Payload RoomStatusUpdateMessageRequestDto roomStatusUpdateMessageRequestDto,
             SimpMessageHeaderAccessor headerAccessor) {
+        User user = WebsocketSessionHolder.getUserFromSessionId(headerAccessor.getSessionId());
+        
         Room room = roomService.updateRoomStatus(
                 roomId,
-                headerAccessor.getSessionId(),
+                user,
                 roomStatusUpdateMessageRequestDto);
 
         return RoomStatusUpdateMessageResponseDto.builder()

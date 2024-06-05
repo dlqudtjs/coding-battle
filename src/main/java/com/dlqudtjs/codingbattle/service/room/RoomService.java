@@ -32,7 +32,7 @@ public interface RoomService {
 
     Boolean isStartedGame(Long roomId);
 
-    Room updateRoomStatus(Long roomId, String sessionId, RoomStatusUpdateMessageRequestDto requestDto);
+    Room updateRoomStatus(Long roomId, User user, RoomStatusUpdateMessageRequestDto requestDto);
 
     RoomUserStatus updateRoomUserStatus(Long roomId, String sessionId, RoomUserStatusUpdateRequestDto requestDto);
 }
