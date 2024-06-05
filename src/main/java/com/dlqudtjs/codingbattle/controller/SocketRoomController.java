@@ -28,7 +28,7 @@ public class SocketRoomController {
     private final SimpMessagingTemplate messagingTemplate;
     private final RoomService roomService;
 
-    @MessageMapping("/rooms/{roomId}/messages/")
+    @MessageMapping("/rooms/{roomId}/messages")
     @SendTo("/topic/rooms/{roomId}")
     public SendToRoomMessageResponseDto sendToRoom(
             @DestinationVariable("roomId") Long roomId,
@@ -39,9 +39,6 @@ public class SocketRoomController {
         return roomService.parseMessage(roomId, headerAccessor.getSessionId(), sendToRoomMessageRequestDto);
     }
 
-    public void sendToRoom(Long roomId, Object responseDto) {
-        messagingTemplate.convertAndSend("/topic/room/" + roomId, responseDto);
-    }
 
     @MessageMapping("/rooms/{roomId}/update/room-status")
     @SendTo("/topic/rooms/{roomId}")
@@ -86,5 +83,9 @@ public class SocketRoomController {
     @MessageExceptionHandler
     public void handleException(CustomSocketException e) {
         messagingTemplate.convertAndSend("/topic/errors", e.getMessage());
+    }
+
+    public void sendToRoom(Long roomId, Object responseDto) {
+        messagingTemplate.convertAndSend("/topic/rooms/" + roomId, responseDto);
     }
 }
