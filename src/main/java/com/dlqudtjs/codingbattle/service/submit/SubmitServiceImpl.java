@@ -35,8 +35,7 @@ public class SubmitServiceImpl implements SubmitService {
         Submit submit = submitRepository.findById(judgeResultResponseDto.getSubmitId()).orElseThrow(
                 () -> new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus()));
 
-        SubmitResultCode submitResultCode = getSubmitResultCode(
-                JudgeResultCode.valueOf(judgeResultResponseDto.getResult()));
+        SubmitResultCode submitResultCode = getSubmitResultCode(judgeResultResponseDto.getResult());
 
         submit.updateSubmitResult(UpdateSubmitResultRequestDto.builder()
                 .executionTime(judgeResultResponseDto.getExecutionTime())
