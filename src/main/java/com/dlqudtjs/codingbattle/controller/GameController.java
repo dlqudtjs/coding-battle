@@ -1,15 +1,10 @@
 package com.dlqudtjs.codingbattle.controller;
 
-import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
-
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
-import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.GameEndResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemsResponseDto;
-import com.dlqudtjs.codingbattle.dto.game.responseDto.UserSurrenderResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameEndMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameLeaveUserStatusMessageResponseDto;
-import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.UserSurrenderMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.GameUserStatusListMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
@@ -105,27 +100,12 @@ public class GameController {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
-    @PostMapping("/v1/games/{roomId}/{userId}/surrender")
-    public ResponseEntity<ResponseDto> surrender(@PathVariable("roomId") Long roomId,
-                                                 @PathVariable("userId") String userId,
-                                                 @RequestHeader("Authorization") String token) {
-        User user = userService.getUser(jwtTokenProvider.getUserName(token));
-        if (!user.getUserId().equals(userId)) {
-            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
-        }
+    public void logout(Long roomId, User user) {
+        LeaveGameUserStatus leaveGameUserStatus = gameService.leaveGame(roomId, user);
 
-        User surrenderUser = gameService.surrender(
-                roomId,
-                userService.getUser(jwtTokenProvider.getUserName(token)));
-
-        messagingTemplate.convertAndSend("/topic/room/" + roomId,
-                UserSurrenderMessageResponseDto.builder()
-                        .userSurrender(UserSurrenderResponseDto.builder()
-                                .userId(surrenderUser.getUserId())
-                                .surrender(true)
-                                .build())
+        messagingTemplate.convertAndSend("/topic/rooms/" + roomId,
+                GameLeaveUserStatusMessageResponseDto.builder()
+                        .leaveUserStatus(leaveGameUserStatus)
                         .build());
-
-        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }
