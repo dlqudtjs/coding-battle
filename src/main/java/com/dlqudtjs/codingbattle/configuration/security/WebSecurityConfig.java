@@ -43,7 +43,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/v1/oauth/sign-in").permitAll()
                                 .requestMatchers("/v1/oauth/check-userId/**").permitAll()
                                 .requestMatchers("/socket-endpoint").permitAll()
-                                .requestMatchers("/v1/judge/results").permitAll()
+                                .requestMatchers("/v1/judges/results").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .exceptionHandling((exceptionHandling) ->
