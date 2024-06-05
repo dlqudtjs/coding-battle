@@ -42,7 +42,7 @@ public class GameController {
     private final UserService userService;
     private final GameService gameService;
 
-    @GetMapping("/v1/game/{roomId}/problems")
+    @GetMapping("/v1/games/{roomId}/problems")
     public ResponseEntity<ProblemsResponseDto> getProblems(@PathVariable("roomId") Long roomId,
                                                            @RequestHeader("Authorization") String token) {
         GameSession gameSession = gameService.getGameSession(roomId);
@@ -51,7 +51,7 @@ public class GameController {
                 .problems(gameSession.getProblemInfo()).build());
     }
 
-    @PostMapping("/v1/game/{roomId}/leave")
+    @PostMapping("/v1/games/{roomId}/leave")
     public ResponseEntity<ResponseDto> leaveGame(@PathVariable("roomId") Long roomId,
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
@@ -66,7 +66,7 @@ public class GameController {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
-    @PostMapping("/v1/game/{roomId}/end")
+    @PostMapping("/v1/games/{roomId}/end")
     public ResponseEntity<ResponseDto> endGame(@PathVariable("roomId") Long roomId,
                                                @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
@@ -105,7 +105,7 @@ public class GameController {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
-    @PostMapping("/v1/game/{roomId}/{userId}/surrender")
+    @PostMapping("/v1/games/{roomId}/{userId}/surrender")
     public ResponseEntity<ResponseDto> surrender(@PathVariable("roomId") Long roomId,
                                                  @PathVariable("userId") String userId,
                                                  @RequestHeader("Authorization") String token) {
