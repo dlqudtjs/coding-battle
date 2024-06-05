@@ -65,10 +65,10 @@ public class GameServiceImpl implements GameService {
         GameSession gameSession = gameSessionMap.get(roomId);
 
         Winner winner = gameSession.endGame(user);
-        gameSessionMap.remove(roomId);
 
         // 매치 기록 저장
         matchService.saveUserMatchHistory(gameSession, winner);
+        gameSessionMap.remove(roomId);
 
         return winner;
     }
