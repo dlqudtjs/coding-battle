@@ -3,9 +3,7 @@ package com.dlqudtjs.codingbattle.service.room;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.requestdto.SendToRoomMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.RoomStatusUpdateMessageRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.room.LeaveRoomUserStatus;
 import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.room.RoomUserStatus;
@@ -33,9 +31,6 @@ public interface RoomService {
     Boolean isExistRoom(Long roomId);
 
     Boolean isStartedGame(Long roomId);
-
-    SendToRoomMessageResponseDto parseMessage(Long roomId, User user,
-                                              SendToRoomMessageRequestDto requestDto);
 
     Room updateRoomStatus(Long roomId, String sessionId, RoomStatusUpdateMessageRequestDto requestDto);
 

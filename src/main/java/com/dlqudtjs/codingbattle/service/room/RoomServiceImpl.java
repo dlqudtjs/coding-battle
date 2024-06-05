@@ -4,16 +4,13 @@ import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.IN
 import static com.dlqudtjs.codingbattle.common.constant.code.RoomConfigCode.INVALID_REQUEST;
 import static com.dlqudtjs.codingbattle.common.constant.code.SocketConfigCode.NOT_CONNECT_USER;
 
-import com.dlqudtjs.codingbattle.common.constant.MessageType;
 import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.exception.CustomSocketException;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomEnterRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.requestdto.SendToRoomMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.RoomStatusUpdateMessageRequestDto;
-import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.game.GameRunningConfig;
 import com.dlqudtjs.codingbattle.entity.room.LeaveRoomUserStatus;
 import com.dlqudtjs.codingbattle.entity.room.Room;
@@ -24,7 +21,6 @@ import com.dlqudtjs.codingbattle.service.session.SessionService;
 import com.dlqudtjs.codingbattle.service.user.UserService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import jakarta.annotation.PostConstruct;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
@@ -154,26 +150,6 @@ public class RoomServiceImpl implements RoomService {
         return List.copyOf(roomMap.values());
     }
 
-    /*
-     방에 보내는 메시지의 유효성을 검사하고 SendToRoomMessageResponseDto로 변환하는 메서드
-     */
-    @Override
-    public SendToRoomMessageResponseDto parseMessage(
-            Long roomId,
-            User user,
-            SendToRoomMessageRequestDto requestDto) {
-        validateRoomExistence(roomId);
-        validateUserSession(user);
-        validateUserInRoom(roomId, user);
-
-        return SendToRoomMessageResponseDto.builder()
-                .messageType(MessageType.USER)
-                .senderId(user.getUserId())
-                .message(requestDto.getMessage())
-                .sendTime(new Timestamp(System.currentTimeMillis()))
-                .build();
-    }
-
     @Override
     public Room updateRoomStatus(
             Long roomId, String sessionId, RoomStatusUpdateMessageRequestDto requestDto) {
@@ -298,7 +274,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     // 방이 존재하지 않으면
-    private void validateRoomExistence(Long roomId) {
+    public void validateRoomExistence(Long roomId) {
         if (!roomMap.containsKey(roomId)) {
             throw new Custom4XXException(INVALID_REQUEST.getMessage(), INVALID_REQUEST.getStatus());
         }

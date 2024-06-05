@@ -1,5 +1,7 @@
 package com.dlqudtjs.codingbattle.controller;
 
+import com.dlqudtjs.codingbattle.common.constant.MessageType;
+import com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode;
 import com.dlqudtjs.codingbattle.common.exception.CustomSocketException;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.SendToRoomMessageRequestDto;
@@ -13,6 +15,7 @@ import com.dlqudtjs.codingbattle.entity.room.RoomUserStatus;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
+import java.sql.Timestamp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
@@ -38,7 +41,16 @@ public class SocketRoomController {
             SimpMessageHeaderAccessor headerAccessor) {
         User user = WebsocketSessionHolder.getUserFromSessionId(headerAccessor.getSessionId());
 
-        return roomService.parseMessage(roomId, user, sendToRoomMessageRequestDto);
+        if (roomService.isExistRoom(roomId) && !roomService.isExistUserInRoom(user, roomId)) {
+            throw new CustomSocketException(CommonConfigCode.INVALID_INPUT_VALUE.getMessage());
+        }
+
+        return SendToRoomMessageResponseDto.builder()
+                .messageType(MessageType.USER)
+                .senderId(user.getUserId())
+                .message(sendToRoomMessageRequestDto.getMessage())
+                .sendTime(new Timestamp(System.currentTimeMillis()))
+                .build();
     }
 
 
