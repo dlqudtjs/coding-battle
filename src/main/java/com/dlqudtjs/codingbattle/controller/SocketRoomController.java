@@ -10,7 +10,9 @@ import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomStat
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomUserStatusUpdateMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.room.RoomUserStatus;
+import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
+import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
@@ -34,9 +36,9 @@ public class SocketRoomController {
             @DestinationVariable("roomId") Long roomId,
             @Payload SendToRoomMessageRequestDto sendToRoomMessageRequestDto,
             SimpMessageHeaderAccessor headerAccessor) {
-        sendToRoomMessageRequestDto.validate();
+        User user = WebsocketSessionHolder.getUserFromSessionId(headerAccessor.getSessionId());
 
-        return roomService.parseMessage(roomId, headerAccessor.getSessionId(), sendToRoomMessageRequestDto);
+        return roomService.parseMessage(roomId, user, sendToRoomMessageRequestDto);
     }
 
 
