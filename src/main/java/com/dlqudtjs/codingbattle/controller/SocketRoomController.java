@@ -85,6 +85,6 @@ public class SocketRoomController {
 
     @MessageExceptionHandler
     public void handleException(CustomSocketException e) {
-        messagingTemplate.convertAndSend("/topic/error", e.getMessage());
+        messagingTemplate.convertAndSend("/topic/errors", e.getMessage());
     }
 }
