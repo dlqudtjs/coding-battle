@@ -58,14 +58,12 @@ public class JudgeController {
         log.info("userId : " + JudgeResultRequestDto.getUserId() + " / " +
                 "result : " + JudgeResultRequestDto.getResult());
 
-        System.out.println("results : " + JudgeResultRequestDto.getResult());
-
         JudgeResultMessageResponseDto responseDto = JudgeResultMessageResponseDto.builder()
                 .judgeResult(JudgeResultRequestDto.toParsedJudgeResultResponseDto())
                 .build();
 
         // 결과 전송
-        messagingTemplate.convertAndSend("/topic/room/" + JudgeResultRequestDto.getRoomId(), responseDto);
+        messagingTemplate.convertAndSend("/topic/rooms/" + JudgeResultRequestDto.getRoomId(), responseDto);
 
         // 결과 저장 (마지막 테스트까지 통과, Fail, Error)
         if (isFinished(JudgeResultRequestDto)) {
@@ -77,7 +75,7 @@ public class JudgeController {
     }
 
     private Boolean isFinished(JudgeResultRequestDto result) {
-        return !result.getResult().equals(JudgeResultCode.PASS.name()) ||
+        return !result.getResult().equals(JudgeResultCode.PASS) ||
                 result.getCurrentTest().equals(result.getTotalTests());
     }
 }
