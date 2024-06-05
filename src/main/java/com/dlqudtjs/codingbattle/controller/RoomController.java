@@ -154,6 +154,11 @@ public class RoomController {
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
+    public void logout(Long roomId, User user) {
+        LeaveRoomUserStatus leaveRoomUserStatus = roomService.leave(roomId, user);
+        sendLeaveRoomUserStatusMessage(roomId, leaveRoomUserStatus);
+    }
+
     private void sendEnterRoomUserStatusMessage(Long roomId, UserInfo userInfo) {
         messagingTemplate.convertAndSend("/topic/rooms/" + roomId,
                 RoomEnterUserStatusMessageResponseDto.builder()
