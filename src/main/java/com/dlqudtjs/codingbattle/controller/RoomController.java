@@ -44,7 +44,7 @@ public class RoomController {
     private final RoomService roomService;
     private final UserService userService;
 
-    @PostMapping("/v1/room")
+    @PostMapping("/v1/rooms")
     public ResponseEntity<ResponseDto> createRoom(@Valid @RequestBody RoomCreateRequestDto requestDto,
                                                   @RequestHeader("Authorization") String token) {
         UserInfo userInfo = userService.getUserInfo(jwtTokenProvider.getUserName(token));
@@ -69,7 +69,7 @@ public class RoomController {
                 .build());
     }
 
-    @PostMapping("/v1/room/enter")
+    @PostMapping("/v1/rooms/{roomId}/enter")
     public ResponseEntity<ResponseDto> enterRoom(@Valid @RequestBody RoomEnterRequestDto requestDto,
                                                  @RequestHeader("Authorization") String token) {
         UserInfo userInfo = userService.getUserInfo(jwtTokenProvider.getUserName(token));
@@ -96,7 +96,7 @@ public class RoomController {
                 .build());
     }
 
-    @PostMapping("/v1/room/leave/{roomId}")
+    @PostMapping("/v1/rooms/{roomId}/leave/")
     public ResponseEntity<ResponseDto> leaveRoom(@PathVariable("roomId") Long roomId,
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
@@ -108,7 +108,7 @@ public class RoomController {
     }
 
 
-    @PostMapping("/v1/game/{roomId}/start")
+    @PostMapping("/v1/rooms/{roomId}/start")
     public ResponseEntity<ResponseDto> startGame(@PathVariable("roomId") Long roomId,
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
@@ -125,7 +125,7 @@ public class RoomController {
     }
 
 
-    @GetMapping("/v1/roomList")
+    @GetMapping("/v1/roomLists")
     public ResponseEntity<ResponseDto> getRoomList() {
         List<Room> roomList = roomService.getRoomList();
 
