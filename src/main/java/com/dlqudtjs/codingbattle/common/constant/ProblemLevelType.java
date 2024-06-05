@@ -23,16 +23,6 @@ public enum ProblemLevelType {
 
     private final int value;
 
-    public static ProblemLevelType getProblemLevel(int value) {
-        for (ProblemLevelType pl : ProblemLevelType.values()) {
-            if (pl.getValue() == value) {
-                return pl;
-            }
-        }
-
-        return null;
-    }
-
     @JsonCreator
     public static ProblemLevelType parsing(int input) {
         return Stream.of(ProblemLevelType.values())
