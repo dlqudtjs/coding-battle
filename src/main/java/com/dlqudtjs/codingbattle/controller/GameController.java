@@ -58,7 +58,7 @@ public class GameController {
 
         LeaveGameUserStatus leaveGameUserStatus = gameService.leaveGame(roomId, user);
 
-        messagingTemplate.convertAndSend("/topic/room/" + roomId,
+        messagingTemplate.convertAndSend("/topic/rooms/" + roomId,
                 GameLeaveUserStatusMessageResponseDto.builder()
                         .leaveUserStatus(leaveGameUserStatus)
                         .build());
@@ -81,7 +81,7 @@ public class GameController {
                 .build();
 
         // 방에 Winner 전송
-        messagingTemplate.convertAndSend("/topic/room/" + roomId,
+        messagingTemplate.convertAndSend("/topic/rooms/" + roomId,
                 GameEndMessageResponseDto.builder()
                         .gameEnd(gameEndResponseDto)
                         .build());
@@ -97,7 +97,7 @@ public class GameController {
                 .toList();
 
         // 방에 초기화된 유저 정보 전송
-        messagingTemplate.convertAndSend("/topic/room/" + roomId,
+        messagingTemplate.convertAndSend("/topic/rooms/" + roomId,
                 GameUserStatusListMessageResponseDto.builder()
                         .userStatusList(userStatus)
                         .build());
