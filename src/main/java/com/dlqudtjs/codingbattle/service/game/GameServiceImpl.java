@@ -56,7 +56,7 @@ public class GameServiceImpl implements GameService {
 
         return LeaveGameUserStatus.builder()
                 .roomId(roomId)
-                .user(user)
+                .userId(user.getUserId())
                 .build();
     }
 
