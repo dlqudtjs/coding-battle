@@ -153,7 +153,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Room updateRoomStatus(
             Long roomId, String sessionId, RoomStatusUpdateMessageRequestDto requestDto) {
-        validateUpdateRoomStatusRequest(roomId, sessionId, requestDto);
+        validateUpdateRoomStatusRequest(roomId, sessionId);
 
         return roomMap.get(roomId).updateRoomStatus(requestDto);
     }
@@ -217,8 +217,7 @@ public class RoomServiceImpl implements RoomService {
         return roomMap.get(roomId).isFull();
     }
 
-    private void validateUpdateRoomStatusRequest(
-            Long roomId, String sessionId, RoomStatusUpdateMessageRequestDto requestDto) {
+    private void validateUpdateRoomStatusRequest(Long roomId, String sessionId) {
         User socketUser = WebsocketSessionHolder.getUserFromSessionId(sessionId);
 
         validateRoomExistence(roomId);
