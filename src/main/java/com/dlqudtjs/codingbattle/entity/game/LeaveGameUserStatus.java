@@ -1,6 +1,5 @@
 package com.dlqudtjs.codingbattle.entity.game;
 
-import com.dlqudtjs.codingbattle.entity.user.User;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,6 +7,6 @@ import lombok.Getter;
 @Builder
 public class LeaveGameUserStatus {
 
-    User user;
+    String userId;
     Long roomId;
 }
