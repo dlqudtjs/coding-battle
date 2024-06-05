@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.common.constant;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,5 +39,10 @@ public enum ProblemLevelType {
                 .filter(level -> level.getValue() == input)
                 .findFirst()
                 .orElse(null);
+    }
+
+    @JsonValue
+    public int getValue() {
+        return value;
     }
 }
