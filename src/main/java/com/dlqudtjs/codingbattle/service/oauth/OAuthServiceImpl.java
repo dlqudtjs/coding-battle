@@ -140,10 +140,10 @@ public class OAuthServiceImpl implements OAuthService {
     }
 
     private void saveRefreshToken(String refreshToken, Long userId) {
-        Optional<Token> jwtToken = tokenRepository.findByUserId(userId);
+        Optional<Token> token = tokenRepository.findByUserId(userId);
 
-        if (jwtToken.isPresent()) {
-            jwtToken.get().setRefreshToken(refreshToken);
+        if (token.isPresent()) {
+            token.get().updateRefreshToken(refreshToken);
         } else {
             tokenRepository.save(Token.builder()
                     .userId(userId)

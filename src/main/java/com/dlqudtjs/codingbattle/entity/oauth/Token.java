@@ -10,12 +10,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Builder
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "token")
@@ -29,6 +26,11 @@ public class Token {
     @Column(name = "user_id", nullable = false, unique = true)
     private Long userId;
 
+    @Getter
     @Column(name = "refresh_token", nullable = false)
     private String refreshToken;
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }
