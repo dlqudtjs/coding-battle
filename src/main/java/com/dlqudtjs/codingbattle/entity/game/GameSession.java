@@ -64,78 +64,6 @@ public class GameSession {
         return user;
     }
 
-    private Winner getWinner() {
-        while (!submitQueue.isEmpty()) {
-            Submit submit = submitQueue.poll();
-
-            if (gameUserStatusMap.containsKey(submit.getUser())) {
-                return new Winner(submit.getUser(), WIN, submit);
-            }
-        }
-
-        return new Winner(User.deafultUser(), DRAW, Submit.drawSubmit());
-    }
-
-    public Boolean existUser(User user) {
-        return gameUserStatusMap.containsKey(user);
-    }
-
-    public List<User> getGameUserList() {
-        return gameUserStatusMap.values().stream()
-                .map(GameUserStatus::getUser)
-                .toList();
-    }
-
-    private MatchHistory saveMatch() {
-        return matchService.startMatch(this);
-    }
-
-    private Boolean canEndGame() {
-        return isAlone() ||
-                isTimeOver() ||
-                isAllUserSurrender();
-    }
-
-    public void reflectSubmit(Submit submit) {
-        if (JudgeResultCode.isPass(submit)) {
-            submitQueue.add(submit);
-            surrender(submit.getUser());
-        }
-    }
-
-    private void initGameUserStatusMap(Room room) {
-        room.getUserList().forEach(user -> {
-            gameUserStatusMap.put(user, GameUserStatus.builder()
-                    .user(user)
-                    .isSurrender(false)
-                    .build());
-        });
-    }
-
-    public User surrender(User user) {
-        GameUserStatus gameUserStatus = gameUserStatusMap.get(user);
-        return gameUserStatus.surrender();
-    }
-
-
-    // 방에 혼자 남았는지 확인
-    private Boolean isAlone() {
-        return gameUserStatusMap.size() == 1;
-    }
-
-    // 시간 초과 확인
-    private Boolean isTimeOver() {
-        // 밀리초 변환
-        long limitTime = gameRunningConfig.getLimitTime() * 60 * 1000;
-        return System.currentTimeMillis() - startTime > limitTime;
-    }
-
-    // 모든 유저가 `다 풀었어요!` 버튼을 눌렀는지 확인
-    private Boolean isAllUserSurrender() {
-        return gameUserStatusMap.values().stream()
-                .allMatch(GameUserStatus::isSurrender);
-    }
-
     public List<ProblemInfoResponseDto> getProblemInfo() {
         List<ProblemInfoResponseDto> infoResponseDtoList = new ArrayList<>();
 
@@ -154,5 +82,77 @@ public class GameSession {
         }
 
         return infoResponseDtoList;
+    }
+
+    public Boolean existUser(User user) {
+        return gameUserStatusMap.containsKey(user);
+    }
+
+    public List<User> getGameUserList() {
+        return gameUserStatusMap.values().stream()
+                .map(GameUserStatus::getUser)
+                .toList();
+    }
+
+    public void reflectSubmit(Submit submit) {
+        if (JudgeResultCode.isPass(submit)) {
+            submitQueue.add(submit);
+            surrender(submit.getUser());
+        }
+    }
+
+    public User surrender(User user) {
+        GameUserStatus gameUserStatus = gameUserStatusMap.get(user);
+        return gameUserStatus.surrender();
+    }
+
+    private Winner getWinner() {
+        while (!submitQueue.isEmpty()) {
+            Submit submit = submitQueue.poll();
+
+            if (gameUserStatusMap.containsKey(submit.getUser())) {
+                return new Winner(submit.getUser(), WIN, submit);
+            }
+        }
+
+        return new Winner(User.deafultUser(), DRAW, Submit.drawSubmit());
+    }
+
+
+    private MatchHistory saveMatch() {
+        return matchService.startMatch(this);
+    }
+
+    private Boolean canEndGame() {
+        return isAlone() ||
+                isTimeOver() ||
+                isAllUserSurrender();
+    }
+
+    private void initGameUserStatusMap(Room room) {
+        room.getUserList().forEach(user -> {
+            gameUserStatusMap.put(user, GameUserStatus.builder()
+                    .user(user)
+                    .isSurrender(false)
+                    .build());
+        });
+    }
+
+    // 방에 혼자 남았는지 확인
+    private Boolean isAlone() {
+        return gameUserStatusMap.size() == 1;
+    }
+
+    // 시간 초과 확인
+    private Boolean isTimeOver() {
+        // 밀리초 변환
+        long limitTime = gameRunningConfig.getLimitTime() * 60 * 1000;
+        return System.currentTimeMillis() - startTime > limitTime;
+    }
+
+    // 모든 유저가 `다 풀었어요!` 버튼을 눌렀는지 확인
+    private Boolean isAllUserSurrender() {
+        return gameUserStatusMap.values().stream()
+                .allMatch(GameUserStatus::isSurrender);
     }
 }
