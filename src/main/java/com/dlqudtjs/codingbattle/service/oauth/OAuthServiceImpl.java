@@ -46,7 +46,6 @@ public class OAuthServiceImpl implements OAuthService {
     private final UserSettingRepository userSettingRepository;
 
     @Override
-    @Transactional
     public ResponseDto signIn(SignInRequestDto signInRequestDto) {
         User user = userRepository.findByUserId(signInRequestDto.getUserId())
                 .orElseThrow(() -> new Custom4XXException(
@@ -95,7 +94,6 @@ public class OAuthServiceImpl implements OAuthService {
     }
 
     @Override
-    @Transactional
     public ResponseDto refreshToken(HttpServletRequest request) {
         String refreshToken = jwtTokenProvider.resolveToken(request);
         Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
@@ -127,7 +125,6 @@ public class OAuthServiceImpl implements OAuthService {
     }
 
     @Override
-    @Transactional
     public ResponseDto checkUserId(String userId) {
         if (isExistUser(userId)) {
             throw new Custom4XXException(ALREADY_EXIST_USER_ID.getMessage(), ALREADY_EXIST_USER_ID.getStatus());

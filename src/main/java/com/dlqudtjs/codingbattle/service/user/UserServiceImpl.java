@@ -31,7 +31,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public UserInfo getUserInfo(String userId) {
         User user = userRepository.findByUserId(userId).orElseThrow(()
                 -> new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus()));

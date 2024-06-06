@@ -22,7 +22,6 @@ public class ProblemServiceImpl implements ProblemService {
     private final AlgorithmClassificationRepository algorithmClassificationRepository;
 
     @Override
-    @Transactional
     public List<ProblemInfo> getProblemInfoList(AlgorithmType algorithmType,
                                                 ProblemLevelType problemLevelType,
                                                 Integer count) {

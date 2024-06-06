@@ -40,7 +40,6 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    @Transactional
     public void saveUserMatchHistory(GameSession gameSession, Winner winner) {
         gameSession.getGameUserList().forEach(user -> {
             MatchingResultType matchingResultType;
