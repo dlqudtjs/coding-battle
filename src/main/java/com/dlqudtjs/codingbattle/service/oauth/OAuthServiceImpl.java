@@ -12,7 +12,7 @@ import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
 import com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
-import com.dlqudtjs.codingbattle.dto.oauth.JwtTokenDto;
+import com.dlqudtjs.codingbattle.dto.oauth.JwtToken;
 import com.dlqudtjs.codingbattle.dto.oauth.SignInRequestDto;
 import com.dlqudtjs.codingbattle.dto.oauth.SignUpRequestDto;
 import com.dlqudtjs.codingbattle.entity.oauth.Token;
@@ -55,14 +55,14 @@ public class OAuthServiceImpl implements OAuthService {
 
         validateSignInRequest(signInRequestDto, user);
 
-        JwtTokenDto jwtTokenDto = jwtTokenProvider.generateToken(user);
+        JwtToken jwtToken = jwtTokenProvider.generateToken(user);
 
-        saveRefreshToken(jwtTokenDto.getRefreshToken(), user.getId());
+        saveRefreshToken(jwtToken.getRefreshToken(), user.getId());
 
         return ResponseDto.builder()
                 .status(OauthConfigCode.SIGN_IN_SUCCESS.getStatus().value())
                 .message(OauthConfigCode.SIGN_IN_SUCCESS.getMessage())
-                .data(jwtTokenDto)
+                .data(jwtToken)
                 .build();
     }
 
@@ -115,14 +115,14 @@ public class OAuthServiceImpl implements OAuthService {
             throw new Custom4XXException(REFRESH_TOKEN_NOT_FOUND.getMessage(), REFRESH_TOKEN_NOT_FOUND.getStatus());
         }
 
-        JwtTokenDto jwtTokenDto = jwtTokenProvider.generateToken(user);
+        JwtToken jwtToken = jwtTokenProvider.generateToken(user);
 
-        saveRefreshToken(jwtTokenDto.getRefreshToken(), user.getId());
+        saveRefreshToken(jwtToken.getRefreshToken(), user.getId());
 
         return ResponseDto.builder()
                 .status(OauthConfigCode.REFRESH_TOKEN_SUCCESS.getStatus().value())
                 .message(OauthConfigCode.REFRESH_TOKEN_SUCCESS.getMessage())
-                .data(jwtTokenDto)
+                .data(jwtToken)
                 .build();
     }
 
