@@ -37,12 +37,4 @@ public class WebsocketSessionHolder extends TextWebSocketHandler {
     public static boolean isNotConnected(User user) {
         return !userAndSessionIdMap.containsKey(user);
     }
-
-    public static boolean isMatched(String sessionId, User user) {
-        if (!userAndSessionIdMap.containsKey(user)) {
-            return false;
-        }
-
-        return userAndSessionIdMap.get(user).equals(sessionId);
-    }
 }

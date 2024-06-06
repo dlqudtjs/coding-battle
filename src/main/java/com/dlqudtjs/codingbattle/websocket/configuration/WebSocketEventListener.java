@@ -14,6 +14,7 @@ import com.dlqudtjs.codingbattle.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.event.EventListener;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
@@ -24,6 +25,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 @Log4j2
 public class WebSocketEventListener {
 
+    private final SimpMessagingTemplate messagingTemplate;
     private final JwtTokenProvider jwtTokenProvider;
     private final SessionService sessionService;
     private final GameController gameController;
@@ -40,6 +42,9 @@ public class WebSocketEventListener {
         jwtTokenProvider.validateToken(token);
 
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
+
+        // 이미 연결된 유저인지 확인하여 연결 돼있다면 끊기
+        disconnectUser(user, headerAccessor.getSessionId());
 
         // 유저 세션 상태 추가
         sessionService.initSessionStatus(user);
@@ -59,6 +64,26 @@ public class WebSocketEventListener {
         User user = WebsocketSessionHolder.getUserFromSessionId(event.getSessionId());
         Long roomId = sessionService.getRoomIdFromUser(user);
         Room enterRoom = roomService.getRoom(roomId);
+
+        if (enterRoom.isStarted()) {
+            gameController.logout(roomId, user);
+        } else {
+            roomController.logout(roomId, user);
+        }
+
+        sessionService.removeSessionStatus(user);
+        WebsocketSessionHolder.removeSessionIdFromUser(user);
+    }
+
+    private void disconnectUser(User user, String sessionId) {
+        if (WebsocketSessionHolder.isNotConnected(user)) {
+            return;
+        }
+
+        Long roomId = sessionService.getRoomIdFromUser(user);
+        Room enterRoom = roomService.getRoom(roomId);
+
+        messagingTemplate.convertAndSendToUser(sessionId, "/topic/room/" + roomId, "강제 종료");
 
         if (enterRoom.isStarted()) {
             gameController.logout(roomId, user);
