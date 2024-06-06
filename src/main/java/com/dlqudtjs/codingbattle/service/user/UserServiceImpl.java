@@ -10,7 +10,6 @@ import com.dlqudtjs.codingbattle.repository.user.UserRepository;
 import com.dlqudtjs.codingbattle.repository.user.UserSettingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,11 +22,6 @@ public class UserServiceImpl implements UserService {
     public User getUser(String userId) {
         return userRepository.findByUserId(userId).orElseThrow(()
                 -> new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus()));
-    }
-
-    @Override
-    public UserSetting getUserSetting(User user) {
-        return userSettingRepository.findByUserId(user.getId());
     }
 
     @Override
