@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "match_history")
 public class MatchHistory {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,8 +29,4 @@ public class MatchHistory {
 
     @Column(name = "end_time")
     private Timestamp endTime;
-
-    public Long getId() {
-        return id;
-    }
 }
