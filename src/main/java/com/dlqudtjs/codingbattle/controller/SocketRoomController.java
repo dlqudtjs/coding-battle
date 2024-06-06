@@ -6,9 +6,11 @@ import static com.dlqudtjs.codingbattle.common.constant.Destination.ROOM_BROADCA
 import com.dlqudtjs.codingbattle.common.constant.MessageType;
 import com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode;
 import com.dlqudtjs.codingbattle.common.exception.CustomSocketException;
+import com.dlqudtjs.codingbattle.common.util.TimeProvider;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.SendToRoomMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.RoomStatusUpdateMessageRequestDto;
+import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.SendToRoomMessageWrapperDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomUserStatusResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.SendToRoomMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.messagewrapperdto.RoomStatusUpdateMessageResponseDto;
@@ -18,7 +20,6 @@ import com.dlqudtjs.codingbattle.entity.room.RoomUserStatus;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
-import java.sql.Timestamp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
@@ -38,21 +39,25 @@ public class SocketRoomController {
 
     @MessageMapping("/rooms/{roomId}/messages")
     @SendTo(ROOM_BROADCAST_VALUE + "{roomId}")
-    public SendToRoomMessageResponseDto sendToRoom(
+    public SendToRoomMessageWrapperDto sendToRoom(
             @DestinationVariable("roomId") Long roomId,
             @Payload SendToRoomMessageRequestDto sendToRoomMessageRequestDto,
             SimpMessageHeaderAccessor headerAccessor) {
         User user = WebsocketSessionHolder.getUserFromSessionId(headerAccessor.getSessionId());
 
-        if (roomService.isExistRoom(roomId) && !roomService.isExistUserInRoom(user, roomId)) {
+        // 방이 존재하지 않거나, 유저가 방에 존재하지 않고, 메시지 전송 유저와 세션 유저가 다를 경우
+        if (!roomService.isExistRoom(roomId) || !roomService.isExistUserInRoom(user, roomId) &&
+                !user.getUserId().equals(sendToRoomMessageRequestDto.getSenderId())) {
             throw new CustomSocketException(CommonConfigCode.INVALID_INPUT_VALUE.getMessage());
         }
 
-        return SendToRoomMessageResponseDto.builder()
-                .messageType(MessageType.USER)
-                .senderId(user.getUserId())
-                .message(sendToRoomMessageRequestDto.getMessage())
-                .sendTime(new Timestamp(System.currentTimeMillis()))
+        return SendToRoomMessageWrapperDto.builder()
+                .message(SendToRoomMessageResponseDto.builder()
+                        .messageType(MessageType.USER)
+                        .senderId(user.getUserId())
+                        .message(sendToRoomMessageRequestDto.getMessage())
+                        .sendTime(TimeProvider.getZonedDateTime())
+                        .build())
                 .build();
     }
 

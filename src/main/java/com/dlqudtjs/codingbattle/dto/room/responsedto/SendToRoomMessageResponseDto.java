@@ -1,7 +1,8 @@
 package com.dlqudtjs.codingbattle.dto.room.responsedto;
 
 import com.dlqudtjs.codingbattle.common.constant.MessageType;
-import java.sql.Timestamp;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.ZonedDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,5 +13,6 @@ public class SendToRoomMessageResponseDto {
     private MessageType messageType;
     private String senderId;
     private String message;
-    private Timestamp sendTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    private ZonedDateTime sendTime;
 }
