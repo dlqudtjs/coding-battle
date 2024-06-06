@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -18,16 +19,13 @@ import lombok.NoArgsConstructor;
 @Table(name = "algorithm_classification")
 public class AlgorithmClassification {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", nullable = false)
     private String name;
-
-    public Long getId() {
-        return id;
-    }
 
     @JsonValue
     public String getValue() {
