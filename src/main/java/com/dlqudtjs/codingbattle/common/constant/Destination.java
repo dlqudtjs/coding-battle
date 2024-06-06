@@ -10,4 +10,6 @@ public enum Destination {
     ;
 
     private final String value;
+
+    public static final String ROOM_BROADCAST_VALUE = "/topic/rooms/";
 }
