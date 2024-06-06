@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Room {
-    private Long roomId;
+    private final Long roomId;
     private final User host;
     private String title;
     private String password;
@@ -127,7 +127,8 @@ public class Room {
     }
 
     public Boolean isAvailableLanguage(ProgrammingLanguage language) {
-        return language.equals(ProgrammingLanguage.DEFAULT) || gameRunningConfig.getLanguage().equals(language);
+        return gameRunningConfig.getLanguage() == ProgrammingLanguage.DEFAULT ||
+                gameRunningConfig.getLanguage() == language;
     }
 
     public List<User> getUserList() {
