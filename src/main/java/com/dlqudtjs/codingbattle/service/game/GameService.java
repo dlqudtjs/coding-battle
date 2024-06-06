@@ -13,7 +13,7 @@ public interface GameService {
 
     LeaveGameUserStatus leaveGame(Long roomId, User user);
 
-    Winner endGame(Long roomId, User user);
+    Winner endGame(Long roomId);
 
     User surrender(Long roomId, User user);
 

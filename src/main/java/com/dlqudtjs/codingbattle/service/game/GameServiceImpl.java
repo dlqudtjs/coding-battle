@@ -29,8 +29,13 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public GameSession startGame(Long roomId, User user) {
+        Room room = roomService.getRoom(roomId);
+        if (room.isStarted()) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
+        }
+
         // Room의 상태를 게임 시작으로 변경
-        Room room = roomService.start(roomId, user);
+        room.startGame();
 
         // 난이도에 따른 문제 리스트 가져오기
         ProblemLevelType problemLevel = room.getGameRunningConfig().getProblemLevel();
@@ -61,10 +66,10 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Winner endGame(Long roomId, User user) {
+    public Winner endGame(Long roomId) {
         GameSession gameSession = gameSessionMap.get(roomId);
 
-        Winner winner = gameSession.endGame(user);
+        Winner winner = gameSession.endGame();
 
         // 매치 기록 저장
         matchService.saveUserMatchHistory(gameSession, winner);
