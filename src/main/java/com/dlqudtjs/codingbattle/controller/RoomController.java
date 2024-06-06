@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.controller;
 
 import static com.dlqudtjs.codingbattle.common.constant.Destination.ROOM_BROADCAST;
+import static com.dlqudtjs.codingbattle.common.constant.Destination.ROOM_BROADCAST_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.code.RoomConfigCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
@@ -27,6 +28,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -99,31 +101,35 @@ public class RoomController {
     }
 
     @PostMapping("/v1/rooms/{roomId}/leave")
-    public ResponseEntity<ResponseDto> leaveRoom(@PathVariable("roomId") Long roomId,
-                                                 @RequestHeader("Authorization") String token) {
+    @SendTo(ROOM_BROADCAST_VALUE + "{roomId}")
+    public RoomLeaveUserStatusMessageResponseDto leaveRoom(@PathVariable("roomId") Long roomId,
+                                                           @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
 
         LeaveRoomUserStatus leaveRoomUserStatus = roomService.leave(roomId, user);
         sendLeaveRoomUserStatusMessage(roomId, leaveRoomUserStatus);
 
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return RoomLeaveUserStatusMessageResponseDto.builder()
+                .leaveUserStatus(RoomLeaveUserStatusResponseDto.builder()
+                        .roomId(leaveRoomUserStatus.getRoomId())
+                        .userId(leaveRoomUserStatus.getUser().getUserId())
+                        .isHost(leaveRoomUserStatus.getIsHost())
+                        .build())
+                .build();
     }
 
 
     @PostMapping("/v1/rooms/{roomId}/start")
-    public ResponseEntity<ResponseDto> startGame(@PathVariable("roomId") Long roomId,
+    @SendTo(ROOM_BROADCAST_VALUE + "{roomId}")
+    public GameStartMessageResponseDto startGame(@PathVariable("roomId") Long roomId,
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
 
         gameService.startGame(roomId, user);
 
-        messagingTemplate.convertAndSend(ROOM_BROADCAST.getValue() + roomId,
-                GameStartMessageResponseDto.builder()
-                        .startMessage("Game Start")
-                        .build()
-        );
-
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return GameStartMessageResponseDto.builder()
+                .startMessage("Game Start")
+                .build();
     }
 
 
