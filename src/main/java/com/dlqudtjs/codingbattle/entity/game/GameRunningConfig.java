@@ -14,6 +14,7 @@ import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
 import java.util.List;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class GameRunningConfig {
@@ -22,6 +23,7 @@ public class GameRunningConfig {
     private ProgrammingLanguage language;
     private Integer maxSubmitCount;
     private Long limitTime;
+    @Setter
     private List<ProblemInfo> problemInfoList;
 
     public GameRunningConfig(Long roomId,
@@ -37,10 +39,6 @@ public class GameRunningConfig {
         this.language = language;
         this.maxSubmitCount = maxSubmitCount;
         this.limitTime = limitTime;
-    }
-
-    public void setProblemInfoList(List<ProblemInfo> problemInfoList) {
-        this.problemInfoList = problemInfoList;
     }
 
     public void updateGameRunningConfig(ProblemLevelType problemLevel,
