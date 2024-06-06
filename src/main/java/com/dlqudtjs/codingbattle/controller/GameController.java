@@ -66,8 +66,6 @@ public class GameController {
     @PostMapping("/v1/games/{roomId}/end")
     public ResponseEntity<ResponseDto> endGame(@PathVariable("roomId") Long roomId,
                                                @RequestHeader("Authorization") String token) {
-        User user = userService.getUser(jwtTokenProvider.getUserName(token));
-
         Winner winner = gameService.endGame(roomId);
 
         // 게임 종료 시 메시지 전송
