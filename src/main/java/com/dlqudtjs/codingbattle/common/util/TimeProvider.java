@@ -1,0 +1,13 @@
+package com.dlqudtjs.codingbattle.common.util;
+
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
+public class TimeProvider {
+
+    public static ZonedDateTime getZonedDateTime() {
+        Instant now = Instant.now();
+        return now.atZone(ZoneId.of("Asia/Seoul"));
+    }
+}
