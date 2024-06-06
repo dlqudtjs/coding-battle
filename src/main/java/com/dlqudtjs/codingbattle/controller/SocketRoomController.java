@@ -1,6 +1,6 @@
 package com.dlqudtjs.codingbattle.controller;
 
-import static com.dlqudtjs.codingbattle.common.constant.Destination.ROOM_BROADCAST;
+import static com.dlqudtjs.codingbattle.common.constant.Destination.ERROR_BROADCAST_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.MessageType;
 import com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode;
@@ -98,10 +98,6 @@ public class SocketRoomController {
 
     @MessageExceptionHandler
     public void handleException(CustomSocketException e) {
-        messagingTemplate.convertAndSend("/topic/errors", e.getMessage());
-    }
-
-    public void sendToRoom(Long roomId, Object responseDto) {
-        messagingTemplate.convertAndSend(ROOM_BROADCAST.getValue() + roomId, responseDto);
+        messagingTemplate.convertAndSend(ERROR_BROADCAST_VALUE, e.getMessage());
     }
 }

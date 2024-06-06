@@ -1,8 +1,10 @@
 package com.dlqudtjs.codingbattle.controller;
 
+import static com.dlqudtjs.codingbattle.common.constant.Destination.ERROR_BROADCAST_VALUE;
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
+import com.dlqudtjs.codingbattle.common.exception.CustomSocketException;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.UserSurrenderResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.UserSurrenderMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.user.User;
@@ -11,15 +13,18 @@ import com.dlqudtjs.codingbattle.service.user.UserService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 @Controller
 @RequiredArgsConstructor
 public class SocketGameController {
 
+    private final SimpMessagingTemplate messagingTemplate;
     private final UserService userService;
     private final GameService gameService;
 
@@ -45,5 +50,10 @@ public class SocketGameController {
                         .surrender(true)
                         .build())
                 .build();
+    }
+
+    @MessageExceptionHandler
+    public void handleException(CustomSocketException e) {
+        messagingTemplate.convertAndSend(ERROR_BROADCAST_VALUE, e.getMessage());
     }
 }
