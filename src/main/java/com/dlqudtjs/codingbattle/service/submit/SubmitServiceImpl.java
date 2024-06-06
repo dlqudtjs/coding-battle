@@ -4,6 +4,7 @@ import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.IN
 
 import com.dlqudtjs.codingbattle.common.constant.JudgeResultCode;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
+import com.dlqudtjs.codingbattle.common.util.TimeProvider;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.UpdateSubmitResultRequestDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ParsedJudgeResultResponseDto;
 import com.dlqudtjs.codingbattle.dto.judge.JudgeProblemRequestDto;
@@ -15,7 +16,6 @@ import com.dlqudtjs.codingbattle.repository.game.SubmitResultCodeRepository;
 import com.dlqudtjs.codingbattle.service.game.GameService;
 import com.dlqudtjs.codingbattle.service.match.MatchService;
 import com.dlqudtjs.codingbattle.service.user.UserService;
-import java.sql.Timestamp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +57,7 @@ public class SubmitServiceImpl implements SubmitService {
                 .memory(0L)
                 .executionTime(0L)
                 .language(judgeProblemRequestDto.getLanguage().getLanguageName())
-                .submitTime(new Timestamp(System.currentTimeMillis()))
+                .submitTime(TimeProvider.getDate())
                 .build());
     }
 
