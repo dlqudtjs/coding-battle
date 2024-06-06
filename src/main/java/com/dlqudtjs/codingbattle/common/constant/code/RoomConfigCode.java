@@ -13,6 +13,7 @@ public enum RoomConfigCode {
     JOIN_GAME_ROOM_SUCCESS("대기방 입장 성공", HttpStatus.OK),
     LEAVE_GAME_ROOM_SUCCESS("대기방 퇴장", HttpStatus.OK),
     GET_GAME_ROOM_LIST_SUCCESS("대기방 목록 조회 성공", HttpStatus.OK),
+    START_GAME_SUCCESS("게임 시작 성공", HttpStatus.OK),
     INVALID_REQUEST("올바르지 않은 요청입니다.", HttpStatus.BAD_REQUEST),
     PASSWORD_NOT_MATCH("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
     NOT_EXIST_ROOM("존재하지 않는 방입니다.", HttpStatus.BAD_REQUEST),

@@ -1,10 +1,10 @@
 package com.dlqudtjs.codingbattle.controller;
 
 import static com.dlqudtjs.codingbattle.common.constant.Destination.ROOM_BROADCAST;
-import static com.dlqudtjs.codingbattle.common.constant.Destination.ROOM_BROADCAST_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.code.RoomConfigCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
+import com.dlqudtjs.codingbattle.dto.game.responseDto.GameStartResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameStartMessageResponseDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomCreateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomEnterRequestDto;
@@ -28,7 +28,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -101,35 +100,34 @@ public class RoomController {
     }
 
     @PostMapping("/v1/rooms/{roomId}/leave")
-    @SendTo(ROOM_BROADCAST_VALUE + "{roomId}")
-    public RoomLeaveUserStatusMessageResponseDto leaveRoom(@PathVariable("roomId") Long roomId,
-                                                           @RequestHeader("Authorization") String token) {
+    public ResponseEntity<ResponseDto> leaveRoom(@PathVariable("roomId") Long roomId,
+                                                 @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
 
         LeaveRoomUserStatus leaveRoomUserStatus = roomService.leave(roomId, user);
         sendLeaveRoomUserStatusMessage(roomId, leaveRoomUserStatus);
 
-        return RoomLeaveUserStatusMessageResponseDto.builder()
-                .leaveUserStatus(RoomLeaveUserStatusResponseDto.builder()
-                        .roomId(leaveRoomUserStatus.getRoomId())
-                        .userId(leaveRoomUserStatus.getUser().getUserId())
-                        .isHost(leaveRoomUserStatus.getIsHost())
-                        .build())
-                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.builder()
+                .message(RoomConfigCode.LEAVE_GAME_ROOM_SUCCESS.getMessage())
+                .status(RoomConfigCode.LEAVE_GAME_ROOM_SUCCESS.getStatus().value())
+                .data(null)
+                .build());
     }
 
 
     @PostMapping("/v1/rooms/{roomId}/start")
-    @SendTo(ROOM_BROADCAST_VALUE + "{roomId}")
-    public GameStartMessageResponseDto startGame(@PathVariable("roomId") Long roomId,
+    public ResponseEntity<ResponseDto> startGame(@PathVariable("roomId") Long roomId,
                                                  @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
 
         gameService.startGame(roomId, user);
+        sendStartGameMessage(roomId);
 
-        return GameStartMessageResponseDto.builder()
-                .startMessage("Game Start")
-                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.builder()
+                .message(RoomConfigCode.START_GAME_SUCCESS.getMessage())
+                .status(RoomConfigCode.START_GAME_SUCCESS.getStatus().value())
+                .data(null)
+                .build());
     }
 
 
@@ -167,13 +165,22 @@ public class RoomController {
         sendLeaveRoomUserStatusMessage(roomId, leaveRoomUserStatus);
     }
 
+    private void sendStartGameMessage(Long roomId) {
+        messagingTemplate.convertAndSend(ROOM_BROADCAST.getValue() + roomId,
+                GameStartMessageResponseDto.builder()
+                        .startMessage(GameStartResponseDto.builder()
+                                .message("Game Start")
+                                .build())
+                        .build());
+    }
+
     private void sendEnterRoomUserStatusMessage(Long roomId, UserInfo userInfo) {
         messagingTemplate.convertAndSend(ROOM_BROADCAST.getValue() + roomId,
                 RoomEnterUserStatusMessageResponseDto.builder()
                         .enterUserStatus(RoomUserStatusResponseDto.builder()
                                 .userId(userInfo.getUser().getUserId())
                                 .isReady(false)
-                                .language(userInfo.getUserSetting().getLanguage().getName())
+                                .language(userInfo.getUserSetting().getProgrammingLanguage())
                                 .build())
                         .build()
         );
@@ -196,7 +203,7 @@ public class RoomController {
                 .map(roomUserStatus -> RoomUserStatusResponseDto.builder()
                         .userId(roomUserStatus.getUserId())
                         .isReady(roomUserStatus.getIsReady())
-                        .language(roomUserStatus.getUseLanguage().getLanguageName())
+                        .language(roomUserStatus.getUseLanguage())
                         .build())
                 .toList();
 
