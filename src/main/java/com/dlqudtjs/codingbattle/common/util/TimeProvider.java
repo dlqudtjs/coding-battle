@@ -15,4 +15,8 @@ public class TimeProvider {
     public static Date getDate() {
         return Date.from(getZonedDateTime().toInstant());
     }
+
+    public static long getCurrentTimeMillis() {
+        return System.currentTimeMillis();
+    }
 }
