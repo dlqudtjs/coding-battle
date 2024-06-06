@@ -1,5 +1,7 @@
 package com.dlqudtjs.codingbattle.controller;
 
+import static com.dlqudtjs.codingbattle.common.constant.Destination.ROOM_BROADCAST;
+
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.GameEndResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemsResponseDto;
@@ -38,8 +40,7 @@ public class GameController {
     private final GameService gameService;
 
     @GetMapping("/v1/games/{roomId}/problems")
-    public ResponseEntity<ProblemsResponseDto> getProblems(@PathVariable("roomId") Long roomId,
-                                                           @RequestHeader("Authorization") String token) {
+    public ResponseEntity<ProblemsResponseDto> getProblems(@PathVariable("roomId") Long roomId) {
         GameSession gameSession = gameService.getGameSession(roomId);
 
         return ResponseEntity.status(HttpStatus.OK).body(ProblemsResponseDto.builder()
@@ -53,7 +54,7 @@ public class GameController {
 
         LeaveGameUserStatus leaveGameUserStatus = gameService.leaveGame(roomId, user);
 
-        messagingTemplate.convertAndSend("/topic/rooms/" + roomId,
+        messagingTemplate.convertAndSend(ROOM_BROADCAST.getValue() + roomId,
                 GameLeaveUserStatusMessageResponseDto.builder()
                         .leaveUserStatus(leaveGameUserStatus)
                         .build());
@@ -76,7 +77,7 @@ public class GameController {
                 .build();
 
         // 방에 Winner 전송
-        messagingTemplate.convertAndSend("/topic/rooms/" + roomId,
+        messagingTemplate.convertAndSend(ROOM_BROADCAST.getValue() + roomId,
                 GameEndMessageResponseDto.builder()
                         .gameEnd(gameEndResponseDto)
                         .build());
@@ -92,7 +93,7 @@ public class GameController {
                 .toList();
 
         // 방에 초기화된 유저 정보 전송
-        messagingTemplate.convertAndSend("/topic/rooms/" + roomId,
+        messagingTemplate.convertAndSend(ROOM_BROADCAST.getValue() + roomId,
                 GameUserStatusListMessageResponseDto.builder()
                         .userStatusList(userStatus)
                         .build());
@@ -103,7 +104,7 @@ public class GameController {
     public void logout(Long roomId, User user) {
         LeaveGameUserStatus leaveGameUserStatus = gameService.leaveGame(roomId, user);
 
-        messagingTemplate.convertAndSend("/topic/rooms/" + roomId,
+        messagingTemplate.convertAndSend(ROOM_BROADCAST.getValue() + roomId,
                 GameLeaveUserStatusMessageResponseDto.builder()
                         .leaveUserStatus(leaveGameUserStatus)
                         .build());

@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.controller;
 
+import static com.dlqudtjs.codingbattle.common.constant.Destination.ROOM_BROADCAST;
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.JudgeResultCode;
@@ -63,7 +64,7 @@ public class JudgeController {
                 .build();
 
         // 결과 전송
-        messagingTemplate.convertAndSend("/topic/rooms/" + JudgeResultRequestDto.getRoomId(), responseDto);
+        messagingTemplate.convertAndSend(ROOM_BROADCAST.getValue() + JudgeResultRequestDto.getRoomId(), responseDto);
 
         // 결과 저장 (마지막 테스트까지 통과, Fail, Error)
         if (isFinished(JudgeResultRequestDto)) {

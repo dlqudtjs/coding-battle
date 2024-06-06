@@ -1,5 +1,7 @@
 package com.dlqudtjs.codingbattle.controller;
 
+import static com.dlqudtjs.codingbattle.common.constant.Destination.ROOM_BROADCAST;
+
 import com.dlqudtjs.codingbattle.common.constant.code.RoomConfigCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameStartMessageResponseDto;
@@ -115,7 +117,7 @@ public class RoomController {
 
         gameService.startGame(roomId, user);
 
-        messagingTemplate.convertAndSend("/topic/rooms/" + roomId,
+        messagingTemplate.convertAndSend(ROOM_BROADCAST.getValue() + roomId,
                 GameStartMessageResponseDto.builder()
                         .startMessage("Game Start")
                         .build()
@@ -160,7 +162,7 @@ public class RoomController {
     }
 
     private void sendEnterRoomUserStatusMessage(Long roomId, UserInfo userInfo) {
-        messagingTemplate.convertAndSend("/topic/rooms/" + roomId,
+        messagingTemplate.convertAndSend(ROOM_BROADCAST.getValue() + roomId,
                 RoomEnterUserStatusMessageResponseDto.builder()
                         .enterUserStatus(RoomUserStatusResponseDto.builder()
                                 .userId(userInfo.getUser().getUserId())
@@ -172,7 +174,7 @@ public class RoomController {
     }
 
     private void sendLeaveRoomUserStatusMessage(Long roomId, LeaveRoomUserStatus leaveRoomUserStatus) {
-        messagingTemplate.convertAndSend("/topic/rooms/" + roomId,
+        messagingTemplate.convertAndSend(ROOM_BROADCAST.getValue() + roomId,
                 RoomLeaveUserStatusMessageResponseDto.builder()
                         .leaveUserStatus(RoomLeaveUserStatusResponseDto.builder()
                                 .roomId(leaveRoomUserStatus.getRoomId())

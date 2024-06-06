@@ -1,5 +1,7 @@
 package com.dlqudtjs.codingbattle.controller;
 
+import static com.dlqudtjs.codingbattle.common.constant.Destination.ROOM_BROADCAST;
+
 import com.dlqudtjs.codingbattle.common.constant.MessageType;
 import com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode;
 import com.dlqudtjs.codingbattle.common.exception.CustomSocketException;
@@ -61,7 +63,7 @@ public class SocketRoomController {
             @Payload RoomStatusUpdateMessageRequestDto roomStatusUpdateMessageRequestDto,
             SimpMessageHeaderAccessor headerAccessor) {
         User user = WebsocketSessionHolder.getUserFromSessionId(headerAccessor.getSessionId());
-        
+
         Room room = roomService.updateRoomStatus(
                 roomId,
                 user,
@@ -100,6 +102,6 @@ public class SocketRoomController {
     }
 
     public void sendToRoom(Long roomId, Object responseDto) {
-        messagingTemplate.convertAndSend("/topic/rooms/" + roomId, responseDto);
+        messagingTemplate.convertAndSend(ROOM_BROADCAST.getValue() + roomId, responseDto);
     }
 }
