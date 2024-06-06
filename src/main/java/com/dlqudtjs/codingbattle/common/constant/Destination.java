@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Destination {
-    ROOM_BROADCAST("/topic/room/"),
+    ROOM_BROADCAST("/topic/rooms/"),
     ;
 
     private final String value;
