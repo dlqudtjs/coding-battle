@@ -4,10 +4,12 @@ import com.dlqudtjs.codingbattle.common.constant.MatchingResultType;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.entity.submit.Submit;
 import com.dlqudtjs.codingbattle.entity.user.User;
+import lombok.Getter;
 
-public class Winner extends User {
+public class Winner {
 
     private final User user;
+    @Getter
     private final MatchingResultType matchingResultType;
     private final Submit submit;
 
@@ -27,9 +29,5 @@ public class Winner extends User {
 
     public ProgrammingLanguage getLanguage() {
         return submit.getLanguage();
-    }
-
-    public MatchingResultType getMatchingResultType() {
-        return matchingResultType;
     }
 }
