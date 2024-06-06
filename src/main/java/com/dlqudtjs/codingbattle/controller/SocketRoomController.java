@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.controller;
 
 import static com.dlqudtjs.codingbattle.common.constant.Destination.ERROR_BROADCAST_VALUE;
+import static com.dlqudtjs.codingbattle.common.constant.Destination.ROOM_BROADCAST_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.MessageType;
 import com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode;
@@ -36,7 +37,7 @@ public class SocketRoomController {
     private final RoomService roomService;
 
     @MessageMapping("/rooms/{roomId}/messages")
-    @SendTo("/topic/rooms/{roomId}")
+    @SendTo(ROOM_BROADCAST_VALUE + "{roomId}")
     public SendToRoomMessageResponseDto sendToRoom(
             @DestinationVariable("roomId") Long roomId,
             @Payload SendToRoomMessageRequestDto sendToRoomMessageRequestDto,
@@ -57,7 +58,7 @@ public class SocketRoomController {
 
 
     @MessageMapping("/rooms/{roomId}/update/room-status")
-    @SendTo("/topic/rooms/{roomId}")
+    @SendTo(ROOM_BROADCAST_VALUE + "{roomId}")
     public RoomStatusUpdateMessageResponseDto updateRoom(
             @DestinationVariable("roomId") Long roomId,
             @Payload RoomStatusUpdateMessageRequestDto roomStatusUpdateMessageRequestDto,
@@ -75,7 +76,7 @@ public class SocketRoomController {
     }
 
     @MessageMapping("/rooms/{roomId}/update/user-status")
-    @SendTo("/topic/rooms/{roomId}")
+    @SendTo(ROOM_BROADCAST_VALUE + "{roomId}")
     public RoomUserStatusUpdateMessageResponseDto updateUserStatus(
             @DestinationVariable("roomId") Long roomId,
             @Payload RoomUserStatusUpdateRequestDto roomUserStatusUpdateRequestDto,
@@ -91,7 +92,7 @@ public class SocketRoomController {
                 .updateUserStatus(RoomUserStatusResponseDto.builder()
                         .userId(roomUserStatus.getUserId())
                         .isReady(roomUserStatus.getIsReady())
-                        .language(roomUserStatus.getUseLanguage().getLanguageName())
+                        .language(roomUserStatus.getUseLanguage())
                         .build())
                 .build();
     }

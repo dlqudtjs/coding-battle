@@ -29,10 +29,6 @@ public enum ProgrammingLanguage {
         return DEFAULT;
     }
 
-    public String getLanguageName() {
-        return languageName;
-    }
-
     public static boolean isNotContains(String language) {
         language = language.toUpperCase();
 

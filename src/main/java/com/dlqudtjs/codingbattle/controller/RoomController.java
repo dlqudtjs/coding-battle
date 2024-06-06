@@ -59,15 +59,15 @@ public class RoomController {
 
         if (room == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.builder()
-                    .message(RoomConfigCode.CREATE_GAME_ROOM_FAIL.getMessage())
-                    .status(RoomConfigCode.CREATE_GAME_ROOM_FAIL.getStatus().value())
+                    .message(RoomConfigCode.CREATE_ROOM_FAIL.getMessage())
+                    .status(RoomConfigCode.CREATE_ROOM_FAIL.getStatus().value())
                     .data(null)
                     .build());
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.builder()
-                .message(RoomConfigCode.CREATE_GAME_ROOM_SUCCESS.getMessage())
-                .status(RoomConfigCode.CREATE_GAME_ROOM_SUCCESS.getStatus().value())
+                .message(RoomConfigCode.CREATE_ROOM_SUCCESS.getMessage())
+                .status(RoomConfigCode.CREATE_ROOM_SUCCESS.getStatus().value())
                 .data(getRoomInfoResponseDto(room))
                 .build());
     }
@@ -93,8 +93,8 @@ public class RoomController {
         sendEnterRoomUserStatusMessage(enterdRoom.getRoomId(), userInfo);
 
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.builder()
-                .message(RoomConfigCode.JOIN_GAME_ROOM_SUCCESS.getMessage())
-                .status(RoomConfigCode.JOIN_GAME_ROOM_SUCCESS.getStatus().value())
+                .message(RoomConfigCode.ENTER_ROOM_SUCCESS.getMessage())
+                .status(RoomConfigCode.ENTER_ROOM_SUCCESS.getStatus().value())
                 .data(getRoomInfoResponseDto(enterdRoom))
                 .build());
     }
@@ -108,8 +108,8 @@ public class RoomController {
         sendLeaveRoomUserStatusMessage(roomId, leaveRoomUserStatus);
 
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.builder()
-                .message(RoomConfigCode.LEAVE_GAME_ROOM_SUCCESS.getMessage())
-                .status(RoomConfigCode.LEAVE_GAME_ROOM_SUCCESS.getStatus().value())
+                .message(RoomConfigCode.LEAVE_ROOM_SUCCESS.getMessage())
+                .status(RoomConfigCode.LEAVE_ROOM_SUCCESS.getStatus().value())
                 .data(null)
                 .build());
     }
@@ -152,8 +152,8 @@ public class RoomController {
                 .toList();
 
         ResponseDto responseDto = ResponseDto.builder()
-                .message(RoomConfigCode.GET_GAME_ROOM_LIST_SUCCESS.getMessage())
-                .status(RoomConfigCode.GET_GAME_ROOM_LIST_SUCCESS.getStatus().value())
+                .message(RoomConfigCode.GET_ROOM_LIST_SUCCESS.getMessage())
+                .status(RoomConfigCode.GET_ROOM_LIST_SUCCESS.getStatus().value())
                 .data(responseDtoList)
                 .build();
 

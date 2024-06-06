@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.controller;
 
 import static com.dlqudtjs.codingbattle.common.constant.Destination.ERROR_BROADCAST_VALUE;
+import static com.dlqudtjs.codingbattle.common.constant.Destination.ROOM_BROADCAST_VALUE;
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
@@ -29,7 +30,7 @@ public class SocketGameController {
     private final GameService gameService;
 
     @MessageMapping("/games/{roomId}/{userId}/surrender")
-    @SendTo("/topic/rooms/{roomId}")
+    @SendTo(ROOM_BROADCAST_VALUE + "{roomId}")
     public UserSurrenderMessageResponseDto surrender(
             @DestinationVariable("roomId") Long roomId,
             @DestinationVariable("userId") String userId,

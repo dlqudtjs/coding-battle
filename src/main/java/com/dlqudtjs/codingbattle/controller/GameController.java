@@ -1,8 +1,9 @@
 package com.dlqudtjs.codingbattle.controller;
 
 import static com.dlqudtjs.codingbattle.common.constant.Destination.ROOM_BROADCAST;
-import static com.dlqudtjs.codingbattle.common.constant.Destination.ROOM_BROADCAST_VALUE;
 
+import com.dlqudtjs.codingbattle.common.constant.code.RoomConfigCode;
+import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.GameEndResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemsResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.GameEndMessageResponseDto;
@@ -22,7 +23,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,47 +49,52 @@ public class GameController {
     }
 
     @PostMapping("/v1/games/{roomId}/leave")
-    @SendTo(ROOM_BROADCAST_VALUE + "{roomId}")
-    public GameLeaveUserStatusMessageResponseDto leaveGame(@PathVariable("roomId") Long roomId,
-                                                           @RequestHeader("Authorization") String token) {
+    public ResponseEntity<ResponseDto> leaveGame(@PathVariable("roomId") Long roomId,
+                                                 @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
 
         LeaveGameUserStatus leaveGameUserStatus = gameService.leaveGame(roomId, user);
+        sendLeaveGameMessage(roomId, leaveGameUserStatus);
 
-        return GameLeaveUserStatusMessageResponseDto.builder()
-                .leaveUserStatus(leaveGameUserStatus)
-                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.builder()
+                .message(RoomConfigCode.LEAVE_GAME_SUCCESS.getMessage())
+                .status(RoomConfigCode.LEAVE_GAME_SUCCESS.getStatus().value())
+                .data(null)
+                .build());
     }
 
     @PostMapping("/v1/games/{roomId}/end")
-    @SendTo(ROOM_BROADCAST_VALUE + "{roomId}")
-    public GameUserStatusListMessageResponseDto endGame(@PathVariable("roomId") Long roomId,
-                                                        @RequestHeader("Authorization") String token) {
+    public ResponseEntity<ResponseDto> endGame(@PathVariable("roomId") Long roomId,
+                                               @RequestHeader("Authorization") String token) {
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
 
-        Winner winner = gameService.endGame(roomId, user);
+        Winner winner = gameService.endGame(roomId);
 
+        // 게임 종료 시 메시지 전송
         sendGameEndMessage(roomId, winner);
 
         Room room = roomService.gameEnd(roomId);
 
-        List<RoomUserStatusResponseDto> userStatus = room.getRoomUserStatusList().stream()
-                .map(roomUserStatus -> RoomUserStatusResponseDto.builder()
-                        .userId(roomUserStatus.getUserId())
-                        .isReady(roomUserStatus.getIsReady())
-                        .language(roomUserStatus.getUseLanguage().getLanguageName())
-                        .build())
-                .toList();
-
         // 방에 초기화된 유저 정보 전송
-        return GameUserStatusListMessageResponseDto.builder()
-                .userStatusList(userStatus)
-                .build();
+        sendInitUserStatus(room);
+
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.builder()
+                .message(RoomConfigCode.END_GAME_SUCCESS.getMessage())
+                .status(RoomConfigCode.END_GAME_SUCCESS.getStatus().value())
+                .data(null)
+                .build());
     }
 
     public void logout(Long roomId, User user) {
         LeaveGameUserStatus leaveGameUserStatus = gameService.leaveGame(roomId, user);
 
+        messagingTemplate.convertAndSend(ROOM_BROADCAST.getValue() + roomId,
+                GameLeaveUserStatusMessageResponseDto.builder()
+                        .leaveUserStatus(leaveGameUserStatus)
+                        .build());
+    }
+
+    private void sendLeaveGameMessage(Long roomId, LeaveGameUserStatus leaveGameUserStatus) {
         messagingTemplate.convertAndSend(ROOM_BROADCAST.getValue() + roomId,
                 GameLeaveUserStatusMessageResponseDto.builder()
                         .leaveUserStatus(leaveGameUserStatus)
@@ -107,5 +112,20 @@ public class GameController {
                                 .build())
                         .build()
         );
+    }
+
+    private void sendInitUserStatus(Room room) {
+        List<RoomUserStatusResponseDto> userStatus = room.getRoomUserStatusList().stream()
+                .map(roomUserStatus -> RoomUserStatusResponseDto.builder()
+                        .userId(roomUserStatus.getUserId())
+                        .isReady(roomUserStatus.getIsReady())
+                        .language(roomUserStatus.getUseLanguage())
+                        .build())
+                .toList();
+
+        messagingTemplate.convertAndSend(ROOM_BROADCAST.getValue() + room.getRoomId(),
+                GameUserStatusListMessageResponseDto.builder()
+                        .userStatusList(userStatus)
+                        .build());
     }
 }
