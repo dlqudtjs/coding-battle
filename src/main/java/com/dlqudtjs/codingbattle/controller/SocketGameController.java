@@ -6,7 +6,6 @@ import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.UserSurrenderResponseDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.messagewrapperdto.UserSurrenderMessageResponseDto;
 import com.dlqudtjs.codingbattle.entity.user.User;
-import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import com.dlqudtjs.codingbattle.service.game.GameService;
 import com.dlqudtjs.codingbattle.service.user.UserService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class SocketGameController {
 
-    private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
     private final GameService gameService;
 
@@ -32,10 +30,10 @@ public class SocketGameController {
             @DestinationVariable("userId") String userId,
             SimpMessageHeaderAccessor headerAccessor) {
 
-        User user = userService.getUser(jwtTokenProvider.getUserName(userId));
+        User user = userService.getUser(userId);
         User socketUser = WebsocketSessionHolder.getUserFromSessionId(headerAccessor.getSessionId());
 
-        if (user != socketUser) {
+        if (!user.equals(socketUser)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
