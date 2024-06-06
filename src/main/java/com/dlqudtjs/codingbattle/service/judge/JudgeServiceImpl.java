@@ -74,8 +74,7 @@ public class JudgeServiceImpl implements JudgeService {
         Submit submit = submitService.savedSubmit(judgeProblemRequestDto);
 
         String uuid = UUID.randomUUID().toString();
-        ProgrammingLanguage submitLanguage =
-                ProgrammingLanguage.valueOf(judgeProblemRequestDto.getLanguage().toUpperCase());
+        ProgrammingLanguage submitLanguage = judgeProblemRequestDto.getLanguage();
 
         String dockerImageName = submitLanguage.getDockerImageName();
         String createUserCodePath = createHostUserCodePath(uuid);
@@ -220,7 +219,7 @@ public class JudgeServiceImpl implements JudgeService {
         User user = userService.getUser(judgeProblemRequestDto.getUserId());
 
         // 언어 검증
-        if (ProgrammingLanguage.isNotContains(judgeProblemRequestDto.getLanguage())) {
+        if (judgeProblemRequestDto.getLanguage() != ProgrammingLanguage.DEFAULT) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
