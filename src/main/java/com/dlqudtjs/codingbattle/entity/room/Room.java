@@ -13,14 +13,21 @@ import com.dlqudtjs.codingbattle.service.session.SessionService;
 import com.dlqudtjs.codingbattle.websocket.configuration.WebsocketSessionHolder;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.Getter;
 
 public class Room {
+    @Getter
     private final Long roomId;
+    @Getter
     private final User host;
+    @Getter
     private String title;
     private String password;
+    @Getter
     private Integer maxUserCount;
+    @Getter
     private Boolean isStarted;
+    @Getter
     private final GameRunningConfig gameRunningConfig;
     private final SessionService sessionService;
     private final ConcurrentHashMap<User, RoomUserStatus> roomUserStatusMap;
@@ -66,7 +73,6 @@ public class Room {
         return true;
     }
 
-
     public Room enter(UserInfo userInfo, String password) {
         if (isLocked() && !isMatchPassword(password)) {
             return null;
@@ -98,6 +104,10 @@ public class Room {
         return user;
     }
 
+    public Integer getUserCount() {
+        return roomUserStatusMap.size();
+    }
+
     public Boolean isFull() {
         return roomUserStatusMap.size() >= maxUserCount;
     }
@@ -118,12 +128,14 @@ public class Room {
         return isStarted;
     }
 
-    public Integer getUserCount() {
-        return roomUserStatusMap.size();
-    }
-
     public Boolean isLocked() {
         return !password.isBlank();
+    }
+
+    public Boolean isAllUserReady() {
+        return roomUserStatusMap.values().stream()
+                .filter(roomUserStatus -> !roomUserStatus.getUserInfo().getUser().equals(host))
+                .allMatch(RoomUserStatus::getIsReady);
     }
 
     public Boolean isAvailableLanguage(ProgrammingLanguage language) {
@@ -138,10 +150,9 @@ public class Room {
                 .toList();
     }
 
-    public Boolean isAllUserReady() {
+    public List<RoomUserStatus> getRoomUserStatusList() {
         return roomUserStatusMap.values().stream()
-                .filter(roomUserStatus -> !roomUserStatus.getUserInfo().getUser().equals(host))
-                .allMatch(RoomUserStatus::getIsReady);
+                .toList();
     }
 
     public Room updateRoomStatus(RoomStatusUpdateMessageRequestDto requestDto) {
@@ -159,10 +170,6 @@ public class Room {
         return this;
     }
 
-    public GameRunningConfig getGameRunningConfig() {
-        return gameRunningConfig;
-    }
-
     public RoomUserStatus updateRoomUserStatus(
             RoomUserStatusUpdateRequestDto requestDto, User user) {
 
@@ -171,7 +178,6 @@ public class Room {
 
         return userStatus;
     }
-
 
     public Boolean isUserAndRoomLanguageMatch() {
         ProgrammingLanguage language = gameRunningConfig.getLanguage();
@@ -182,26 +188,6 @@ public class Room {
 
         return roomUserStatusMap.values().stream()
                 .allMatch(user -> user.getUseLanguage().equals(language));
-    }
-
-    private Boolean canStartGame() {
-        return isAllUserReady() &&
-                isUserAndRoomLanguageMatch();
-        // 시작 인원 제한
-        //                getUserCount() >= GameSetting.GAME_START_MIN_USER_COUNT.getValue();
-    }
-
-    private void setAllUsersToGameStart() {
-        getUserList().forEach(sessionService::startGame);
-    }
-
-    private RoomUserStatus getUserStatus(User user) {
-        return roomUserStatusMap.get(user);
-    }
-
-    public List<RoomUserStatus> getRoomUserStatusList() {
-        return roomUserStatusMap.values().stream()
-                .toList();
     }
 
     public RoomStatusResponseDto toRoomStatusResponseDto() {
@@ -219,23 +205,18 @@ public class Room {
                 .build();
     }
 
-    public Long getRoomId() {
-        return roomId;
+    private Boolean canStartGame() {
+        return isAllUserReady() &&
+                isUserAndRoomLanguageMatch();
+        // 시작 인원 제한
+        //                getUserCount() >= GameSetting.GAME_START_MIN_USER_COUNT.getValue();
     }
 
-    public User getHost() {
-        return host;
+    private void setAllUsersToGameStart() {
+        getUserList().forEach(sessionService::startGame);
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public Boolean getIsStarted() {
-        return isStarted;
-    }
-
-    public Integer getMaxUserCount() {
-        return maxUserCount;
+    private RoomUserStatus getUserStatus(User user) {
+        return roomUserStatusMap.get(user);
     }
 }
