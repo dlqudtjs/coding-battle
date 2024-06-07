@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Table(name = "user")
 public class User implements UserDetails {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -34,6 +36,7 @@ public class User implements UserDetails {
     @JoinColumn(name = "role_id", nullable = false)
     private UserRole role;
 
+    @Getter
     @Column(name = "user_id", nullable = false, unique = true)
     private String userId;
 
@@ -48,14 +51,6 @@ public class User implements UserDetails {
     @Override
     public int hashCode() {
         return userId.hashCode();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getUserId() {
-        return userId;
     }
 
     @Override
