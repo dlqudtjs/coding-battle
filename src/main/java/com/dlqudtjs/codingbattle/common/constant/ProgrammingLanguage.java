@@ -19,16 +19,6 @@ public enum ProgrammingLanguage {
     private final String dockerImageName;
     private final String fileName;
 
-    public static ProgrammingLanguage getLanguage(String language) {
-        for (ProgrammingLanguage pl : ProgrammingLanguage.values()) {
-            if (pl.name().equals(language.toUpperCase())) {
-                return pl;
-            }
-        }
-
-        return DEFAULT;
-    }
-
     public static boolean isNotContains(String language) {
         language = language.toUpperCase();
 

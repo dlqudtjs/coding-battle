@@ -26,5 +26,4 @@ public class Language {
     @Getter
     @Column(name = "name", nullable = false)
     private String name;
-
 }
