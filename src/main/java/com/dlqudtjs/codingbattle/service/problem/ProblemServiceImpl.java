@@ -24,17 +24,23 @@ public class ProblemServiceImpl implements ProblemService {
     public List<ProblemInfo> getProblemInfoList(AlgorithmType algorithmType,
                                                 ProblemLevelType problemLevelType,
                                                 Integer count) {
-        Long algorithmId = 0L;
-        Long problemLevelId = 0L;
-
-        if (algorithmType != null) {
-            algorithmId = algorithmClassificationRepository.findByName(algorithmType.name()).getId();
-        }
-        if (problemLevelType != null) {
-            problemLevelId = problemLevelRepository.findByName(problemLevelType.name()).getId();
-        }
+        Long algorithmId = algorithmClassificationRepository.findByName(algorithmType.name()).getId();
+        Long problemLevelId = problemLevelRepository.findByName(problemLevelType.name()).getId();
 
         return problemRepository.getRandomProblems(algorithmId, problemLevelId, count).stream()
+                .map(problem -> ProblemInfo.builder()
+                        .problem(problem)
+                        .problemIOExamples(problemIOExampleRepository.findByProblemId(problem.getId()))
+                        .build())
+                .toList();
+    }
+
+    @Override
+    public List<ProblemInfo> getProblemInfoList(ProblemLevelType problemLevelType,
+                                                Integer count) {
+        Long problemLevelId = problemLevelRepository.findByName(problemLevelType.name()).getId();
+
+        return problemRepository.getRandomProblems(0L, problemLevelId, count).stream()
                 .map(problem -> ProblemInfo.builder()
                         .problem(problem)
                         .problemIOExamples(problemIOExampleRepository.findByProblemId(problem.getId()))

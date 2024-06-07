@@ -8,4 +8,6 @@ import java.util.List;
 public interface ProblemService {
 
     List<ProblemInfo> getProblemInfoList(AlgorithmType algorithmType, ProblemLevelType problemLevel, Integer count);
+
+    List<ProblemInfo> getProblemInfoList(ProblemLevelType problemLevel, Integer count);
 }
