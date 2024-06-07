@@ -7,6 +7,5 @@ import lombok.Getter;
 @Getter
 @Builder
 public class UserSurrenderMessageResponseDto {
-
     private UserSurrenderResponseDto userSurrender;
 }

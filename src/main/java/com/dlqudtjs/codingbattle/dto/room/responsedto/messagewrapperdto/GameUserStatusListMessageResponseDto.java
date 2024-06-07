@@ -8,6 +8,5 @@ import lombok.Getter;
 @Getter
 @Builder
 public class GameUserStatusListMessageResponseDto {
-
     private List<RoomUserStatusResponseDto> userStatusList;
 }
