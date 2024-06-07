@@ -39,7 +39,7 @@ public class GameServiceImpl implements GameService {
 
         // 난이도에 따른 문제 리스트 가져오기
         ProblemLevelType problemLevel = room.getGameRunningConfig().getProblemLevel();
-        List<ProblemInfo> problemInfoList = problemService.getProblemInfoList(null, problemLevel, 1);
+        List<ProblemInfo> problemInfoList = problemService.getProblemInfoList(problemLevel, 1);
 
         GameSession gameSession = new GameSession(room, problemInfoList, matchService, roomService);
 
