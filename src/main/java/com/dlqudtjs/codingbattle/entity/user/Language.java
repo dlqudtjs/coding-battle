@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -22,10 +23,8 @@ public class Language {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Getter
     @Column(name = "name", nullable = false)
     private String name;
 
-    public String getName() {
-        return name;
-    }
 }
