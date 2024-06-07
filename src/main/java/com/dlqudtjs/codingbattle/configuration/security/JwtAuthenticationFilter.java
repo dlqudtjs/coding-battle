@@ -22,19 +22,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
+        String authorizationHeader = request.getHeader("Authorization");
 
-        try {
-            // 헤더에서 JWT 를 받아옴
-            String token = jwtTokenProvider.resolveToken(request);
-
-            // getAuthentication 메서드에서 토큰에 문제가 생기면 exception 발생
-            // 이 exception을 CustomAuthenticationEntryPoint에서 처리
-            Authentication auth = jwtTokenProvider.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(auth);
-        } catch (Exception e) {
-            SecurityContextHolder.clearContext();
-            request.setAttribute("exception", e);
+        // header에 Authorization이 없거나 Bearer로 시작하지 않거나 토큰이 유효하지 않은 경우
+        if (authorizationHeader == null ||
+                !authorizationHeader.startsWith("Bearer ") ||
+                jwtTokenProvider.isTokenValid(authorizationHeader.substring(7))) {
+            filterChain.doFilter(request, response);
+            return;
         }
+
+        String token = authorizationHeader.substring(7);
+
+        Authentication auth = jwtTokenProvider.getAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(auth);
 
         filterChain.doFilter(request, response);
     }

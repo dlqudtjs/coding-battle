@@ -17,7 +17,7 @@ public class CustomDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userId) {
-        return userRepository.findByUserId(userId)
+        return userRepository.findById(Long.parseLong(userId))
                 .orElseThrow(() -> new Custom4XXException(
                         USER_ID_NOT_FOUNT.getMessage(),
                         USER_ID_NOT_FOUNT.getStatus()));

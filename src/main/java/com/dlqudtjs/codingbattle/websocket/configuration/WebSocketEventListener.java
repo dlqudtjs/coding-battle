@@ -36,10 +36,15 @@ public class WebSocketEventListener {
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        String token = headerAccessor.getFirstNativeHeader(Header.AUTHORIZATION.getHeaderName());
+        String authorizationHeader = headerAccessor.getFirstNativeHeader(Header.AUTHORIZATION.getHeaderName());
+        if (authorizationHeader == null) {
+            return;
+        }
+
+        String token = authorizationHeader.substring(7);
 
         // token이 유효한지 확인
-        jwtTokenProvider.validateToken(token);
+        jwtTokenProvider.isTokenValid(token);
 
         User user = userService.getUser(jwtTokenProvider.getUserName(token));
 
