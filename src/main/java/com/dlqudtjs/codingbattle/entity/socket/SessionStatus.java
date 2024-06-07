@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.entity.socket;
 
 import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
+import lombok.Getter;
 
 /*
  * 세션 상태를 나타내는 클래스
@@ -8,6 +9,7 @@ import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
 
 public class SessionStatus {
 
+    @Getter
     private Long enterRoomId;
     // todo : 추후 세션 상태 추가 (ex. 방해 금지)
     private Boolean isGameInProgress;
@@ -40,9 +42,5 @@ public class SessionStatus {
 
     public Boolean isGameInProgress() {
         return this.isGameInProgress;
-    }
-
-    public Long getEnterRoomId() {
-        return enterRoomId;
     }
 }
