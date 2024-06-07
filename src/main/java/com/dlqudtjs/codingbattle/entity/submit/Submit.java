@@ -6,6 +6,8 @@ import com.dlqudtjs.codingbattle.entity.game.MatchHistory;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,6 +18,7 @@ import jakarta.persistence.Table;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -25,14 +28,17 @@ import lombok.NoArgsConstructor;
 @Table(name = "submit")
 public class Submit implements Comparable<Submit> {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Getter
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Getter
     @OneToOne
     @JoinColumn(name = "submit_result_code_id", nullable = false)
     private SubmitResultCode submitResultCode;
@@ -41,6 +47,7 @@ public class Submit implements Comparable<Submit> {
     @JoinColumn(name = "match_history_id", nullable = false)
     private MatchHistory matchHistory;
 
+    @Getter
     @Column(name = "code", nullable = false)
     private String code;
 
@@ -50,35 +57,13 @@ public class Submit implements Comparable<Submit> {
     @Column(name = "execution_time")
     private Long executionTime;
 
+    @Getter
     @Column(name = "language", nullable = false)
-    private String language;
+    @Enumerated(EnumType.STRING)
+    private ProgrammingLanguage language;
 
     @Column(name = "submit_time", nullable = false)
     private Date submitTime;
-
-    public Long getId() {
-        return id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public ProgrammingLanguage getLanguage() {
-        return ProgrammingLanguage.getLanguage(language);
-    }
-
-    public Long getExecutionTime() {
-        return executionTime;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public SubmitResultCode getSubmitResultCode() {
-        return submitResultCode;
-    }
 
     public void updateSubmitResult(UpdateSubmitResultRequestDto updateSubmitResultRequestDto) {
         this.executionTime = updateSubmitResultRequestDto.getExecutionTime();
@@ -93,7 +78,7 @@ public class Submit implements Comparable<Submit> {
     public static Submit drawSubmit() {
         return Submit.builder()
                 .code("")
-                .language(ProgrammingLanguage.DEFAULT.getLanguageName())
+                .language(ProgrammingLanguage.DEFAULT)
                 .build();
     }
 }
