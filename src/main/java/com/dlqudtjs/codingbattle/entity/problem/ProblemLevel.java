@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.entity.problem;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,7 +12,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Entity
 @Builder
 @AllArgsConstructor
@@ -19,10 +19,16 @@ import lombok.NoArgsConstructor;
 @Table(name = "problem_level")
 public class ProblemLevel {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", nullable = false)
     private String name;
+
+    @JsonValue
+    public String getValue() {
+        return name;
+    }
 }
