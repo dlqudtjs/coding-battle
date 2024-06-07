@@ -165,7 +165,7 @@ public class JudgeServiceImpl implements JudgeService {
     }
 
     private String createHostScriptPath(ProgrammingLanguage language) {
-        return hostScriptPath + language.getLanguageName();
+        return hostScriptPath + language.name();
     }
 
     private String createHostTestCasePath(Long problemId) {

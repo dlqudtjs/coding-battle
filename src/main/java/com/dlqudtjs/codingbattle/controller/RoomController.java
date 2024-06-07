@@ -140,7 +140,7 @@ public class RoomController {
                         .roomId(room.getRoomId())
                         .hostId(room.getHost().getUserId())
                         .title(room.getTitle())
-                        .language(room.getGameRunningConfig().getLanguage().getLanguageName())
+                        .language(room.getGameRunningConfig().getLanguage())
                         .isLocked(room.isLocked())
                         .isStarted(room.getIsStarted())
                         .problemLevel(room.getGameRunningConfig().getProblemLevel())

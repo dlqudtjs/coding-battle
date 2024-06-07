@@ -195,7 +195,7 @@ public class Room {
                 .roomId(roomId)
                 .hostId(host.getUserId())
                 .title(title)
-                .language(gameRunningConfig.getLanguage().getLanguageName())
+                .language(gameRunningConfig.getLanguage())
                 .isLocked(isLocked())
                 .isStarted(isStarted)
                 .problemLevel(gameRunningConfig.getProblemLevel())

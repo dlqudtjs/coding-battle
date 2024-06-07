@@ -9,13 +9,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ProgrammingLanguage {
 
-    DEFAULT("default", "default", "default"),
-    JAVA("java", "java", "Main.java"),
-    PYTHON("python", "python", "main.py"),
-    C("c", "gcc", "main.c"),
-    JAVASCRIPT("javascript", "node", "app.js");
+    DEFAULT("default", "default"),
+    JAVA("java", "Main.java"),
+    PYTHON("python", "main.py"),
+    C("gcc", "main.c"),
+    JAVASCRIPT("node", "app.js");
 
-    private final String languageName;
     private final String dockerImageName;
     private final String fileName;
 
