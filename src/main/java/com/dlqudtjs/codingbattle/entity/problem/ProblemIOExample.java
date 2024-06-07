@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -27,17 +28,11 @@ public class ProblemIOExample {
     @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
 
+    @Getter
     @Column(name = "input")
     private String input;
 
+    @Getter
     @Column(name = "output")
     private String output;
-
-    public String getInput() {
-        return input;
-    }
-
-    public String getOutput() {
-        return output;
-    }
 }
