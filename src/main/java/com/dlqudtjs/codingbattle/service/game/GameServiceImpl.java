@@ -35,7 +35,9 @@ public class GameServiceImpl implements GameService {
         }
 
         // Room의 상태를 게임 시작으로 변경
-        room.startGame();
+        if (!room.startGame()) {
+            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
+        }
 
         // 난이도에 따른 문제 리스트 가져오기
         ProblemLevelType problemLevel = room.getGameRunningConfig().getProblemLevel();
