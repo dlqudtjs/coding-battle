@@ -30,4 +30,8 @@ public class Winner {
     public ProgrammingLanguage getLanguage() {
         return submit.getLanguage();
     }
+
+    public Boolean equalsUser(User user) {
+        return this.user.equals(user);
+    }
 }
