@@ -10,6 +10,7 @@ import com.dlqudtjs.codingbattle.repository.problem.ProblemRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class ProblemServiceImpl implements ProblemService {
     private final AlgorithmClassificationRepository algorithmClassificationRepository;
 
     @Override
+    @Transactional
     public List<ProblemInfo> getProblemInfoList(AlgorithmType algorithmType,
                                                 ProblemLevelType problemLevelType,
                                                 Integer count) {
@@ -36,6 +38,7 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
+    @Transactional
     public List<ProblemInfo> getProblemInfoList(ProblemLevelType problemLevelType,
                                                 Integer count) {
         Long problemLevelId = problemLevelRepository.findByName(problemLevelType.name()).getId();
