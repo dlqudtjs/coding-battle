@@ -63,12 +63,17 @@ public class JudgeController {
                 .judgeResult(JudgeResultRequestDto.toParsedJudgeResultResponseDto())
                 .build();
 
+        boolean isFinished = isFinished(JudgeResultRequestDto);
+
+        // 결과 저장 (마지막 테스트까지 통과, Fail, Error)
+        if (isFinished) {
+            submitService.saveSubmitResult(JudgeResultRequestDto.toParsedJudgeResultResponseDto());
+        }
+
         // 결과 전송
         messagingTemplate.convertAndSend(ROOM_BROADCAST.getValue() + JudgeResultRequestDto.getRoomId(), responseDto);
 
-        // 결과 저장 (마지막 테스트까지 통과, Fail, Error)
-        if (isFinished(JudgeResultRequestDto)) {
-            submitService.saveSubmitResult(JudgeResultRequestDto.toParsedJudgeResultResponseDto());
+        if (isFinished) {
             judgeService.closeDockerContainer(JudgeResultRequestDto.getContainerId());
         }
 
