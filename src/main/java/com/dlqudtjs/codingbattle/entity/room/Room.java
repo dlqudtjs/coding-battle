@@ -108,6 +108,10 @@ public class Room {
         return roomUserStatusMap.size();
     }
 
+    public ProgrammingLanguage getUserLanguage(User user) {
+        return roomUserStatusMap.get(user).getUseLanguage();
+    }
+
     public Boolean isFull() {
         return roomUserStatusMap.size() >= maxUserCount;
     }

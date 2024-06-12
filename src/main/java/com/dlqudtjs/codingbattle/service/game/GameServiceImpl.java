@@ -101,13 +101,4 @@ public class GameServiceImpl implements GameService {
 
         return gameSessionMap.get(roomId);
     }
-
-    @Override
-    public List<ProblemInfo> getProblemInfoList(Long roomId) {
-        if (!gameSessionMap.containsKey(roomId)) {
-            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
-        }
-
-        return gameSessionMap.get(roomId).getGameRunningConfig().getProblemInfoList();
-    }
 }

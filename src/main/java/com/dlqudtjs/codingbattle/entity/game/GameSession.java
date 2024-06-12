@@ -5,6 +5,7 @@ import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.WIN;
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.JudgeResultCode;
+import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.util.TimeProvider;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemInfoResponseDto;
@@ -107,6 +108,10 @@ public class GameSession {
         return gameUserStatus.surrender();
     }
 
+    public Boolean isMatchUserLanguage(User user, ProgrammingLanguage language) {
+        return gameUserStatusMap.get(user).getLanguage().equals(language);
+    }
+
     private Winner getWinner() {
         while (!submitQueue.isEmpty()) {
             Submit submit = submitQueue.poll();
@@ -134,6 +139,7 @@ public class GameSession {
         room.getUserList().forEach(user -> {
             gameUserStatusMap.put(user, GameUserStatus.builder()
                     .user(user)
+                    .language(room.getUserLanguage(user))
                     .isSurrender(false)
                     .build());
         });
