@@ -9,6 +9,7 @@ import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.util.Time;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemInfoResponseDto;
+import com.dlqudtjs.codingbattle.entity.match.MatchHistory;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
 import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.submit.Submit;

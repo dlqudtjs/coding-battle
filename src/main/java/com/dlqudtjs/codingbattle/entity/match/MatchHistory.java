@@ -1,5 +1,6 @@
-package com.dlqudtjs.codingbattle.entity.game;
+package com.dlqudtjs.codingbattle.entity.match;
 
+import com.dlqudtjs.codingbattle.common.util.Time;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,4 +30,8 @@ public class MatchHistory {
 
     @Column(name = "end_time")
     private Timestamp endTime;
+
+    public void matchEnd() {
+        this.endTime = Time.getTimestamp();
+    }
 }

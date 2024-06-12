@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.entity.game;
+package com.dlqudtjs.codingbattle.entity.match;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

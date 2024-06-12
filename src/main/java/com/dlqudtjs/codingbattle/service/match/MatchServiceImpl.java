@@ -6,9 +6,9 @@ import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.IN
 import com.dlqudtjs.codingbattle.common.constant.MatchingResultType;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
-import com.dlqudtjs.codingbattle.entity.game.MatchHistory;
-import com.dlqudtjs.codingbattle.entity.game.MatchingResultClassification;
-import com.dlqudtjs.codingbattle.entity.game.UserMatchingHistory;
+import com.dlqudtjs.codingbattle.entity.match.MatchHistory;
+import com.dlqudtjs.codingbattle.entity.match.MatchingResultClassification;
+import com.dlqudtjs.codingbattle.entity.match.UserMatchingHistory;
 import com.dlqudtjs.codingbattle.entity.game.Winner;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.repository.game.MatchHistoryRepository;

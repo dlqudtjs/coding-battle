@@ -2,7 +2,7 @@ package com.dlqudtjs.codingbattle.entity.submit;
 
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.UpdateSubmitResultRequestDto;
-import com.dlqudtjs.codingbattle.entity.game.MatchHistory;
+import com.dlqudtjs.codingbattle.entity.match.MatchHistory;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
