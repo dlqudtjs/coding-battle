@@ -41,21 +41,20 @@ public class WebSocketEventListener {
             return;
         }
 
-        String token = authorizationHeader.substring(7);
-
         // token이 유효한지 확인
-        jwtTokenProvider.isTokenValid(token);
+        jwtTokenProvider.isTokenValid(authorizationHeader);
 
-        User user = userService.getUser(jwtTokenProvider.getUserName(token));
+        User user = userService.getUser(jwtTokenProvider.getUserName(authorizationHeader));
 
         // 이미 연결된 유저인지 확인하여 연결 돼있다면 끊기
-        disconnectUser(user, headerAccessor.getSessionId());
+        disconnectUser(user);
 
         // 유저 세션 상태 추가
         sessionService.initSessionStatus(user);
 
         WebsocketSessionHolder.addUserAndSessionId(user, headerAccessor.getSessionId());
 
+        headerAccessor.setUser(user);
         // 소켓을 연결한 유저는 Default 방을 입장
         roomService.enter(RoomEnterRequestDto.builder()
                 .roomId(RoomConfig.DEFAULT_ROOM_ID.getValue())
@@ -80,7 +79,7 @@ public class WebSocketEventListener {
         WebsocketSessionHolder.removeSessionIdFromUser(user);
     }
 
-    private void disconnectUser(User user, String sessionId) {
+    private void disconnectUser(User user) {
         if (WebsocketSessionHolder.isNotConnected(user)) {
             return;
         }
@@ -88,7 +87,11 @@ public class WebSocketEventListener {
         Long roomId = sessionService.getRoomIdFromUser(user);
         Room enterRoom = roomService.getRoom(roomId);
 
-        messagingTemplate.convertAndSendToUser(sessionId, "/topic/room/" + roomId, "강제 종료");
+        // client 는 /users/queue/messages 를 구독해야 함
+        messagingTemplate.convertAndSendToUser(
+                user.getUsername(),
+                "/queue/messages",
+                "강제 종료");
 
         if (enterRoom.isStarted()) {
             gameController.logout(roomId, user);

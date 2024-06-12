@@ -19,10 +19,10 @@ import org.springframework.web.socket.handler.WebSocketHandlerDecorator;
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final StompExceptionHandler stompExceptionHandler;
-//    private final StompHandler stompHandler;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.setUserDestinationPrefix("/users");
         registry.enableSimpleBroker("/queue", "/topic");
         registry.setApplicationDestinationPrefixes("/app");
     }
