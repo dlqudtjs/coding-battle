@@ -9,8 +9,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.Collections;
+import javax.security.auth.Subject;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,7 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "user")
-public class User implements UserDetails {
+public class User implements UserDetails, Principal {
 
     @Getter
     @Id
@@ -81,6 +83,16 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return false;
+    }
+
+    @Override
+    public boolean implies(Subject subject) {
+        return Principal.super.implies(subject);
+    }
+
+    @Override
+    public String getName() {
+        return userId;
     }
 
     public User encodePassword(PasswordEncoder passwordEncoder) {
