@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.common.util;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -14,6 +15,10 @@ public class Time {
 
     public static Date getDate() {
         return Date.from(getZonedDateTime().toInstant());
+    }
+
+    public static Timestamp getTimestamp() {
+        return new Timestamp(getDate().getTime());
     }
 
     public static long getCurrentTimeMillis() {
