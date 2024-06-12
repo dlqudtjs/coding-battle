@@ -117,21 +117,6 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room start(Long roomId, User user) {
-        Room room = roomMap.get(roomId);
-
-        if (!room.isHost(user)) {
-            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
-        }
-
-        if (!room.startGame()) {
-            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
-        }
-
-        return room;
-    }
-
-    @Override
     public Boolean isExistUserInRoom(User user, Long roomId) {
         return roomMap.get(roomId).isExistUser(user);
     }
@@ -139,11 +124,6 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Boolean isExistRoom(Long roomId) {
         return roomMap.containsKey(roomId);
-    }
-
-    @Override
-    public Boolean isStartedGame(Long roomId) {
-        return roomMap.get(roomId).isStarted();
     }
 
     @Override

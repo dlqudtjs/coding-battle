@@ -8,6 +8,8 @@ import com.dlqudtjs.codingbattle.common.constant.code.GameConfigCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.dto.judge.JudgeProblemRequestDto;
+import com.dlqudtjs.codingbattle.entity.game.GameSession;
+import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.submit.Submit;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.service.game.GameService;
@@ -217,19 +219,16 @@ public class JudgeServiceImpl implements JudgeService {
 
     private void validateJudgeProblemRequestDto(JudgeProblemRequestDto judgeProblemRequestDto) {
         User user = userService.getUser(judgeProblemRequestDto.getUserId());
+        GameSession gameSession = gameService.getGameSession(judgeProblemRequestDto.getRoomId());
+        Room room = roomService.getRoom(judgeProblemRequestDto.getRoomId());
 
         // 언어 검증
-        if (judgeProblemRequestDto.getLanguage() != ProgrammingLanguage.DEFAULT) {
-            throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
-        }
-
-        // 방이 존재하는지 검증
-        if (!roomService.isExistRoom(judgeProblemRequestDto.getRoomId())) {
+        if (!gameSession.isMatchUserLanguage(user, judgeProblemRequestDto.getLanguage())) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
         // 방이 시작되었는지 검증
-        if (!roomService.isStartedGame(judgeProblemRequestDto.getRoomId())) {
+        if (!room.isStarted()) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
@@ -239,12 +238,12 @@ public class JudgeServiceImpl implements JudgeService {
         }
 
         // 사용자가 방에 들어가 있는지 검증
-        if (!roomService.isExistUserInRoom(user, judgeProblemRequestDto.getRoomId())) {
+        if (room.isExistUser(user)) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 
         // 문제가 존재하는지 검증
-        if (gameService.getProblemInfoList(judgeProblemRequestDto.getRoomId()).stream()
+        if (gameSession.getGameRunningConfig().getProblemInfoList().stream()
                 .noneMatch(problemInfo -> problemInfo.getProblem().getId()
                         .equals(judgeProblemRequestDto.getProblemId()))) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());

@@ -22,15 +22,11 @@ public interface RoomService {
 
     List<Room> getRoomList();
 
-    Room start(Long roomId, User user);
-
     Room gameEnd(Long roomId);
 
     Boolean isExistUserInRoom(User user, Long roomId);
 
     Boolean isExistRoom(Long roomId);
-
-    Boolean isStartedGame(Long roomId);
 
     Room updateRoomStatus(Long roomId, User user, RoomStatusUpdateMessageRequestDto requestDto);
 
