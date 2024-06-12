@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.entity.match;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,4 +24,9 @@ public class MatchingResultClassification {
 
     @Column(name = "name", nullable = false)
     private String name;
+
+    @JsonValue
+    public String getName() {
+        return name;
+    }
 }

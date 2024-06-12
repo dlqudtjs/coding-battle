@@ -21,6 +21,10 @@ public class Time {
         return new Timestamp(getDate().getTime());
     }
 
+    public static ZonedDateTime convertTimestampToZonedDateTime(Timestamp timestamp) {
+        return timestamp.toInstant().atZone(ZoneId.of("Asia/Seoul"));
+    }
+
     public static long getCurrentTimeMillis() {
         return System.currentTimeMillis();
     }
