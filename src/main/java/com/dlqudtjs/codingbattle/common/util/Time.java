@@ -5,7 +5,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
-public class TimeProvider {
+public class Time {
 
     public static ZonedDateTime getZonedDateTime() {
         Instant now = Instant.now();

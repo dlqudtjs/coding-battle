@@ -6,7 +6,7 @@ import static com.dlqudtjs.codingbattle.common.constant.Destination.ROOM_BROADCA
 import com.dlqudtjs.codingbattle.common.constant.MessageType;
 import com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode;
 import com.dlqudtjs.codingbattle.common.exception.CustomSocketException;
-import com.dlqudtjs.codingbattle.common.util.TimeProvider;
+import com.dlqudtjs.codingbattle.common.util.Time;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.SendToRoomMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.RoomStatusUpdateMessageRequestDto;
@@ -56,7 +56,7 @@ public class SocketRoomController {
                         .messageType(MessageType.USER)
                         .senderId(user.getUserId())
                         .message(sendToRoomMessageRequestDto.getMessage())
-                        .sendTime(TimeProvider.getZonedDateTime())
+                        .sendTime(Time.getZonedDateTime())
                         .build())
                 .build();
     }

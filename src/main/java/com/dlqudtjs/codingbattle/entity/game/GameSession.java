@@ -7,7 +7,7 @@ import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.IN
 import com.dlqudtjs.codingbattle.common.constant.JudgeResultCode;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
-import com.dlqudtjs.codingbattle.common.util.TimeProvider;
+import com.dlqudtjs.codingbattle.common.util.Time;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemInfoResponseDto;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
 import com.dlqudtjs.codingbattle.entity.room.Room;
@@ -40,7 +40,7 @@ public class GameSession {
         initGameUserStatusMap(room);
 
         this.gameRunningConfig = room.getGameRunningConfig();
-        this.startTime = TimeProvider.getCurrentTimeMillis();
+        this.startTime = Time.getCurrentTimeMillis();
         this.matchService = matchService;
         this.roomService = roomService;
         gameRunningConfig.setProblemInfoList(problemInfoList);
@@ -154,7 +154,7 @@ public class GameSession {
     private Boolean isTimeOver() {
         // 밀리초 변환
         long limitTime = gameRunningConfig.getLimitTime() * 60 * 1000;
-        return TimeProvider.getCurrentTimeMillis() - startTime > limitTime;
+        return Time.getCurrentTimeMillis() - startTime > limitTime;
     }
 
     // 모든 유저가 `다 풀었어요!` 버튼을 눌렀는지 확인

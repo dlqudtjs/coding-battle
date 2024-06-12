@@ -4,7 +4,7 @@ import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.IN
 
 import com.dlqudtjs.codingbattle.common.constant.JudgeResultCode;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
-import com.dlqudtjs.codingbattle.common.util.TimeProvider;
+import com.dlqudtjs.codingbattle.common.util.Time;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.UpdateSubmitResultRequestDto;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ParsedJudgeResultResponseDto;
 import com.dlqudtjs.codingbattle.dto.judge.JudgeProblemRequestDto;
@@ -57,7 +57,7 @@ public class SubmitServiceImpl implements SubmitService {
                 .memory(0L)
                 .executionTime(0L)
                 .language(judgeProblemRequestDto.getLanguage())
-                .submitTime(TimeProvider.getDate())
+                .submitTime(Time.getDate())
                 .build());
     }
 
