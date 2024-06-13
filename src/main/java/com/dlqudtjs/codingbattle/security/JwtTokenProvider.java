@@ -111,7 +111,6 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token.substring(7));
 
             return true;
-
         } catch (SecurityException | MalformedJwtException e) {
             log.error("Invalid JWT signature -> Message: ", e);
         } catch (ExpiredJwtException e) {
