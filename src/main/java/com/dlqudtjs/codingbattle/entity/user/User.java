@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.entity.user;
 
 import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
+import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -121,5 +122,10 @@ public class User implements UserDetails, Principal {
                 .userId("DEFAULT")
                 .password("DEFAULT")
                 .build();
+    }
+
+    @JsonValue
+    public String getValue() {
+        return userId;
     }
 }
