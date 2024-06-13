@@ -6,6 +6,7 @@ import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.PENDI
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.MatchingResultType;
+import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.util.Time;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
@@ -13,17 +14,11 @@ import com.dlqudtjs.codingbattle.entity.game.Winner;
 import com.dlqudtjs.codingbattle.entity.match.MatchHistory;
 import com.dlqudtjs.codingbattle.entity.match.MatchRecode;
 import com.dlqudtjs.codingbattle.entity.match.MatchRecodeUserStatus;
-import com.dlqudtjs.codingbattle.entity.match.MatchingResultClassification;
 import com.dlqudtjs.codingbattle.entity.match.UserMatchingHistory;
-import com.dlqudtjs.codingbattle.entity.problem.ProblemLevel;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.repository.game.MatchHistoryRepository;
-import com.dlqudtjs.codingbattle.repository.game.MatchingResultClassificationRepository;
 import com.dlqudtjs.codingbattle.repository.game.UserMatchingHistoryRepository;
-import com.dlqudtjs.codingbattle.repository.problem.ProblemLevelRepository;
-import com.dlqudtjs.codingbattle.service.user.UserService;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,8 +33,6 @@ public class MatchServiceImpl implements MatchService {
 
     private final MatchHistoryRepository matchHistoryRepository;
     private final UserMatchingHistoryRepository userMatchingHistoryRepository;
-    private final MatchingResultClassificationRepository matchingResultClassificationRepository;
-    private final ProblemLevelRepository problemLevelRepository;
 
     @Override
     @Transactional
@@ -67,11 +60,10 @@ public class MatchServiceImpl implements MatchService {
                 matchingResultType = LOSE;
             }
 
-            userMatchingHistoryRepository.save(UserMatchingHistory.builder()
-                    .user(user)
-                    .matchHistory(this.getMatchHistory(gameSession.getMatchId()))
-                    .matchingResultClassification(getMatchingResultClassification(matchingResultType))
-                    .build());
+            UserMatchingHistory userMatchingHistory = userMatchingHistoryRepository.findByMatchHistoryIdAndUserId(
+                    gameSession.getMatchId(), user.getId());
+
+            userMatchingHistory.updateResult(matchingResultType);
         });
 
         matchHistoryRepository.findById(gameSession.getMatchId())
@@ -88,14 +80,21 @@ public class MatchServiceImpl implements MatchService {
                 .usersResult(getMatchRecodeUserStatuses(matchHistory.getId()))
                 .matchId(matchHistory.getId())
                 .language(matchHistory.getLanguage())
-                // TODO: 조회한 사용자 기준으로 결과를 반환하는 로직 추가
-                .result(matchHistory.getResult())
-                .level(matchHistory.getLanguage())
+                .result(getResultType(user, getMatchRecodeUserStatuses(matchHistory.getId())))
+                .problemLevel(matchHistory.getProblemLevel())
                 .elapsedTime(Time.getElapsedTime(matchHistory.getStartTime(), matchHistory.getEndTime()))
-                .date(Time.getZonedDateTime(matchHistory.getStartTime()))
+                .date(Time.convertTimestampToZonedDateTime(matchHistory.getStartTime()))
                 .build()).toList();
-
     }
+
+    private MatchingResultType getResultType(User user, List<MatchRecodeUserStatus> matchRecodeUserStatuses) {
+        return matchRecodeUserStatuses.stream()
+                .filter(matchRecodeUserStatus -> matchRecodeUserStatus.getUser().equals(user))
+                .findFirst()
+                .map(MatchRecodeUserStatus::getResult)
+                .orElse(null);
+    }
+
 
     private List<MatchRecodeUserStatus> getMatchRecodeUserStatuses(Long matchHistoryId) {
         List<UserMatchingHistory> userMatchingHistories = userMatchingHistoryRepository.findByMatchHistoryId(
@@ -103,7 +102,7 @@ public class MatchServiceImpl implements MatchService {
 
         return userMatchingHistories.stream().map(userMatchingHistory -> MatchRecodeUserStatus.builder()
                 .user(userMatchingHistory.getUser())
-                .result(userMatchingHistory.getMatchingResultClassification())
+                .result(userMatchingHistory.getResult())
                 .build()).toList();
     }
 
@@ -115,31 +114,22 @@ public class MatchServiceImpl implements MatchService {
     }
 
     private MatchHistory saveMatchHistory(GameSession gameSession) {
-        ProblemLevel problemLevel = problemLevelRepository.findByName(
-                gameSession.getGameRunningConfig().getProblemLevel().name());
+        ProblemLevelType problemLevel = gameSession.getGameRunningConfig().getProblemLevel();
 
         return matchHistoryRepository.save(MatchHistory.builder()
-                .problemLevelId(problemLevel)
+                .problemLevel(problemLevel)
                 .startTime(new Timestamp(gameSession.getStartTime()))
                 .language(gameSession.getGameRunningConfig().getLanguage())
                 .build());
     }
 
     private void saveUserMatchingHistory(GameSession gameSession, MatchHistory matchHistory) {
-        MatchingResultClassification matchingResultClassification =
-                getMatchingResultClassification(PENDING);
-
         for (User user : gameSession.getGameUserList()) {
             userMatchingHistoryRepository.save(UserMatchingHistory.builder()
                     .user(user)
                     .matchHistory(matchHistory)
-                    .matchingResultClassification(matchingResultClassification)
+                    .result(PENDING)
                     .build());
         }
-    }
-
-    private MatchingResultClassification getMatchingResultClassification(MatchingResultType matchingResultType) {
-        return matchingResultClassificationRepository.findById(matchingResultType.getValue())
-                .orElseThrow(RuntimeException::new);
     }
 }
