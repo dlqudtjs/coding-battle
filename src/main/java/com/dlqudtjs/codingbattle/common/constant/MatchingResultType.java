@@ -7,10 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum MatchingResultType {
     PENDING(0L),
-    PERFECT_WIN(1L),
-    WIN(2L),
-    DRAW(3L),
-    LOSE(4L);
+    WIN(1L),
+    DRAW(2L),
+    LOSE(3L);
 
     private final Long value;
 }
