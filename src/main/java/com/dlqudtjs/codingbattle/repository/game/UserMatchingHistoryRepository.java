@@ -10,10 +10,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface UserMatchingHistoryRepository extends JpaRepository<UserMatchingHistory, Long> {
-    @Query("SELECT mh FROM MatchHistory mh "
-            + "JOIN UserMatchingHistory umh ON mh.id = umh.matchHistoryId "
-            + "WHERE umh.user.id = :userId ORDER BY mh.startTime DESC")
+    @Query("SELECT mh "
+            + "FROM MatchHistory mh "
+            + "JOIN mh.userMatchingHistories umh "
+            + "WHERE umh.user.id = :userId AND mh.endTime IS NOT NULL "
+            + "ORDER BY mh.startTime DESC")
     Page<MatchHistory> findMatchHistoriesByUserId(@Param("userId") Long userId, Pageable pageable);
 
     List<UserMatchingHistory> findByMatchHistoryId(Long matchHistoryId);
+
+    UserMatchingHistory findByMatchHistoryIdAndUserId(Long matchHistoryId, Long userId);
 }
