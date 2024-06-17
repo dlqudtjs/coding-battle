@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.dto.room.requestdto;
 
+import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguageManager;
 import com.dlqudtjs.codingbattle.common.validator.programmingLanguage.ValidProgrammingLanguage;
 import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import jakarta.validation.constraints.NotNull;
@@ -16,5 +17,9 @@ public class RoomUserStatusUpdateRequestDto {
     @NotNull
     private Boolean isReady;
     @ValidProgrammingLanguage
-    private ProgrammingLanguage language;
+    private String language;
+
+    public ProgrammingLanguage getProgrammingLanguage() {
+        return ProgrammingLanguageManager.getLanguageFromName(language);
+    }
 }

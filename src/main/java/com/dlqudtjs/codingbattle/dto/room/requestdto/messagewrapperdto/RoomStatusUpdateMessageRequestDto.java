@@ -14,19 +14,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoomStatusUpdateMessageRequestDto {
 
-    @Getter
     @NotNull
     private String hostId;
 
-    @Getter
     @NotNull
     private String title;
 
-    @Getter
     @NotNull
     private String password;
 
@@ -36,19 +34,16 @@ public class RoomStatusUpdateMessageRequestDto {
     @ValidProblemLevel
     private String problemLevel;
 
-    @Getter
     @NotNull
     @Min(GameSetting.MIN_USER_COUNT_VALUE)
     @Max(GameSetting.MAX_USER_COUNT_VALUE)
     private Integer maxUserCount;
 
-    @Getter
     @NotNull
     @Min(GameSetting.MIN_SUBMISSION_COUNT_VALUE)
     @Max(GameSetting.MAX_SUBMISSION_COUNT_VALUE)
     private Integer maxSubmitCount;
 
-    @Getter
     @NotNull
     @Min(GameSetting.MIN_LIMIT_TIME_VALUE)
     @Max(GameSetting.MAX_LIMIT_TIME_VALUE)

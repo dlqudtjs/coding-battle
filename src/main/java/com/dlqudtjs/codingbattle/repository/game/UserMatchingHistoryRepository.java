@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface UserMatchingHistoryRepository extends JpaRepository<UserMatchingHistory, Long> {
-    @Query("SELECT mh "
+    @Query("SELECT DISTINCT mh "
             + "FROM MatchHistory mh "
             + "JOIN mh.userMatchingHistories umh "
             + "WHERE umh.user.id = :userId AND mh.endTime IS NOT NULL "

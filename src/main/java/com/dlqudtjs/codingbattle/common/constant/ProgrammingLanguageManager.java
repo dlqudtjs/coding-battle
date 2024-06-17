@@ -17,6 +17,9 @@ public class ProgrammingLanguageManager {
 
     public static ProgrammingLanguage DEFAULT;
     public static ProgrammingLanguage JAVA;
+    public static ProgrammingLanguage JAVASCRIPT;
+    public static ProgrammingLanguage PYTHON;
+    public static ProgrammingLanguage C;
 
     @PostConstruct
     private void init() {
@@ -27,8 +30,8 @@ public class ProgrammingLanguageManager {
         setLanguage();
     }
 
-    public static ProgrammingLanguage getLanguageFromName(String languageName) {
-        return LANGUAGES.get(languageName.toUpperCase());
+    public static ProgrammingLanguage getLanguageFromName(String language) {
+        return LANGUAGES.get(language.toUpperCase());
     }
 
     public static String getDockerImageName(ProgrammingLanguage language) {
@@ -47,13 +50,20 @@ public class ProgrammingLanguageManager {
         return "default";
     }
 
-    public static Boolean isSupportedLanguage(String languageName) {
-        return LANGUAGES.containsKey(languageName.toUpperCase());
+    public static Boolean isSupportedLanguage(String language) {
+        if (language == null) {
+            return false;
+        }
+
+        return LANGUAGES.containsKey(language.toUpperCase());
     }
 
     private void setLanguage() {
         DEFAULT = getLanguage("DEFAULT");
         JAVA = getLanguage("JAVA");
+        JAVASCRIPT = getLanguage("JAVASCRIPT");
+        PYTHON = getLanguage("PYTHON");
+        C = getLanguage("C");
     }
 
     private ProgrammingLanguage getLanguage(String languageName) {

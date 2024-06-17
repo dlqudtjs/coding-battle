@@ -109,7 +109,7 @@ public class GameSession {
     }
 
     public Boolean isMatchUserLanguage(User user, ProgrammingLanguage language) {
-        return gameUserStatusMap.get(user).getLanguage().equals(language);
+        return gameUserStatusMap.get(user).getLanguage().getName().equals(language.getName());
     }
 
     private Winner getWinner() {

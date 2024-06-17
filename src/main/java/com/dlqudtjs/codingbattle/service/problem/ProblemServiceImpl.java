@@ -3,7 +3,6 @@ package com.dlqudtjs.codingbattle.service.problem;
 import com.dlqudtjs.codingbattle.entity.problem.Algorithm;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemLevel;
-import com.dlqudtjs.codingbattle.repository.problem.AlgorithmRepository;
 import com.dlqudtjs.codingbattle.repository.problem.ProblemIOExampleRepository;
 import com.dlqudtjs.codingbattle.repository.problem.ProblemRepository;
 import java.util.List;
@@ -23,7 +22,7 @@ public class ProblemServiceImpl implements ProblemService {
     public List<ProblemInfo> getProblemInfoList(Algorithm algorithm,
                                                 ProblemLevel problemLevel,
                                                 Integer count) {
-        return problemRepository.getRandomProblems(algorithm.getId(), problemLevel.getName(), count).stream()
+        return problemRepository.getRandomProblems(algorithm.getId(), problemLevel.getId(), count).stream()
                 .map(problem -> ProblemInfo.builder()
                         .problem(problem)
                         .problemIOExamples(problemIOExampleRepository.findByProblemId(problem.getId()))
@@ -35,7 +34,7 @@ public class ProblemServiceImpl implements ProblemService {
     @Transactional
     public List<ProblemInfo> getProblemInfoList(ProblemLevel problemLevel,
                                                 Integer count) {
-        return problemRepository.getRandomProblems(0L, problemLevel.getName(), count).stream()
+        return problemRepository.getRandomProblems(0L, problemLevel.getId(), count).stream()
                 .map(problem -> ProblemInfo.builder()
                         .problem(problem)
                         .problemIOExamples(problemIOExampleRepository.findByProblemId(problem.getId()))

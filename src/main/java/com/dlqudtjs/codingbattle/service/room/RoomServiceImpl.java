@@ -172,7 +172,7 @@ public class RoomServiceImpl implements RoomService {
             Long roomId,
             RoomUserStatusUpdateRequestDto requestDto) {
         validateRoomExistence(roomId);
-        validateUserLanguage(roomId, requestDto.getLanguage());
+        validateUserLanguage(roomId, requestDto.getProgrammingLanguage());
     }
 
     private GameRunningConfig createGameRunningConfig(RoomCreateRequestDto requestDto, Long newRoomId) {

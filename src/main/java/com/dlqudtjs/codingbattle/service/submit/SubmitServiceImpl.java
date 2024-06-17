@@ -56,7 +56,7 @@ public class SubmitServiceImpl implements SubmitService {
                 .code(judgeProblemRequestDto.getCode())
                 .memory(0L)
                 .executionTime(0L)
-                .language(judgeProblemRequestDto.getLanguage())
+                .language(judgeProblemRequestDto.getProgrammingLanguage())
                 .submitTime(Time.getDate())
                 .build());
     }

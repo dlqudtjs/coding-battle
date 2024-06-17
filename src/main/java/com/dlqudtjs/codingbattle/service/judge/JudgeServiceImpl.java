@@ -77,7 +77,7 @@ public class JudgeServiceImpl implements JudgeService {
         Submit submit = submitService.savedSubmit(judgeProblemRequestDto);
 
         String uuid = UUID.randomUUID().toString();
-        ProgrammingLanguage submitLanguage = judgeProblemRequestDto.getLanguage();
+        ProgrammingLanguage submitLanguage = judgeProblemRequestDto.getProgrammingLanguage();
 
         String dockerImageName = ProgrammingLanguageManager.getDockerImageName(submitLanguage);
         String createUserCodePath = createHostUserCodePath(uuid);
@@ -224,7 +224,7 @@ public class JudgeServiceImpl implements JudgeService {
         Room room = roomService.getRoom(judgeProblemRequestDto.getRoomId());
 
         // 언어 검증
-        if (!gameSession.isMatchUserLanguage(user, judgeProblemRequestDto.getLanguage())) {
+        if (!gameSession.isMatchUserLanguage(user, judgeProblemRequestDto.getProgrammingLanguage())) {
             throw new Custom4XXException(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getStatus());
         }
 

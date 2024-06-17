@@ -179,7 +179,7 @@ public class Room {
             RoomUserStatusUpdateRequestDto requestDto, User user) {
 
         RoomUserStatus userStatus = getUserStatus(user);
-        userStatus.updateStatus(requestDto.getIsReady(), requestDto.getLanguage());
+        userStatus.updateStatus(requestDto.getIsReady(), requestDto.getProgrammingLanguage());
 
         return userStatus;
     }

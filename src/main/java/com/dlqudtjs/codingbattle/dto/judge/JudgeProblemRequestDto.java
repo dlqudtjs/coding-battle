@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.dto.judge;
 
+import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguageManager;
 import com.dlqudtjs.codingbattle.common.validator.programmingLanguage.ValidProgrammingLanguage;
 import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +20,11 @@ public class JudgeProblemRequestDto {
     @NotNull
     private String userId;
     @ValidProgrammingLanguage
-    private ProgrammingLanguage language;
+    private String language;
     @NotNull
     private String code;
+
+    public ProgrammingLanguage getProgrammingLanguage() {
+        return ProgrammingLanguageManager.getLanguageFromName(language);
+    }
 }

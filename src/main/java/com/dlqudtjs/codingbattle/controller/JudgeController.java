@@ -81,7 +81,7 @@ public class JudgeController {
     }
 
     private Boolean isFinished(JudgeResultRequestDto result) {
-        return !result.getResult().equals(SubmitResultManager.PASS) ||
+        return !result.getSubmitResult().getName().equals(SubmitResultManager.PASS.getName()) ||
                 result.getCurrentTest().equals(result.getTotalTests());
     }
 }
