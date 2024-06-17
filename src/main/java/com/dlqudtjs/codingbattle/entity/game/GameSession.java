@@ -1,9 +1,8 @@
 package com.dlqudtjs.codingbattle.entity.game;
 
-import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.DRAW;
-import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.WIN;
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
+import com.dlqudtjs.codingbattle.common.constant.MatchResultManager;
 import com.dlqudtjs.codingbattle.common.constant.SubmitResultManager;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.util.Time;
@@ -118,11 +117,11 @@ public class GameSession {
             Submit submit = submitQueue.poll();
 
             if (gameUserStatusMap.containsKey(submit.getUser())) {
-                return new Winner(submit.getUser(), WIN, submit);
+                return new Winner(submit.getUser(), MatchResultManager.WIM, submit);
             }
         }
 
-        return new Winner(User.deafultUser(), DRAW, Submit.drawSubmit());
+        return new Winner(User.deafultUser(), MatchResultManager.DRAW, Submit.drawSubmit());
     }
 
 

@@ -103,7 +103,7 @@ public class GameController {
         messagingTemplate.convertAndSend(ROOM_BROADCAST.getValue() + roomId,
                 GameEndMessageResponseDto.builder()
                         .gameEnd(GameEndResponseDto.builder()
-                                .result(winner.getMatchingResultType())
+                                .result(winner.getMatchResult())
                                 .userId(winner.getUserId())
                                 .code(winner.getCode())
                                 .language(winner.getLanguage())

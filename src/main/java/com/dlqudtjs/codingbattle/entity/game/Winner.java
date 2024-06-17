@@ -1,6 +1,6 @@
 package com.dlqudtjs.codingbattle.entity.game;
 
-import com.dlqudtjs.codingbattle.common.constant.MatchingResultType;
+import com.dlqudtjs.codingbattle.entity.match.MatchResult;
 import com.dlqudtjs.codingbattle.entity.submit.Submit;
 import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.entity.user.User;
@@ -10,12 +10,12 @@ public class Winner {
 
     private final User user;
     @Getter
-    private final MatchingResultType matchingResultType;
+    private final MatchResult matchResult;
     private final Submit submit;
 
-    public Winner(User user, MatchingResultType matchingResultType, Submit submit) {
+    public Winner(User user, MatchResult matchResult, Submit submit) {
         this.user = user;
-        this.matchingResultType = matchingResultType;
+        this.matchResult = matchResult;
         this.submit = submit;
     }
 

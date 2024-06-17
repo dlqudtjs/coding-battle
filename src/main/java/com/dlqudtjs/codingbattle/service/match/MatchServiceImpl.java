@@ -1,11 +1,10 @@
 package com.dlqudtjs.codingbattle.service.match;
 
-import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.DRAW;
-import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.LOSE;
-import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.PENDING;
+import static com.dlqudtjs.codingbattle.common.constant.MatchResultManager.DRAW;
+import static com.dlqudtjs.codingbattle.common.constant.MatchResultManager.LOSE;
+import static com.dlqudtjs.codingbattle.common.constant.MatchResultManager.PENDING;
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
-import com.dlqudtjs.codingbattle.common.constant.MatchingResultType;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.util.Time;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
@@ -13,6 +12,7 @@ import com.dlqudtjs.codingbattle.entity.game.Winner;
 import com.dlqudtjs.codingbattle.entity.match.MatchHistory;
 import com.dlqudtjs.codingbattle.entity.match.MatchRecode;
 import com.dlqudtjs.codingbattle.entity.match.MatchRecodeUserStatus;
+import com.dlqudtjs.codingbattle.entity.match.MatchResult;
 import com.dlqudtjs.codingbattle.entity.match.UserMatchingHistory;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemLevel;
 import com.dlqudtjs.codingbattle.entity.user.User;
@@ -50,20 +50,20 @@ public class MatchServiceImpl implements MatchService {
     @Transactional
     public void saveUserMatchHistory(GameSession gameSession, Winner winner) {
         gameSession.getGameUserList().forEach(user -> {
-            MatchingResultType matchingResultType;
+            MatchResult matchResult;
 
-            if (winner.getMatchingResultType() == DRAW) {
-                matchingResultType = DRAW;
+            if (winner.getMatchResult() == DRAW) {
+                matchResult = DRAW;
             } else if (winner.equalsUser(user)) {
-                matchingResultType = winner.getMatchingResultType();
+                matchResult = winner.getMatchResult();
             } else {
-                matchingResultType = LOSE;
+                matchResult = LOSE;
             }
 
             UserMatchingHistory userMatchingHistory = userMatchingHistoryRepository.findByMatchHistoryIdAndUserId(
                     gameSession.getMatchId(), user.getId());
 
-            userMatchingHistory.updateResult(matchingResultType);
+            userMatchingHistory.updateResult(matchResult);
         });
 
         matchHistoryRepository.findById(gameSession.getMatchId())
@@ -87,7 +87,7 @@ public class MatchServiceImpl implements MatchService {
                 .build()).toList();
     }
 
-    private MatchingResultType getResultType(User user, List<MatchRecodeUserStatus> matchRecodeUserStatuses) {
+    private MatchResult getResultType(User user, List<MatchRecodeUserStatus> matchRecodeUserStatuses) {
         return matchRecodeUserStatuses.stream()
                 .filter(matchRecodeUserStatus -> matchRecodeUserStatus.getUser().equals(user))
                 .findFirst()
