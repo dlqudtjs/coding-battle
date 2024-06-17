@@ -6,7 +6,6 @@ import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.PENDI
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.MatchingResultType;
-import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.util.Time;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
@@ -15,6 +14,7 @@ import com.dlqudtjs.codingbattle.entity.match.MatchHistory;
 import com.dlqudtjs.codingbattle.entity.match.MatchRecode;
 import com.dlqudtjs.codingbattle.entity.match.MatchRecodeUserStatus;
 import com.dlqudtjs.codingbattle.entity.match.UserMatchingHistory;
+import com.dlqudtjs.codingbattle.entity.problem.ProblemLevel;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.repository.game.MatchHistoryRepository;
 import com.dlqudtjs.codingbattle.repository.game.UserMatchingHistoryRepository;
@@ -114,7 +114,7 @@ public class MatchServiceImpl implements MatchService {
     }
 
     private MatchHistory saveMatchHistory(GameSession gameSession) {
-        ProblemLevelType problemLevel = gameSession.getGameRunningConfig().getProblemLevel();
+        ProblemLevel problemLevel = gameSession.getGameRunningConfig().getProblemLevel();
 
         return matchHistoryRepository.save(MatchHistory.builder()
                 .problemLevel(problemLevel)

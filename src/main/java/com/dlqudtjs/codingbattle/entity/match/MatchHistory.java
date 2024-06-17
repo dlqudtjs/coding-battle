@@ -1,16 +1,15 @@
 package com.dlqudtjs.codingbattle.entity.match;
 
-import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
 import com.dlqudtjs.codingbattle.common.util.Time;
+import com.dlqudtjs.codingbattle.entity.problem.ProblemLevel;
 import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -37,16 +36,15 @@ public class MatchHistory {
     @JoinColumn(name = "programming_language_id", nullable = false)
     private ProgrammingLanguage language;
 
-    @Column(name = "problem_level", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private ProblemLevelType problemLevel;
+    @ManyToOne
+    @JoinColumn(name = "problem_level_id", nullable = false)
+    private ProblemLevel problemLevel;
 
     @Column(name = "start_time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp startTime;
 
     @Column(name = "end_time")
     private Timestamp endTime;
-
 
     @OneToMany(mappedBy = "matchHistory")
     private List<UserMatchingHistory> userMatchingHistories;

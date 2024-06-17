@@ -178,7 +178,7 @@ public class RoomServiceImpl implements RoomService {
     private GameRunningConfig createGameRunningConfig(RoomCreateRequestDto requestDto, Long newRoomId) {
         return new GameRunningConfig(newRoomId,
                 requestDto.getProblemLevel(),
-                requestDto.getLanguage(),
+                requestDto.getProgrammingLanguage(),
                 requestDto.getMaxSubmitCount(),
                 requestDto.getLimitTime());
     }

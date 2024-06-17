@@ -1,10 +1,7 @@
 package com.dlqudtjs.codingbattle.entity.problem;
 
-import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,9 +29,9 @@ public class Problem {
     @JoinColumn(name = "algorithm_classification_id", nullable = false)
     private AlgorithmClassification algorithmClassification;
 
-    @JoinColumn(name = "problem_level", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private ProblemLevelType problemLevel;
+    @ManyToOne
+    @JoinColumn(name = "problem_level_id", nullable = false)
+    private ProblemLevel problemLevel;
 
     @Column(name = "title", nullable = false)
     private String title;

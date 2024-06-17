@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.common.validator.SubmitResult;
+package com.dlqudtjs.codingbattle.common.validator.submitResult;
 
 import com.dlqudtjs.codingbattle.common.constant.SubmitResultManager;
 import jakarta.validation.ConstraintValidator;

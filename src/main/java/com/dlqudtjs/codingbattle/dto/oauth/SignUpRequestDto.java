@@ -1,7 +1,7 @@
 package com.dlqudtjs.codingbattle.dto.oauth;
 
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguageManager;
-import com.dlqudtjs.codingbattle.common.validator.ProgrammingLanguage.ValidProgrammingLanguage;
+import com.dlqudtjs.codingbattle.common.validator.programmingLanguage.ValidProgrammingLanguage;
 import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

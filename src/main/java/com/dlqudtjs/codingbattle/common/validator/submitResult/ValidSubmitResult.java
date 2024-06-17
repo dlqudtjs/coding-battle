@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.common.validator.SubmitResult;
+package com.dlqudtjs.codingbattle.common.validator.submitResult;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidSubmitResult {
-    String message() default "Invalid Programming Language";
+    String message() default "Invalid submit result";
 
     Class<?>[] groups() default {}; // groups 속성 추가
 

@@ -1,7 +1,7 @@
 package com.dlqudtjs.codingbattle.entity.match;
 
 import com.dlqudtjs.codingbattle.common.constant.MatchingResultType;
-import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
+import com.dlqudtjs.codingbattle.entity.problem.ProblemLevel;
 import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.ZonedDateTime;
@@ -17,7 +17,7 @@ public class MatchRecode {
     private Long matchId;
     private ProgrammingLanguage language;
     private MatchingResultType result;
-    private ProblemLevelType problemLevel;
+    private ProblemLevel problemLevel;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private String elapsedTime;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

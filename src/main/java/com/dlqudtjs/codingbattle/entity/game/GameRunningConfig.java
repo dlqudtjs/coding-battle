@@ -7,11 +7,12 @@ import static com.dlqudtjs.codingbattle.common.constant.GameSetting.MIN_SUBMISSI
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
-import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
+import com.dlqudtjs.codingbattle.common.constant.ProblemLevelManager;
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguageManager;
 import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
+import com.dlqudtjs.codingbattle.entity.problem.ProblemLevel;
 import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import java.util.List;
 import lombok.Getter;
@@ -20,7 +21,7 @@ import lombok.Setter;
 @Getter
 public class GameRunningConfig {
     private final Long roomId;
-    private ProblemLevelType problemLevel;
+    private ProblemLevel problemLevel;
     private ProgrammingLanguage language;
     private Integer maxSubmitCount;
     private Long limitTime;
@@ -28,7 +29,7 @@ public class GameRunningConfig {
     private List<ProblemInfo> problemInfoList;
 
     public GameRunningConfig(Long roomId,
-                             ProblemLevelType problemLevel,
+                             ProblemLevel problemLevel,
                              ProgrammingLanguage language,
                              Integer maxSubmitCount,
                              Long limitTime) {
@@ -42,7 +43,7 @@ public class GameRunningConfig {
         this.limitTime = limitTime;
     }
 
-    public void updateGameRunningConfig(ProblemLevelType problemLevel,
+    public void updateGameRunningConfig(ProblemLevel problemLevel,
                                         ProgrammingLanguage language,
                                         Integer maxSubmitCount,
                                         Long limitTime) {
@@ -58,7 +59,7 @@ public class GameRunningConfig {
     public static GameRunningConfig defaultGameRunningConfig() {
         return new GameRunningConfig(
                 RoomConfig.DEFAULT_ROOM_ID.getValue(),
-                ProblemLevelType.BRONZE1,
+                ProblemLevelManager.BRONZE5,
                 ProgrammingLanguageManager.DEFAULT,
                 GameSetting.MIN_SUBMISSION_COUNT.getValue(),
                 (long) GameSetting.MIN_LIMIT_TIME.getValue());

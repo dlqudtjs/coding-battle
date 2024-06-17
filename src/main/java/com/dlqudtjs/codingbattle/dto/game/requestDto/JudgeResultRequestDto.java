@@ -1,7 +1,7 @@
 package com.dlqudtjs.codingbattle.dto.game.requestDto;
 
 import com.dlqudtjs.codingbattle.common.constant.SubmitResultManager;
-import com.dlqudtjs.codingbattle.common.validator.SubmitResult.ValidSubmitResult;
+import com.dlqudtjs.codingbattle.common.validator.submitResult.ValidSubmitResult;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ParsedJudgeResultResponseDto;
 import com.dlqudtjs.codingbattle.entity.submit.SubmitResult;
 import lombok.AllArgsConstructor;

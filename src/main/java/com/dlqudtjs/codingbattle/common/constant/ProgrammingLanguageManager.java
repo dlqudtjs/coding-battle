@@ -21,7 +21,7 @@ public class ProgrammingLanguageManager {
     @PostConstruct
     private void init() {
         programmingLanguageRepository.findAll().forEach(programingLanguage -> {
-            LANGUAGES.put(programingLanguage.getName().toUpperCase(), programingLanguage);
+            LANGUAGES.put(programingLanguage.getName(), programingLanguage);
         });
 
         setLanguage();

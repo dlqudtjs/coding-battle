@@ -167,7 +167,7 @@ public class Room {
 
         gameRunningConfig.updateGameRunningConfig(
                 requestDto.getProblemLevel(),
-                requestDto.getLanguage(),
+                requestDto.getProgrammingLanguage(),
                 requestDto.getMaxSubmitCount(),
                 requestDto.getLimitTime()
         );

@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.common.validator.ProgrammingLanguage;
+package com.dlqudtjs.codingbattle.common.validator.programmingLanguage;
 
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguageManager;
 import jakarta.validation.ConstraintValidator;

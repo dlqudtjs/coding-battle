@@ -23,7 +23,7 @@ public class SubmitResultManager {
     @PostConstruct
     private void init() {
         submitResultRepository.findAll().forEach(submitResult -> {
-            RESULTS.put(submitResult.getName().toUpperCase(), submitResult);
+            RESULTS.put(submitResult.getName(), submitResult);
         });
         setResult();
     }

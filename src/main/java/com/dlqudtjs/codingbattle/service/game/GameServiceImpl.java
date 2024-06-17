@@ -2,12 +2,12 @@ package com.dlqudtjs.codingbattle.service.game;
 
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
-import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.LeaveGameUserStatus;
 import com.dlqudtjs.codingbattle.entity.game.Winner;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
+import com.dlqudtjs.codingbattle.entity.problem.ProblemLevel;
 import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.service.match.MatchService;
@@ -40,7 +40,7 @@ public class GameServiceImpl implements GameService {
         }
 
         // 난이도에 따른 문제 리스트 가져오기
-        ProblemLevelType problemLevel = room.getGameRunningConfig().getProblemLevel();
+        ProblemLevel problemLevel = room.getGameRunningConfig().getProblemLevel();
         List<ProblemInfo> problemInfoList = problemService.getProblemInfoList(problemLevel, 1);
 
         GameSession gameSession = new GameSession(room, problemInfoList, matchService, roomService);

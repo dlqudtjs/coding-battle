@@ -1,6 +1,6 @@
 package com.dlqudtjs.codingbattle.dto.room.responsedto;
 
-import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
+import com.dlqudtjs.codingbattle.entity.problem.ProblemLevel;
 import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +16,7 @@ public class RoomListResponseDto {
     private Boolean isStarted;
     private Integer countUsersInRoom;
     private Integer maxUserCount;
-    private ProblemLevelType problemLevel;
+    private ProblemLevel problemLevel;
     private Integer maxSubmitCount;
     private Long limitTime;
 }

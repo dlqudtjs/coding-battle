@@ -1,6 +1,6 @@
 package com.dlqudtjs.codingbattle.dto.room.requestdto;
 
-import com.dlqudtjs.codingbattle.common.validator.ProgrammingLanguage.ValidProgrammingLanguage;
+import com.dlqudtjs.codingbattle.common.validator.programmingLanguage.ValidProgrammingLanguage;
 import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

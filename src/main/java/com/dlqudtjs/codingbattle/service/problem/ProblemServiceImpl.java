@@ -1,8 +1,8 @@
 package com.dlqudtjs.codingbattle.service.problem;
 
 import com.dlqudtjs.codingbattle.common.constant.AlgorithmType;
-import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
+import com.dlqudtjs.codingbattle.entity.problem.ProblemLevel;
 import com.dlqudtjs.codingbattle.repository.problem.AlgorithmClassificationRepository;
 import com.dlqudtjs.codingbattle.repository.problem.ProblemIOExampleRepository;
 import com.dlqudtjs.codingbattle.repository.problem.ProblemRepository;
@@ -22,11 +22,11 @@ public class ProblemServiceImpl implements ProblemService {
     @Override
     @Transactional
     public List<ProblemInfo> getProblemInfoList(AlgorithmType algorithmType,
-                                                ProblemLevelType problemLevelType,
+                                                ProblemLevel problemLevel,
                                                 Integer count) {
         Long algorithmId = algorithmClassificationRepository.findByName(algorithmType.name()).getId();
 
-        return problemRepository.getRandomProblems(algorithmId, problemLevelType.name(), count).stream()
+        return problemRepository.getRandomProblems(algorithmId, problemLevel.getName(), count).stream()
                 .map(problem -> ProblemInfo.builder()
                         .problem(problem)
                         .problemIOExamples(problemIOExampleRepository.findByProblemId(problem.getId()))
@@ -36,9 +36,9 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     @Transactional
-    public List<ProblemInfo> getProblemInfoList(ProblemLevelType problemLevelType,
+    public List<ProblemInfo> getProblemInfoList(ProblemLevel problemLevel,
                                                 Integer count) {
-        return problemRepository.getRandomProblems(0L, problemLevelType.name(), count).stream()
+        return problemRepository.getRandomProblems(0L, problemLevel.getName(), count).stream()
                 .map(problem -> ProblemInfo.builder()
                         .problem(problem)
                         .problemIOExamples(problemIOExampleRepository.findByProblemId(problem.getId()))

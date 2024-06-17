@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.common.validator.ProgrammingLanguage;
+package com.dlqudtjs.codingbattle.common.validator.problemLevel;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -7,11 +7,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = ProgrammingLanguageValidator.class)
+@Constraint(validatedBy = ProblemLevelValidator.class)
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidProgrammingLanguage {
-    String message() default "Invalid Programming Language";
+public @interface ValidProblemLevel {
+    String message() default "Invalid problem level";
 
     Class<?>[] groups() default {}; // groups 속성 추가
 
