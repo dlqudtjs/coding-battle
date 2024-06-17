@@ -1,10 +1,7 @@
 package com.dlqudtjs.codingbattle.entity.user;
 
-import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,6 +24,5 @@ public class UserRole {
 
     @Getter
     @Column(name = "name", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private UserRoleType name;
+    private String name;
 }

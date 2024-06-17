@@ -8,7 +8,7 @@ import static com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode.REF
 import static com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode.USER_ID_NOT_FOUNT;
 
 import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
-import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
+import com.dlqudtjs.codingbattle.common.constant.UserRoleManager;
 import com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
@@ -72,7 +72,7 @@ public class OAuthServiceImpl implements OAuthService {
         validateSignUpRequest(signUpRequestDto);
 
         User user = User.builder()
-                .role(userRoleRepository.findByName(UserRoleType.ROLE_USER))
+                .role(UserRoleManager.ROLE_USER)
                 .userId(signUpRequestDto.getUserId())
                 .password(signUpRequestDto.getPassword())
                 .build()

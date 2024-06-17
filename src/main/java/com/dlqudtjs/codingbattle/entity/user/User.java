@@ -1,6 +1,6 @@
 package com.dlqudtjs.codingbattle.entity.user;
 
-import com.dlqudtjs.codingbattle.common.constant.UserRoleType;
+import com.dlqudtjs.codingbattle.common.constant.UserRoleManager;
 import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -48,7 +48,7 @@ public class User implements UserDetails, Principal {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(() -> "ROLE_" + role.getName().name());
+        return Collections.singletonList(() -> role.getName());
     }
 
     @Override
@@ -118,7 +118,7 @@ public class User implements UserDetails, Principal {
     public static User deafultUser() {
         return User.builder()
                 .id(0L)
-                .role(UserRole.builder().name(UserRoleType.ROLE_USER).build())
+                .role(UserRoleManager.ROLE_USER)
                 .userId("DEFAULT")
                 .password("DEFAULT")
                 .build();
