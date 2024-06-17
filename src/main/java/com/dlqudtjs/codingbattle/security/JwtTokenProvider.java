@@ -109,16 +109,17 @@ public class JwtTokenProvider {
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token.substring(7));
-
             return true;
         } catch (SecurityException | MalformedJwtException e) {
-            log.error("Invalid JWT signature -> Message: ", e);
+            log.error("Invalid JWT signature -> Message: {}", e.getMessage());
         } catch (ExpiredJwtException e) {
-            log.error("Expired JWT token -> Message:", e);
+            log.error("Expired JWT token -> Message:{}", e.getMessage());
         } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT token -> Message:", e);
+            log.error("Unsupported JWT token -> Message:{}", e.getMessage());
         } catch (IllegalArgumentException e) {
-            log.error("JWT claims string is empty -> Message:", e);
+            log.error("JWT claims string is empty -> Message:{}", e.getMessage());
+        } catch (Exception e) {
+            log.error("Invalid JWT token -> Message:{}", e.getMessage());
         }
 
         return false;

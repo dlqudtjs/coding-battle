@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.common.exception;
 
 import com.dlqudtjs.codingbattle.common.dto.ErrorResponseDto;
+import io.jsonwebtoken.MalformedJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleCustomSocketException(CustomSocketException e) {
         log.error("CustomSocketException", e);
         return buildErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<Object> handleMalformedJwtException(MalformedJwtException e) {
+        log.error("MalformedJwtException", e);
+        return buildErrorResponse(e.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
     // 4XX custom exception

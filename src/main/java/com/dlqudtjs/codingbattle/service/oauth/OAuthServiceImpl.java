@@ -40,6 +40,7 @@ public class OAuthServiceImpl implements OAuthService {
     private final UserSettingRepository userSettingRepository;
 
     @Override
+    @Transactional
     public ResponseDto signIn(SignInRequestDto signInRequestDto) {
         User user = userRepository.findByUserId(signInRequestDto.getUserId())
                 .orElseThrow(() -> new Custom4XXException(
@@ -88,6 +89,7 @@ public class OAuthServiceImpl implements OAuthService {
     }
 
     @Override
+    @Transactional
     public ResponseDto refreshToken(HttpServletRequest request) {
         String refreshToken = jwtTokenProvider.resolveToken(request);
         Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);

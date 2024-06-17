@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.configuration.security;
 
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,15 +29,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.info("request : " + request.getRequestURI());
 
         // header에 Authorization이 없거나 Bearer로 시작하지 않거나 토큰이 유효하지 않은 경우
-        if (authorizationHeader == null ||
-                !authorizationHeader.startsWith("Bearer ") ||
-                !jwtTokenProvider.isTokenValid(authorizationHeader)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+        try {
+            if (authorizationHeader == null ||
+                    !authorizationHeader.startsWith("Bearer ") ||
+                    !jwtTokenProvider.isTokenValid(authorizationHeader)) {
+                throw new MalformedJwtException("Invalid Token");
+            }
 
-        Authentication auth = jwtTokenProvider.getAuthentication(authorizationHeader);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+            Authentication auth = jwtTokenProvider.getAuthentication(authorizationHeader);
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        } catch (MalformedJwtException e) {
+            SecurityContextHolder.clearContext();
+            request.setAttribute("exception", e);
+        }
 
         filterChain.doFilter(request, response);
     }
