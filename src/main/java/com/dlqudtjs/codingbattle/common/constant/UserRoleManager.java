@@ -26,10 +26,6 @@ public class UserRoleManager {
         setRole();
     }
 
-    public UserRole getUserRole(String roleName) {
-        return getRole(roleName);
-    }
-
     private void setRole() {
         ROLE_USER = getRole("ROLE_USER");
         ROLE_ADMIN = getRole("ROLE_ADMIN");

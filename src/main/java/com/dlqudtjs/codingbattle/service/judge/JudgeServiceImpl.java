@@ -3,7 +3,7 @@ package com.dlqudtjs.codingbattle.service.judge;
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 import static com.dlqudtjs.codingbattle.common.constant.code.SocketConfigCode.NOT_CONNECT_USER;
 
-import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
+import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguageManager;
 import com.dlqudtjs.codingbattle.common.constant.code.GameConfigCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
@@ -11,6 +11,7 @@ import com.dlqudtjs.codingbattle.dto.judge.JudgeProblemRequestDto;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.room.Room;
 import com.dlqudtjs.codingbattle.entity.submit.Submit;
+import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.service.game.GameService;
 import com.dlqudtjs.codingbattle.service.room.RoomService;
@@ -78,7 +79,7 @@ public class JudgeServiceImpl implements JudgeService {
         String uuid = UUID.randomUUID().toString();
         ProgrammingLanguage submitLanguage = judgeProblemRequestDto.getLanguage();
 
-        String dockerImageName = submitLanguage.getDockerImageName();
+        String dockerImageName = ProgrammingLanguageManager.getDockerImageName(submitLanguage);
         String createUserCodePath = createHostUserCodePath(uuid);
         String createScriptPath = createHostScriptPath(submitLanguage);
         String createTestcasePath = createHostTestCasePath(judgeProblemRequestDto.getProblemId());
@@ -167,7 +168,7 @@ public class JudgeServiceImpl implements JudgeService {
     }
 
     private String createHostScriptPath(ProgrammingLanguage language) {
-        return hostScriptPath + language.name();
+        return hostScriptPath + language.getName();
     }
 
     private String createHostTestCasePath(Long problemId) {
@@ -175,7 +176,7 @@ public class JudgeServiceImpl implements JudgeService {
     }
 
     private String getUserCodePath(String directoryPath, ProgrammingLanguage language) {
-        return directoryPath + language.getFileName();
+        return directoryPath + ProgrammingLanguageManager.getFileName(language);
     }
 
     private String createHostUserCodePath(String uuid) {

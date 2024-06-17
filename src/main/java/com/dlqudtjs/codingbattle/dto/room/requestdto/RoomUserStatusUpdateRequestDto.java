@@ -1,6 +1,7 @@
 package com.dlqudtjs.codingbattle.dto.room.requestdto;
 
-import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
+import com.dlqudtjs.codingbattle.common.validator.ProgrammingLanguage.ValidProgrammingLanguage;
+import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +15,6 @@ public class RoomUserStatusUpdateRequestDto {
     private String userId;
     @NotNull
     private Boolean isReady;
-    @NotNull
+    @ValidProgrammingLanguage
     private ProgrammingLanguage language;
 }

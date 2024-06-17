@@ -1,8 +1,8 @@
 package com.dlqudtjs.codingbattle.entity.match;
 
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
-import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.util.Time;
+import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,7 +10,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.sql.Timestamp;
 import java.util.List;
@@ -31,6 +33,10 @@ public class MatchHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne
+    @JoinColumn(name = "programming_language_id", nullable = false)
+    private ProgrammingLanguage language;
+
     @Column(name = "problem_level", nullable = false)
     @Enumerated(EnumType.STRING)
     private ProblemLevelType problemLevel;
@@ -41,9 +47,6 @@ public class MatchHistory {
     @Column(name = "end_time")
     private Timestamp endTime;
 
-    @Column(name = "language", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private ProgrammingLanguage language;
 
     @OneToMany(mappedBy = "matchHistory")
     private List<UserMatchingHistory> userMatchingHistories;

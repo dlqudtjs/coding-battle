@@ -1,13 +1,12 @@
 package com.dlqudtjs.codingbattle.entity.submit;
 
-import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
+import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguageManager;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.UpdateSubmitResultRequestDto;
 import com.dlqudtjs.codingbattle.entity.match.MatchHistory;
+import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -48,6 +47,11 @@ public class Submit implements Comparable<Submit> {
     private MatchHistory matchHistory;
 
     @Getter
+    @OneToOne
+    @JoinColumn(name = "programming_language_id", nullable = false)
+    private ProgrammingLanguage language;
+
+    @Getter
     @Column(name = "code", nullable = false)
     private String code;
 
@@ -57,10 +61,6 @@ public class Submit implements Comparable<Submit> {
     @Column(name = "execution_time")
     private Long executionTime;
 
-    @Getter
-    @Column(name = "language", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private ProgrammingLanguage language;
 
     @Column(name = "submit_time", nullable = false)
     private Date submitTime;
@@ -78,7 +78,7 @@ public class Submit implements Comparable<Submit> {
     public static Submit drawSubmit() {
         return Submit.builder()
                 .code("")
-                .language(ProgrammingLanguage.DEFAULT)
+                .language(ProgrammingLanguageManager.DEFAULT)
                 .build();
     }
 }

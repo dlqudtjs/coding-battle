@@ -1,12 +1,13 @@
 package com.dlqudtjs.codingbattle.entity.room;
 
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
-import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
+import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguageManager;
 import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.RoomUserStatusUpdateRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto.RoomStatusUpdateMessageRequestDto;
 import com.dlqudtjs.codingbattle.dto.room.responsedto.RoomStatusResponseDto;
 import com.dlqudtjs.codingbattle.entity.game.GameRunningConfig;
+import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserInfo;
 import com.dlqudtjs.codingbattle.service.session.SessionService;
@@ -143,7 +144,7 @@ public class Room {
     }
 
     public Boolean isAvailableLanguage(ProgrammingLanguage language) {
-        return gameRunningConfig.getLanguage() == ProgrammingLanguage.DEFAULT ||
+        return gameRunningConfig.getLanguage() == ProgrammingLanguageManager.DEFAULT ||
                 gameRunningConfig.getLanguage() == language;
     }
 
@@ -186,7 +187,7 @@ public class Room {
     public Boolean isUserAndRoomLanguageMatch() {
         ProgrammingLanguage language = gameRunningConfig.getLanguage();
 
-        if (language.equals(ProgrammingLanguage.DEFAULT)) {
+        if (language.equals(ProgrammingLanguageManager.DEFAULT)) {
             return true;
         }
 

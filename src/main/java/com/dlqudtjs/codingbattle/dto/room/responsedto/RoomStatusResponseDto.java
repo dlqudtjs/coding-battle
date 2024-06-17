@@ -1,7 +1,7 @@
 package com.dlqudtjs.codingbattle.dto.room.responsedto;
 
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
-import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
+import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import lombok.Builder;
 import lombok.Getter;
 

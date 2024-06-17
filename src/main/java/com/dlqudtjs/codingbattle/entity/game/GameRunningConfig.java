@@ -8,10 +8,11 @@ import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.IN
 
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
-import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
+import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguageManager;
 import com.dlqudtjs.codingbattle.common.constant.RoomConfig;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
+import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -58,7 +59,7 @@ public class GameRunningConfig {
         return new GameRunningConfig(
                 RoomConfig.DEFAULT_ROOM_ID.getValue(),
                 ProblemLevelType.BRONZE1,
-                ProgrammingLanguage.DEFAULT,
+                ProgrammingLanguageManager.DEFAULT,
                 GameSetting.MIN_SUBMISSION_COUNT.getValue(),
                 (long) GameSetting.MIN_LIMIT_TIME.getValue());
     }

@@ -2,7 +2,8 @@ package com.dlqudtjs.codingbattle.dto.room.requestdto.messagewrapperdto;
 
 import com.dlqudtjs.codingbattle.common.constant.GameSetting;
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
-import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
+import com.dlqudtjs.codingbattle.common.validator.ProgrammingLanguage.ValidProgrammingLanguage;
+import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -23,7 +24,7 @@ public class RoomStatusUpdateMessageRequestDto {
     @NotNull
     private String password;
 
-    @NotNull
+    @ValidProgrammingLanguage
     private ProgrammingLanguage language;
 
     @NotNull

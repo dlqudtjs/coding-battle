@@ -1,13 +1,11 @@
 package com.dlqudtjs.codingbattle.service.oauth;
 
 import static com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode.ALREADY_EXIST_USER_ID;
-import static com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode.LANGUAGE_NOT_FOUND;
 import static com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode.PASSWORD_CHECK;
 import static com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode.PASSWORD_NOT_MATCH;
 import static com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode.REFRESH_TOKEN_NOT_FOUND;
 import static com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode.USER_ID_NOT_FOUNT;
 
-import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.common.constant.UserRoleManager;
 import com.dlqudtjs.codingbattle.common.constant.code.OauthConfigCode;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
@@ -16,13 +14,11 @@ import com.dlqudtjs.codingbattle.dto.oauth.JwtToken;
 import com.dlqudtjs.codingbattle.dto.oauth.SignInRequestDto;
 import com.dlqudtjs.codingbattle.dto.oauth.SignUpRequestDto;
 import com.dlqudtjs.codingbattle.entity.oauth.Token;
-import com.dlqudtjs.codingbattle.entity.user.Language;
+import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import com.dlqudtjs.codingbattle.entity.user.UserSetting;
 import com.dlqudtjs.codingbattle.repository.token.TokenRepository;
-import com.dlqudtjs.codingbattle.repository.user.LanguageRepository;
 import com.dlqudtjs.codingbattle.repository.user.UserRepository;
-import com.dlqudtjs.codingbattle.repository.user.UserRoleRepository;
 import com.dlqudtjs.codingbattle.repository.user.UserSettingRepository;
 import com.dlqudtjs.codingbattle.security.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,8 +37,6 @@ public class OAuthServiceImpl implements OAuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenRepository tokenRepository;
-    private final UserRoleRepository userRoleRepository;
-    private final LanguageRepository languageRepository;
     private final UserSettingRepository userSettingRepository;
 
     @Override
@@ -79,11 +73,11 @@ public class OAuthServiceImpl implements OAuthService {
                 .encodePassword(passwordEncoder);
 
         User savedUser = userRepository.save(user);
-        Language language = languageRepository.findByName(signUpRequestDto.getLanguage().toLowerCase());
+        ProgrammingLanguage programmingLanguage = signUpRequestDto.getLanguage();
 
         userSettingRepository.save(UserSetting.builder()
                 .user(savedUser)
-                .language(language)
+                .programmingLanguage(programmingLanguage)
                 .build());
 
         return ResponseDto.builder()
@@ -162,10 +156,6 @@ public class OAuthServiceImpl implements OAuthService {
 
         if (!passwordCheck(signUpRequestDto.getPassword(), signUpRequestDto.getPasswordCheck())) {
             throw new Custom4XXException(PASSWORD_CHECK.getMessage(), PASSWORD_CHECK.getStatus());
-        }
-
-        if (ProgrammingLanguage.isNotContains(signUpRequestDto.getLanguage())) {
-            throw new Custom4XXException(LANGUAGE_NOT_FOUND.getMessage(), LANGUAGE_NOT_FOUND.getStatus());
         }
     }
 

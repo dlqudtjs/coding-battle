@@ -1,6 +1,6 @@
 package com.dlqudtjs.codingbattle.entity.room;
 
-import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
+import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.entity.user.UserInfo;
 import lombok.Getter;
 

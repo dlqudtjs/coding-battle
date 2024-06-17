@@ -1,8 +1,8 @@
 package com.dlqudtjs.codingbattle.entity.game;
 
 import com.dlqudtjs.codingbattle.common.constant.MatchingResultType;
-import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.entity.submit.Submit;
+import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import lombok.Getter;
 

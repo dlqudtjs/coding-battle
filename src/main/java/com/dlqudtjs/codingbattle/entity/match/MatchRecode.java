@@ -2,7 +2,7 @@ package com.dlqudtjs.codingbattle.entity.match;
 
 import com.dlqudtjs.codingbattle.common.constant.MatchingResultType;
 import com.dlqudtjs.codingbattle.common.constant.ProblemLevelType;
-import com.dlqudtjs.codingbattle.common.constant.ProgrammingLanguage;
+import com.dlqudtjs.codingbattle.entity.user.ProgrammingLanguage;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.ZonedDateTime;
 import java.util.List;

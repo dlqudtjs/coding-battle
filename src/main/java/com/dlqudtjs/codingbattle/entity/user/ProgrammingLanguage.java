@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,15 +16,20 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "language")
-public class Language {
+@Table(name = "programming_language")
+public class ProgrammingLanguage {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Getter
     @Column(name = "name", nullable = false)
     private String name;
+
+    @JsonValue
+    public String getName() {
+        return name.toUpperCase();
+    }
 }
