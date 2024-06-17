@@ -6,11 +6,9 @@ import static com.dlqudtjs.codingbattle.common.constant.MatchResultManager.PENDI
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
-import com.dlqudtjs.codingbattle.common.util.Time;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.Winner;
 import com.dlqudtjs.codingbattle.entity.match.MatchHistory;
-import com.dlqudtjs.codingbattle.entity.match.MatchRecode;
 import com.dlqudtjs.codingbattle.entity.match.MatchRecodeUserStatus;
 import com.dlqudtjs.codingbattle.entity.match.MatchResult;
 import com.dlqudtjs.codingbattle.entity.match.UserMatchingHistory;
@@ -71,32 +69,14 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public List<MatchRecode> getMatchRecodeList(User user, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<MatchHistory> matchHistories =
-                userMatchingHistoryRepository.findMatchHistoriesByUserId(user.getId(), pageable);
+    public Page<MatchHistory> getMatchRecodeList(User user, int currentPage, int size) {
+        Pageable pageable = PageRequest.of(currentPage, size);
 
-        return matchHistories.getContent().stream().map(matchHistory -> MatchRecode.builder()
-                .usersResult(getMatchRecodeUserStatuses(matchHistory.getId()))
-                .matchId(matchHistory.getId())
-                .language(matchHistory.getLanguage())
-                .result(getResultType(user, getMatchRecodeUserStatuses(matchHistory.getId())))
-                .problemLevel(matchHistory.getProblemLevel())
-                .elapsedTime(Time.getElapsedTime(matchHistory.getStartTime(), matchHistory.getEndTime()))
-                .date(Time.convertTimestampToZonedDateTime(matchHistory.getStartTime()))
-                .build()).toList();
+        return userMatchingHistoryRepository.findMatchHistoriesByUserId(user.getId(), pageable);
     }
 
-    private MatchResult getResultType(User user, List<MatchRecodeUserStatus> matchRecodeUserStatuses) {
-        return matchRecodeUserStatuses.stream()
-                .filter(matchRecodeUserStatus -> matchRecodeUserStatus.getUser().equals(user))
-                .findFirst()
-                .map(MatchRecodeUserStatus::getResult)
-                .orElse(null);
-    }
-
-
-    private List<MatchRecodeUserStatus> getMatchRecodeUserStatuses(Long matchHistoryId) {
+    @Override
+    public List<MatchRecodeUserStatus> getMatchRecodeUserStatuses(Long matchHistoryId) {
         List<UserMatchingHistory> userMatchingHistories = userMatchingHistoryRepository.findByMatchHistoryId(
                 matchHistoryId);
 

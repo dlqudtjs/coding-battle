@@ -3,9 +3,10 @@ package com.dlqudtjs.codingbattle.service.match;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.Winner;
 import com.dlqudtjs.codingbattle.entity.match.MatchHistory;
-import com.dlqudtjs.codingbattle.entity.match.MatchRecode;
+import com.dlqudtjs.codingbattle.entity.match.MatchRecodeUserStatus;
 import com.dlqudtjs.codingbattle.entity.user.User;
 import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface MatchService {
 
@@ -15,5 +16,7 @@ public interface MatchService {
 
     void saveUserMatchHistory(GameSession gameSession, Winner winner);
 
-    List<MatchRecode> getMatchRecodeList(User user, int page, int size);
+    Page<MatchHistory> getMatchRecodeList(User user, int currentPage, int size);
+
+    List<MatchRecodeUserStatus> getMatchRecodeUserStatuses(Long matchHistoryId);
 }
