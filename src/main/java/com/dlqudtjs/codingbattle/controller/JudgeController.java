@@ -3,7 +3,7 @@ package com.dlqudtjs.codingbattle.controller;
 import static com.dlqudtjs.codingbattle.common.constant.Destination.ROOM_BROADCAST;
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
-import com.dlqudtjs.codingbattle.common.constant.JudgeResultCode;
+import com.dlqudtjs.codingbattle.common.constant.SubmitResultManager;
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.dto.game.requestDto.JudgeResultRequestDto;
@@ -81,7 +81,7 @@ public class JudgeController {
     }
 
     private Boolean isFinished(JudgeResultRequestDto result) {
-        return !result.getResult().equals(JudgeResultCode.PASS) ||
+        return !result.getResult().equals(SubmitResultManager.PASS) ||
                 result.getCurrentTest().equals(result.getTotalTests());
     }
 }

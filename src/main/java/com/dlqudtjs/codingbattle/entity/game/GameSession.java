@@ -4,7 +4,7 @@ import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.DRAW;
 import static com.dlqudtjs.codingbattle.common.constant.MatchingResultType.WIN;
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
-import com.dlqudtjs.codingbattle.common.constant.JudgeResultCode;
+import com.dlqudtjs.codingbattle.common.constant.SubmitResultManager;
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
 import com.dlqudtjs.codingbattle.common.util.Time;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ProblemInfoResponseDto;
@@ -98,7 +98,7 @@ public class GameSession {
     }
 
     public void reflectSubmit(Submit submit) {
-        if (JudgeResultCode.isPass(submit)) {
+        if (SubmitResultManager.isPass(submit.getSubmitResult())) {
             submitQueue.add(submit);
             surrender(submit.getUser());
         }

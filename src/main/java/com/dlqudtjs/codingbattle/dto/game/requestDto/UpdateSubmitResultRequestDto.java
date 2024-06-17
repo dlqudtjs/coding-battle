@@ -1,6 +1,6 @@
 package com.dlqudtjs.codingbattle.dto.game.requestDto;
 
-import com.dlqudtjs.codingbattle.entity.submit.SubmitResultCode;
+import com.dlqudtjs.codingbattle.entity.submit.SubmitResult;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,5 +9,5 @@ import lombok.Getter;
 public class UpdateSubmitResultRequestDto {
 
     private Long executionTime;
-    private SubmitResultCode submitResultCode;
+    private SubmitResult submitResult;
 }

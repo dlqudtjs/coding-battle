@@ -1,8 +1,9 @@
 package com.dlqudtjs.codingbattle.dto.game.requestDto;
 
-import com.dlqudtjs.codingbattle.common.constant.JudgeResultCode;
+import com.dlqudtjs.codingbattle.common.constant.SubmitResultManager;
+import com.dlqudtjs.codingbattle.common.validator.SubmitResult.ValidSubmitResult;
 import com.dlqudtjs.codingbattle.dto.game.responseDto.ParsedJudgeResultResponseDto;
-import jakarta.validation.constraints.NotNull;
+import com.dlqudtjs.codingbattle.entity.submit.SubmitResult;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,8 +18,8 @@ public class JudgeResultRequestDto {
     private String problemId;
     private String submitId;
     private String testcaseNumber;
-    @NotNull
-    private JudgeResultCode result;
+    @ValidSubmitResult
+    private String result;
     private String errorMessage;
     private String executionTime;
     private String currentTest;
@@ -27,18 +28,22 @@ public class JudgeResultRequestDto {
     private String secretKey;
 
     public ParsedJudgeResultResponseDto toParsedJudgeResultResponseDto() {
+        SubmitResult result = getSubmitResult();
         return ParsedJudgeResultResponseDto.builder()
                 .roomId(Long.parseLong(roomId))
                 .problemId(Long.parseLong(problemId))
                 .userId(userId)
                 .submitId(Long.parseLong(submitId))
                 .result(result)
-                .currentTest(result == JudgeResultCode.PASS ? Long.parseLong(currentTest) : 0L)
-                .totalTests(result == JudgeResultCode.PASS ? Long.parseLong(totalTests) : 0L)
-                .executionTime(result == JudgeResultCode.PASS ? Long.parseLong(executionTime) : 0L)
+                .currentTest(result == SubmitResultManager.PASS ? Long.parseLong(currentTest) : 0L)
+                .totalTests(result == SubmitResultManager.PASS ? Long.parseLong(totalTests) : 0L)
+                .executionTime(result == SubmitResultManager.PASS ? Long.parseLong(executionTime) : 0L)
                 .errorMessage(errorMessage)
                 .containerId(containerId)
                 .build();
     }
 
+    public SubmitResult getSubmitResult() {
+        return SubmitResultManager.getSubmitResultFromName(result);
+    }
 }

@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.entity.submit;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,8 +17,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "submit_result_code")
-public class SubmitResultCode {
+@Table(name = "submit_result")
+public class SubmitResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +26,9 @@ public class SubmitResultCode {
 
     @Column(name = "name", nullable = false)
     private String name;
+
+    @JsonValue
+    public String getName() {
+        return name.toUpperCase();
+    }
 }

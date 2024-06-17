@@ -40,7 +40,7 @@ public class Submit implements Comparable<Submit> {
     @Getter
     @OneToOne
     @JoinColumn(name = "submit_result_code_id", nullable = false)
-    private SubmitResultCode submitResultCode;
+    private SubmitResult submitResult;
 
     @OneToOne
     @JoinColumn(name = "match_history_id", nullable = false)
@@ -67,7 +67,7 @@ public class Submit implements Comparable<Submit> {
 
     public void updateSubmitResult(UpdateSubmitResultRequestDto updateSubmitResultRequestDto) {
         this.executionTime = updateSubmitResultRequestDto.getExecutionTime();
-        this.submitResultCode = updateSubmitResultRequestDto.getSubmitResultCode();
+        this.submitResult = updateSubmitResultRequestDto.getSubmitResult();
     }
 
     @Override
