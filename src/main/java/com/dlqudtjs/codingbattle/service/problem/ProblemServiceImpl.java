@@ -1,9 +1,9 @@
 package com.dlqudtjs.codingbattle.service.problem;
 
-import com.dlqudtjs.codingbattle.common.constant.AlgorithmType;
+import com.dlqudtjs.codingbattle.entity.problem.Algorithm;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemInfo;
 import com.dlqudtjs.codingbattle.entity.problem.ProblemLevel;
-import com.dlqudtjs.codingbattle.repository.problem.AlgorithmClassificationRepository;
+import com.dlqudtjs.codingbattle.repository.problem.AlgorithmRepository;
 import com.dlqudtjs.codingbattle.repository.problem.ProblemIOExampleRepository;
 import com.dlqudtjs.codingbattle.repository.problem.ProblemRepository;
 import java.util.List;
@@ -17,16 +17,13 @@ public class ProblemServiceImpl implements ProblemService {
 
     private final ProblemRepository problemRepository;
     private final ProblemIOExampleRepository problemIOExampleRepository;
-    private final AlgorithmClassificationRepository algorithmClassificationRepository;
 
     @Override
     @Transactional
-    public List<ProblemInfo> getProblemInfoList(AlgorithmType algorithmType,
+    public List<ProblemInfo> getProblemInfoList(Algorithm algorithm,
                                                 ProblemLevel problemLevel,
                                                 Integer count) {
-        Long algorithmId = algorithmClassificationRepository.findByName(algorithmType.name()).getId();
-
-        return problemRepository.getRandomProblems(algorithmId, problemLevel.getName(), count).stream()
+        return problemRepository.getRandomProblems(algorithm.getId(), problemLevel.getName(), count).stream()
                 .map(problem -> ProblemInfo.builder()
                         .problem(problem)
                         .problemIOExamples(problemIOExampleRepository.findByProblemId(problem.getId()))

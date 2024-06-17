@@ -26,8 +26,8 @@ public class Problem {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "algorithm_classification_id", nullable = false)
-    private AlgorithmClassification algorithmClassification;
+    @JoinColumn(name = "algorithm_id", nullable = false)
+    private Algorithm algorithm;
 
     @ManyToOne
     @JoinColumn(name = "problem_level_id", nullable = false)

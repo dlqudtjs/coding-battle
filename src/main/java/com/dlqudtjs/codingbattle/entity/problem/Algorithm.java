@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "algorithm_classification")
-public class AlgorithmClassification {
+@Table(name = "algorithm")
+public class Algorithm {
 
     @Getter
     @Id
@@ -28,7 +28,7 @@ public class AlgorithmClassification {
     private String name;
 
     @JsonValue
-    public String getValue() {
-        return name;
+    public String getName() {
+        return name.toUpperCase();
     }
 }

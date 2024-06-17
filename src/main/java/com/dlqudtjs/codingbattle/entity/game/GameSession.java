@@ -73,7 +73,7 @@ public class GameSession {
         for (ProblemInfo problemInfo : gameRunningConfig.getProblemInfoList()) {
             infoResponseDtoList.add(ProblemInfoResponseDto.builder()
                     .id(problemInfo.getProblem().getId())
-                    .algorithmClassification(problemInfo.getProblem().getAlgorithmClassification())
+                    .algorithm(problemInfo.getProblem().getAlgorithm())
                     .problemLevel(problemInfo.getProblem().getProblemLevel())
                     .title(problemInfo.getProblem().getTitle())
                     .problemDescription(problemInfo.getProblem().getProblemDescription())
