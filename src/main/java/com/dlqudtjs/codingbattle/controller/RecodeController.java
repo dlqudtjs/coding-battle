@@ -2,7 +2,9 @@ package com.dlqudtjs.codingbattle.controller;
 
 import com.dlqudtjs.codingbattle.common.dto.ResponseDto;
 import com.dlqudtjs.codingbattle.common.util.Time;
-import com.dlqudtjs.codingbattle.dto.score.ScoreListResponseDto;
+import com.dlqudtjs.codingbattle.dto.recode.RecodeListResponseDto;
+import com.dlqudtjs.codingbattle.dto.recode.ResultCountDto;
+import com.dlqudtjs.codingbattle.dto.recode.ResultCountResponseDto;
 import com.dlqudtjs.codingbattle.entity.match.MatchHistory;
 import com.dlqudtjs.codingbattle.entity.match.MatchRecode;
 import com.dlqudtjs.codingbattle.entity.match.MatchRecodeUserStatus;
@@ -21,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class ScoreController {
+public class RecodeController {
 
     private final UserService userService;
     private final MatchService matchService;
@@ -47,11 +49,22 @@ public class ScoreController {
                         .build()).toList();
 
         return ResponseEntity.ok().body(ResponseDto.builder()
-                .data(ScoreListResponseDto.builder()
+                .data(RecodeListResponseDto.builder()
                         .matchRecodeList(matchRecodes)
                         .currentPage(currentPage)
                         .totalPage(matchHistories.getTotalPages())
                         .build())
+                .build());
+    }
+
+    @GetMapping("/v1/recodes/{userId}/overalls")
+    public ResponseEntity<ResponseDto> getOverallScores(@PathVariable("userId") String userId) {
+        User user = userService.getUser(userId);
+
+        List<ResultCountDto> resultCountDto = matchService.getResultCountByUser(user);
+
+        return ResponseEntity.ok().body(ResponseDto.builder()
+                .data(new ResultCountResponseDto(resultCountDto))
                 .build());
     }
 
