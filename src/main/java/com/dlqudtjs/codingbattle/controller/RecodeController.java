@@ -15,6 +15,7 @@ import com.dlqudtjs.codingbattle.service.user.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,6 +50,7 @@ public class RecodeController {
                         .build()).toList();
 
         return ResponseEntity.ok().body(ResponseDto.builder()
+                .status(HttpStatus.OK.value())
                 .data(RecodeListResponseDto.builder()
                         .matchRecodeList(matchRecodes)
                         .currentPage(currentPage)
@@ -64,6 +66,7 @@ public class RecodeController {
         List<ResultCountDto> resultCountDto = matchService.getResultCountByUser(user);
 
         return ResponseEntity.ok().body(ResponseDto.builder()
+                .status(HttpStatus.OK.value())
                 .data(new ResultCountResponseDto(resultCountDto))
                 .build());
     }
