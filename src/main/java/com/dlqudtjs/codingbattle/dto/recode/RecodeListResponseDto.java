@@ -1,4 +1,4 @@
-package com.dlqudtjs.codingbattle.dto.score;
+package com.dlqudtjs.codingbattle.dto.recode;
 
 import com.dlqudtjs.codingbattle.entity.match.MatchRecode;
 import java.util.List;
@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ScoreListResponseDto {
+public class RecodeListResponseDto {
 
     private List<MatchRecode> matchRecodeList;
     private Integer currentPage;
