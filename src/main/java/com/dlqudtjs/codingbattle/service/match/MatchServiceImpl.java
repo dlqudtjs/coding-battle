@@ -6,6 +6,7 @@ import static com.dlqudtjs.codingbattle.common.constant.MatchResultManager.PENDI
 import static com.dlqudtjs.codingbattle.common.constant.code.CommonConfigCode.INVALID_INPUT_VALUE;
 
 import com.dlqudtjs.codingbattle.common.exception.Custom4XXException;
+import com.dlqudtjs.codingbattle.dto.recode.ResultCountDto;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.Winner;
 import com.dlqudtjs.codingbattle.entity.match.MatchHistory;
@@ -84,6 +85,11 @@ public class MatchServiceImpl implements MatchService {
                 .user(userMatchingHistory.getUser())
                 .result(userMatchingHistory.getResult())
                 .build()).toList();
+    }
+
+    @Override
+    public List<ResultCountDto> getResultCountByUser(User user) {
+        return userMatchingHistoryRepository.findResultCountByUserId(user.getId());
     }
 
     private MatchHistory saveMatch(GameSession gameSession) {

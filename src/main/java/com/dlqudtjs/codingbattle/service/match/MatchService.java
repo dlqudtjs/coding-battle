@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.service.match;
 
+import com.dlqudtjs.codingbattle.dto.recode.ResultCountDto;
 import com.dlqudtjs.codingbattle.entity.game.GameSession;
 import com.dlqudtjs.codingbattle.entity.game.Winner;
 import com.dlqudtjs.codingbattle.entity.match.MatchHistory;
@@ -19,4 +20,6 @@ public interface MatchService {
     Page<MatchHistory> getMatchRecodeList(User user, int currentPage, int size);
 
     List<MatchRecodeUserStatus> getMatchRecodeUserStatuses(Long matchHistoryId);
+
+    List<ResultCountDto> getResultCountByUser(User user);
 }
