@@ -2,6 +2,7 @@
 FROM gradle:7.5.1-jdk17 AS build
 WORKDIR /app
 COPY . .
+RUN chmod +x gradlew
 RUN ./gradlew clean build
 
 # 단계 2: 실행 단계
