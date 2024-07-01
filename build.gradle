@@ -46,6 +46,9 @@ dependencies {
     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
     implementation group: 'com.github.docker-java', name: 'docker-java-transport-httpclient5', version: '3.3.6'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    // gcp
+    implementation 'com.google.cloud:google-cloud-storage:2.39.0'
 }
 
 tasks.named('test') {

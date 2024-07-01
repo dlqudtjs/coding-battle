@@ -27,9 +27,11 @@ import com.github.dockerjava.api.model.Binds;
 import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.api.model.Volume;
-import java.io.File;
-import java.io.FileWriter;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -64,11 +66,18 @@ public class JudgeServiceImpl implements JudgeService {
     @Value("${docker.out.directory}")
     private String dockerOutDirectory;
 
+    @Value("${spring.cloud.gcp.storage.bucket}")
+    private String bucketName;
+
+    @Value("${gcs.code.path}")
+    private String gcsCodePath;
+
     private final DockerClient dockerClient;
     private final RoomService roomService;
     private final GameService gameService;
     private final UserService userService;
     private final SubmitService submitService;
+    private final Storage storage;
 
     @Override
     public ResponseDto judgeProblem(JudgeProblemRequestDto judgeProblemRequestDto) {
@@ -80,7 +89,7 @@ public class JudgeServiceImpl implements JudgeService {
         ProgrammingLanguage submitLanguage = judgeProblemRequestDto.getProgrammingLanguage();
 
         String dockerImageName = ProgrammingLanguageManager.getDockerImageName(submitLanguage);
-        String createUserCodePath = createHostUserCodePath(uuid);
+        String createUserCodePath = createHostUserCodePath(uuid, submitLanguage);
         String createScriptPath = createHostScriptPath(submitLanguage);
         String createTestcasePath = createHostTestCasePath(judgeProblemRequestDto.getProblemId());
 
@@ -94,7 +103,7 @@ public class JudgeServiceImpl implements JudgeService {
 
             Map<String, String> hostAndBindDirectory = Map.of(
                     createTestcasePath, bindTestcasePath,
-                    createUserCodePath, bindUserCodePath,
+                    hostUserCodePath + createUserCodePath, bindUserCodePath,
                     createScriptPath, bindScriptPath
             );
 
@@ -175,17 +184,8 @@ public class JudgeServiceImpl implements JudgeService {
         return hostTestcasePath + problemId;
     }
 
-    private String getUserCodePath(String directoryPath, ProgrammingLanguage language) {
-        return directoryPath + ProgrammingLanguageManager.getFileName(language);
-    }
-
-    private String createHostUserCodePath(String uuid) {
-        String path = hostUserCodePath + uuid;
-
-        File directory = new File(path);
-        directory.mkdirs();
-
-        return path + "/";
+    private String createHostUserCodePath(String uuid, ProgrammingLanguage language) {
+        return uuid + "/" + ProgrammingLanguageManager.getFileName(language);
     }
 
     /*
@@ -197,17 +197,14 @@ public class JudgeServiceImpl implements JudgeService {
             String directoryPath,
             String code,
             ProgrammingLanguage language) throws IOException {
-        try {
-            File file = new File(getUserCodePath(directoryPath, language));
-            FileWriter fileWriter = new FileWriter(file);
+        BlobId blobId = BlobId.of(bucketName, gcsCodePath + directoryPath);
 
-            fileWriter.write(code);
-            fileWriter.flush();
+        // Blob 업로드
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
+                .setContentType("text/plain") // 코드의 Content Type 설정
+                .build();
 
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        storage.create(blobInfo, code.getBytes(StandardCharsets.UTF_8));
     }
 
     private HostConfig createHostConfig(Map<String, String> hostAndBindDirectory) {
