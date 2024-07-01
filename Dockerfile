@@ -9,6 +9,7 @@ RUN ls -al build/libs
 # 단계 2: 실행 단계
 FROM amazoncorretto:17
 WORKDIR /app
+COPY --from=build /app /app
 COPY --from=build /app/build/libs/codingbattle-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
