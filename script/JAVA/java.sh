@@ -57,7 +57,7 @@ for ((i=0; i<total_tests; i++)); do
          \"problemId\":\"${problem_id}\", \"result\":\"${result}\", \"executionTime\":\"${execution_time}\",
          \"errorMessage\":\"${runtime_error}\",\"currentTest\":\"${current_test}\", \"containerId\":\"${container_id}\",
          \"submitId\":\"${submit_id}\", \"totalTests\":\"${total_tests}\",\"secretKey\":\"${secret_key}\"}" \
-         http://host.docker.internal:8080/v1/judges/results
+         https://coding-battle-mhskpios3a-du.a.run.app/v1/judges/results
 
     # 결과와 실행 시간을 파일에 기록
     echo -e "${result}\nExecution Time: ${execution_time}" > "/out/${testcase_number}.txt"
