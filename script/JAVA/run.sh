@@ -20,7 +20,7 @@ if [ $? -ne 0 ]; then
             \"problemId\":\"${problem_id}\", \"result\":\"ERROR\", \"executionTime\":\"${execution_time}\",
             \"errorMessage\":\"${compile_error}\",\"currentTest\":\"0\", \"containerId\":\"${container_id}\",
             \"submitId\":\"${submit_id}\", \"totalTests\":\"0\",\"secretKey\":\"${secret_key}\"}" \
-            http://host.docker.internal:8080/v1/judges/results
+            https://coding-battle-mhskpios3a-du.a.run.app/v1/judges/results
     exit 1
 fi
 

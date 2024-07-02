@@ -103,7 +103,7 @@ public class JudgeServiceImpl implements JudgeService {
 
             Map<String, String> hostAndBindDirectory = Map.of(
                     createTestcasePath, bindTestcasePath,
-                    hostUserCodePath + createUserCodePath, bindUserCodePath,
+                    hostUserCodePath + uuid, bindUserCodePath,
                     createScriptPath, bindScriptPath
             );
 
