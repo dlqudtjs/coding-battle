@@ -19,9 +19,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class StorageConfig {
 
 	@Value("${gcs.private.key.id}")
@@ -40,6 +42,8 @@ public class StorageConfig {
 
 	@Bean
 	public Storage storage() throws IOException {
+		log.info(private_key);
+
 		Resource resource = resourceLoader.getResource(keyFileLocation);
 
 		String jsonString = new String(
