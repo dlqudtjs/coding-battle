@@ -48,10 +48,6 @@ public class StorageConfig {
 	// gcs-key json 파일에 private_key_id, private_key, client_id 추가
 	@PostConstruct
 	public void init() throws IOException {
-		log.info("keyFileLocation = {}", keyFileLocation);
-		log.info("private_key_id = {}", private_key_id);
-		log.info("private_key = {}", private_key);
-		log.info("client_id = {}", client_id);
 		String jsonString = new String(
 			Files.readAllBytes(Paths.get(keyFileLocation)));
 
