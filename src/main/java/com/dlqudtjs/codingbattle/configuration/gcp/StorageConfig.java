@@ -43,6 +43,7 @@ public class StorageConfig {
 	@Bean
 	public Storage storage() throws IOException {
 		private_key = private_key.replace("\\n", "\n");
+		log.info(private_key);
 
 		Resource resource = resourceLoader.getResource(keyFileLocation);
 
