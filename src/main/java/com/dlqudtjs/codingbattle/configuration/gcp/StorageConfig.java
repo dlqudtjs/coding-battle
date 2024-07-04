@@ -1,5 +1,6 @@
 package com.dlqudtjs.codingbattle.configuration.gcp;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -8,7 +9,8 @@ import java.nio.file.Paths;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.ResourceUtils;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Storage;
@@ -16,11 +18,10 @@ import com.google.cloud.storage.StorageOptions;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import jakarta.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
-@Slf4j
+@RequiredArgsConstructor
 public class StorageConfig {
 
 	@Value("${gcs.private.key.id}")
@@ -35,21 +36,14 @@ public class StorageConfig {
 	@Value("${spring.cloud.gcp.storage.credentials.location}")
 	private String keyFileLocation;
 
+	private final ResourceLoader resourceLoader;
+
 	@Bean
 	public Storage storage() throws IOException {
-		InputStream keyFile = ResourceUtils.getURL(keyFileLocation)
-			.openStream();
-		return StorageOptions.newBuilder()
-			.setCredentials(GoogleCredentials.fromStream(keyFile))
-			.build()
-			.getService();
-	}
+		Resource resource = resourceLoader.getResource(keyFileLocation);
 
-	// gcs-key json 파일에 private_key_id, private_key, client_id 추가
-	@PostConstruct
-	public void init() throws IOException {
 		String jsonString = new String(
-			Files.readAllBytes(Paths.get(keyFileLocation)));
+			Files.readAllBytes(Paths.get(resource.getURI())));
 
 		Gson gson = new Gson();
 		JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
@@ -58,7 +52,14 @@ public class StorageConfig {
 		jsonObject.addProperty("private_key", private_key);
 		jsonObject.addProperty("client_id", client_id);
 
-		Files.write(Paths.get(keyFileLocation),
-			jsonObject.toString().getBytes());
+		// 새 파일 경로 (메모리에 저장)
+		String newJsonString = jsonObject.toString();
+		InputStream inputStream = new ByteArrayInputStream(
+			newJsonString.getBytes());
+
+		return StorageOptions.newBuilder()
+			.setCredentials(GoogleCredentials.fromStream(inputStream))
+			.build()
+			.getService();
 	}
 }
