@@ -174,7 +174,6 @@ public class JudgeServiceImpl implements JudgeService {
 		JudgeProblemRequestDto judgeProblemRequestDto,
 		Submit submit) {
 		return dockerClient.execCreateCmd(containerId)
-			// run.sh (roomId, userId, problemId, secretKey)
 			.withCmd("sh", "-c", "mkdir " + dockerOutDirectory +
 				"&& bash /script/run.sh " +
 				judgeProblemRequestDto.getRoomId() + " " +
