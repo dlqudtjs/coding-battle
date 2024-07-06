@@ -1,7 +1,7 @@
 # 단계 1: 빌드 단계
 FROM gradle:7.5.1-jdk17 AS build
 # dos2unix 패키지 설치
-RUN apt-get update && apt-get install -y dos2unix
+RUN yum update && yum install -y dos2unix
 WORKDIR /app
 COPY . .
 RUN chmod +x gradlew
