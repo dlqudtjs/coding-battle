@@ -82,10 +82,11 @@ public class JudgeController {
 			ROOM_BROADCAST.getValue() + JudgeResultRequestDto.getRoomId(),
 			responseDto);
 
-		if (isFinished) {
-			judgeService.closeDockerContainer(
-				JudgeResultRequestDto.getContainerId());
-		}
+		// 컨테이너 종료 (잠깐 주석)
+		// if (isFinished) {
+		// 	judgeService.closeDockerContainer(
+		// 		JudgeResultRequestDto.getContainerId());
+		// }
 
 		return ResponseEntity.ok().build();
 	}
