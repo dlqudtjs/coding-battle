@@ -93,7 +93,8 @@ public class WebSocketEventListener {
 
 	private void logout(Room room, User user) {
 		// 연결이 되어있다면 로그아웃하지 않음
-		if (WebsocketSessionHolder.isNotConnected(user)) {
+		if (!WebsocketSessionHolder.isNotConnected(user)) {
+			log.info("Not logout user : {}", user.getUsername());
 			return;
 		}
 
